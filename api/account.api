@@ -1,0 +1,31 @@
+info (
+	title:   "room rover account models"
+	author:  "thopb"
+	email:   "thoahlgbg2002@gamil.com"
+	version: "1.0"
+)
+
+import "model.api"
+
+type (
+	// request Login API
+	// return jwt auth-token use for other API
+	LoginReq {
+		UserName string `json:"user_name"` // user_name
+		Password string `json:"password"`  //  password
+	}
+
+	LoginRes {
+		Result Result `json:"result"`
+		Token  string `json:"token"` // jwt token for api
+		User   User   `json:"user"`  // Account info
+	}
+)
+
+service account-api {
+	@doc(
+		summary: "Login"
+	)
+	@handler Login
+	post /users/login (LoginReq) returns (LoginRes)
+}

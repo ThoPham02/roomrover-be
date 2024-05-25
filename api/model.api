@@ -1,0 +1,22 @@
+info (
+	title:   "room rover models"
+	author:  "thopb"
+	email:   "thoahlgbg2002@gamil.com"
+	version: "1.0"
+)
+
+// common model api
+type (
+	Result {
+		Code    int       `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
+		Message string    `json:"message"` // Result message: detail response code
+	}
+)
+
+
+// account model api
+type (
+	User {
+		
+	}
+)
