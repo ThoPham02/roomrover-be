@@ -20,7 +20,18 @@ func NewObjSync(instanceId int) *ObjSync {
 	}
 }
 
-// Gen ID
+// GenServiceObjID generates a unique ID for a service object.
+// The ID is composed of a timestamp, instance ID, and object type.
+// The timestamp is in milliseconds since the Unix epoch.
+// The instance ID is a 7-bit integer representing the instance of the service.
+// The object type is a 5-bit integer representing the type of the object.
+// The function ensures that the generated ID is unique by using a mutex lock.
+//
+// Parameters:
+// objId (int): The ID of the object.
+//
+// Returns:
+// int64: The generated unique ID for the service object.
 func (oSync *ObjSync) GenServiceObjID(objId int) int64 {
 	var ret int64 = 0
 

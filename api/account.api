@@ -22,10 +22,55 @@ type (
 	}
 )
 
+type (
+	RegisterReq {
+		UserName string `json:"user_name"`
+		Password string `json:"password"`
+		Email    string `json:"email"`
+	}
+
+	RegisterRes {
+		Result Result `json:"result"`
+		Token  string `json:"token"` // jwt token for api
+		User   User   `json:"user"`  // Account info
+	}
+)
+
+type (
+	GetProfileReq {
+	}
+
+	GetProfileRes {
+		Result  Result  `json:"result"`
+		Profile Profile `json:"profile"`
+	}
+)
+
+@server (
+	prefix:     /users
+)
 service account-api {
 	@doc(
 		summary: "Login"
 	)
 	@handler Login
-	post /users/login (LoginReq) returns (LoginRes)
+	post /login (LoginReq) returns (LoginRes)
+	
+	@doc(
+		summary: "Register"
+	)
+	@handler Register
+	post /register (RegisterReq) returns (RegisterRes)
+}
+
+@server (
+	jwt:        Auth
+	prefix:     /users
+)
+service account-api {
+	@doc(
+		summary: "GetProfile"
+	)
+	@handler GetProfile
+	post /info (GetProfileReq) returns (GetProfileRes)
 }

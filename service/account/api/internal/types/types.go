@@ -12,10 +12,44 @@ type LoginRes struct {
 	User   User   `json:"user"`  // Account info
 }
 
+type RegisterReq struct {
+	UserName string `json:"user_name"`
+	Password string `json:"password"`
+	Email    string `json:"email"`
+}
+
+type RegisterRes struct {
+	Result Result `json:"result"`
+	Token  string `json:"token"` // jwt token for api
+	User   User   `json:"user"`  // Account info
+}
+
+type GetProfileReq struct {
+}
+
+type GetProfileRes struct {
+	Result  Result  `json:"result"`
+	Profile Profile `json:"profile"`
+}
+
 type Result struct {
 	Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
 	Message string `json:"message"` // Result message: detail response code
 }
 
 type User struct {
+	UserID    int64  `json:"userID"`
+	ProfileID int64  `json:"profileID"`
+	UserName  string `json:"userName"`
+	Email     string `json:"email"`
+}
+
+type Profile struct {
+	UserID    int64  `json:"userID"`
+	ProfileID int64  `json:"profileID"`
+	FullName  string `json:"fullName"`
+	Dob       int64  `json:"dob"`
+	AvatarUrl string `json:"avatarUrl"`
+	Address   string `json:"address"`
+	Phone     string `json:"phone"`
 }

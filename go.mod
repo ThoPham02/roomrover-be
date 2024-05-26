@@ -3,8 +3,10 @@ module roomrover
 go 1.22.2
 
 require (
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/muhfajar/go-zero-cors-middleware v0.0.0-20211011142017-8c5bbca6202a
 	github.com/zeromicro/go-zero v1.6.5
+	golang.org/x/crypto v0.23.0
 )
 
 require (

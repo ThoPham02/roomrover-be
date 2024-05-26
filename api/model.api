@@ -8,15 +8,27 @@ info (
 // common model api
 type (
 	Result {
-		Code    int       `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
-		Message string    `json:"message"` // Result message: detail response code
+		Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
+		Message string `json:"message"` // Result message: detail response code
 	}
 )
-
 
 // account model api
 type (
 	User {
-		
+		UserID    int64  `json:"userID"`
+		ProfileID int64  `json:"profileID"`
+		UserName  string `json:"userName"`
+		Email     string `json:"email"`
+	}
+
+	Profile {
+		UserID    int64  `json:"userID"`
+		ProfileID int64  `json:"profileID"`
+		FullName  string `json:"fullName"`
+		Dob       int64  `json:"dob"`
+		AvatarUrl string `json:"avatarUrl"`
+		Address   string `json:"address"`
+		Phone     string `json:"phone"`
 	}
 )

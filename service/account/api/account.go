@@ -11,7 +11,7 @@ import (
 	"github.com/zeromicro/go-zero/rest"
 )
 
-var configFile = flag.String("f", "etc/account-api.yaml", "the config file")
+var configFile = flag.String("account-api", "etc/account-api.yaml", "the config file")
 
 type AccountService struct {
 	C      config.Config

@@ -7,18 +7,20 @@ import (
 
 	middleware "github.com/muhfajar/go-zero-cors-middleware"
 	"github.com/zeromicro/go-zero/core/conf"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
 
-	account "roomrover/service/account/api"
+	accountApi "roomrover/service/account/api"
 )
 
 var configFile = flag.String("f", "etc/server.yaml", "the config file")
 
-// @BasePath  
+// @BasePath /
 // @securityDefinitions.apikey Authorization
 // @in header
 // @name Authorization
 func main() {
+	logx.Info(*configFile)
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 
@@ -28,7 +30,7 @@ func main() {
 	server.Use(cors.Handle)
 	defer server.Stop()
 
-	accountService := account.NewAccountService(server)
+	accountService := accountApi.NewAccountService(server)
 	accountService.Start()
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 
