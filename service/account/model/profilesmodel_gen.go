@@ -17,8 +17,8 @@ import (
 var (
 	profilesFieldNames          = builder.RawFieldNames(&Profiles{})
 	profilesRows                = strings.Join(profilesFieldNames, ",")
-	profilesRowsExpectAutoSet   = strings.Join(stringx.Remove(profilesFieldNames, "`update_time`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`"), ",")
-	profilesRowsWithPlaceHolder = strings.Join(stringx.Remove(profilesFieldNames, "`profile_id`", "`update_time`", "`create_at`", "`created_at`", "`create_time`", "`update_at`", "`updated_at`"), "=?,") + "=?"
+	profilesRowsExpectAutoSet   = strings.Join(stringx.Remove(profilesFieldNames, "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
+	profilesRowsWithPlaceHolder = strings.Join(stringx.Remove(profilesFieldNames, "`profile_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
 )
 
 type (
@@ -41,6 +41,8 @@ type (
 		AvatarUrl sql.NullString `db:"avatar_url"`
 		Address   sql.NullString `db:"address"`
 		Phone     sql.NullString `db:"phone"`
+		CreatedAt sql.NullInt64  `db:"created_at"`
+		UpdatedAt sql.NullInt64  `db:"updated_at"`
 	}
 )
 

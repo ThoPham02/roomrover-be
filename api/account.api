@@ -8,8 +8,6 @@ info (
 import "model.api"
 
 type (
-	// request Login API
-	// return jwt auth-token use for other API
 	LoginReq {
 		UserName string `json:"user_name"` // user_name
 		Password string `json:"password"`  //  password
@@ -46,6 +44,27 @@ type (
 	}
 )
 
+type (
+	UpdateProfileReq {
+		Profile Profile `json:"profile"`
+	}
+
+	UpdateProfileRes {
+		Result Result `json:"result"`
+	}
+)
+
+type (
+	ChangePasswordReq {
+		OldPassword string `json:"old_password"`
+		NewPassword string `json:"new_password"`
+	}
+
+	ChangePasswordRes {
+		Result Result `json:"result"`
+	}
+)
+
 @server (
 	prefix:     /users
 )
@@ -72,5 +91,17 @@ service account-api {
 		summary: "GetProfile"
 	)
 	@handler GetProfile
-	post /info (GetProfileReq) returns (GetProfileRes)
+	get /info (GetProfileReq) returns (GetProfileRes)
+	
+	@doc(
+		summary: "UpdateProfile"
+	)
+	@handler UpdateProfile
+	put /info (UpdateProfileReq) returns (UpdateProfileRes)
+	
+	@doc(
+		summary: "ChangePassword"
+	)
+	@handler ChangePassword
+	put /change-password (ChangePasswordReq) returns (ChangePasswordRes)
 }

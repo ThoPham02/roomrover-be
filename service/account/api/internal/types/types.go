@@ -32,6 +32,23 @@ type GetProfileRes struct {
 	Profile Profile `json:"profile"`
 }
 
+type UpdateProfileReq struct {
+	Profile Profile `json:"profile"`
+}
+
+type UpdateProfileRes struct {
+	Result Result `json:"result"`
+}
+
+type ChangePasswordReq struct {
+	OldPassword string `json:"old_password"`
+	NewPassword string `json:"new_password"`
+}
+
+type ChangePasswordRes struct {
+	Result Result `json:"result"`
+}
+
 type Result struct {
 	Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
 	Message string `json:"message"` // Result message: detail response code
