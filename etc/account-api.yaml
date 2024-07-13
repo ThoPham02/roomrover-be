@@ -4,4 +4,6 @@ Port: 8888
 Auth:
   AccessSecret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   AccessExpire: 604800
-Datasource: thopb:524020@tcp(localhost:3306)
+Database:
+  Name: "postgresql"
+  Datasource: postgresql://thopb:hkIenQPTp61nQYeMAUVhTDlMo6dcOhSa@dpg-cq962piju9rs73b0k27g-a.singapore-postgres.render.com/humgroom
