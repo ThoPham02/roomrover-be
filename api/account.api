@@ -9,35 +9,31 @@ import "model.api"
 
 type (
 	LoginReq {
-		UserName string `json:"user_name"` // user_name
-		Password string `json:"password"`  //  password
+		UserName string `form:"user_name"` // user_name
+		Password string `form:"password"` //  password
 	}
-
 	LoginRes {
 		Result Result `json:"result"`
 		Token  string `json:"token"` // jwt token for api
-		User   User   `json:"user"`  // Account info
+		User   User   `json:"user"` // Account info
 	}
 )
 
 type (
 	RegisterReq {
-		UserName string `json:"user_name"`
-		Password string `json:"password"`
-		Email    string `json:"email"`
+		UserName string `form:"user_name"`
+		Password string `form:"password"`
+		Email    string `form:"email"`
 	}
-
 	RegisterRes {
 		Result Result `json:"result"`
 		Token  string `json:"token"` // jwt token for api
-		User   User   `json:"user"`  // Account info
+		User   User   `json:"user"` // Account info
 	}
 )
 
 type (
-	GetProfileReq {
-	}
-
+	GetProfileReq  {}
 	GetProfileRes {
 		Result  Result  `json:"result"`
 		Profile Profile `json:"profile"`
@@ -46,9 +42,8 @@ type (
 
 type (
 	UpdateProfileReq {
-		Profile Profile `json:"profile"`
+		Profile Profile `form:"profile"`
 	}
-
 	UpdateProfileRes {
 		Result Result `json:"result"`
 	}
@@ -56,26 +51,25 @@ type (
 
 type (
 	ChangePasswordReq {
-		OldPassword string `json:"old_password"`
-		NewPassword string `json:"new_password"`
+		OldPassword string `form:"old_password"`
+		NewPassword string `form:"new_password"`
 	}
-
 	ChangePasswordRes {
 		Result Result `json:"result"`
 	}
 )
 
 @server (
-	prefix:     /users
+	prefix: /users
 )
 service account-api {
-	@doc(
+	@doc (
 		summary: "Login"
 	)
 	@handler Login
 	post /login (LoginReq) returns (LoginRes)
-	
-	@doc(
+
+	@doc (
 		summary: "Register"
 	)
 	@handler Register
@@ -83,25 +77,26 @@ service account-api {
 }
 
 @server (
-	jwt:        Auth
-	prefix:     /users
+	jwt:    Auth
+	prefix: /users
 )
 service account-api {
-	@doc(
+	@doc (
 		summary: "GetProfile"
 	)
 	@handler GetProfile
 	get /info (GetProfileReq) returns (GetProfileRes)
-	
-	@doc(
+
+	@doc (
 		summary: "UpdateProfile"
 	)
 	@handler UpdateProfile
 	put /info (UpdateProfileReq) returns (UpdateProfileRes)
-	
-	@doc(
+
+	@doc (
 		summary: "ChangePassword"
 	)
 	@handler ChangePassword
 	put /change-password (ChangePasswordReq) returns (ChangePasswordRes)
 }
+

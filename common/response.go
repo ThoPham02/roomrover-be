@@ -16,4 +16,10 @@ const (
 const (
 	USER_ALREADY_EXISTS_CODE    = 10000
 	USER_ALREADY_EXISTS_MESSAGE = "User already exists"
+
+	USER_NOT_FOUND_CODE    = 10001
+	USER_NOT_FOUND_MESSAGE = "User not found"
+
+	INVALID_PASSWORD_CODE    = 10002
+	INVALID_PASSWORD_MESSAGE = "Invalid password"
 )
