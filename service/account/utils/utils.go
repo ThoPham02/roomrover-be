@@ -17,18 +17,18 @@ import (
 //
 // Note: The bcrypt algorithm is used with a default cost factor of 10.
 func HashPassword(password string) (string, error) {
-    var hashpassword string
+	var hashpassword string
 
-    // Generate a hashed version of the password using bcrypt
-    hashedBytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-    if err!= nil {
-        return hashpassword, err
-    }
+	// Generate a hashed version of the password using bcrypt
+	hashedBytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return hashpassword, err
+	}
 
-    // Convert the hashed bytes to a string
-    hashpassword = string(hashedBytes)
+	// Convert the hashed bytes to a string
+	hashpassword = string(hashedBytes)
 
-    return hashpassword, nil
+	return hashpassword, nil
 }
 
 // ConfirmPassword Function
@@ -39,9 +39,9 @@ func HashPassword(password string) (string, error) {
 // - hashpassword: A string representing the hashed password.
 //
 // Returns:
-// - A boolean value indicating whether the password matches the hashed password.
-//   Returns true if the password matches, false otherwise.
-// - An error if there was an issue comparing the password with the hashed password.
+//   - A boolean value indicating whether the password matches the hashed password.
+//     Returns true if the password matches, false otherwise.
+//   - An error if there was an issue comparing the password with the hashed password.
 //
 // Note: This function uses bcrypt.CompareHashAndPassword to compare the password with the hashed password.
 func ConfirmPassword(password string, hashpassword string) bool {
@@ -68,7 +68,7 @@ func GetJwtToken(secretKey string, iat, seconds int64, userID int64, payload int
 	claims := make(jwt.MapClaims)
 	claims["exp"] = iat + seconds
 	claims["iat"] = iat
-	claims["user_id"] = userID
+	claims["userID"] = userID
 	claims["payload"] = payload
 	token := jwt.New(jwt.SigningMethodHS256)
 	token.Claims = claims

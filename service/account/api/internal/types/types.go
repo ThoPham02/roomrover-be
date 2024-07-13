@@ -16,6 +16,7 @@ type GetProfileReq struct {
 type GetProfileRes struct {
 	Result  Result  `json:"result"`
 	Profile Profile `json:"profile"`
+	User    User    `json:"user"` // Account info
 }
 
 type LoginReq struct {
@@ -37,12 +38,17 @@ type Profile struct {
 	AvatarUrl string `json:"avatarUrl"`
 	Address   string `json:"address"`
 	Phone     string `json:"phone"`
+	CreatedAt int64  `json:"createdAt"`
+	UpdatedAt int64  `json:"updatedAt"`
+	CreatedBy int64  `json:"createdBy"`
+	UpdatedBy int64  `json:"updatedBy"`
 }
 
 type RegisterReq struct {
 	UserName string `form:"user_name"`
 	Password string `form:"password"`
 	Email    string `form:"email"`
+	UserRole int64  `form:"user_role"`
 }
 
 type RegisterRes struct {
@@ -57,11 +63,17 @@ type Result struct {
 }
 
 type UpdateProfileReq struct {
-	Profile Profile `form:"profile"`
+	FullName  string `form:"full_name,optional"`
+	Dob       int64  `form:"dob,optional"`
+	Phone     string `form:"phone,optional"`
+	Address   string `form:"address,optional"`
+	AvatarUrl string `form:"avatar_url,optional"`
 }
 
 type UpdateProfileRes struct {
-	Result Result `json:"result"`
+	Result  Result  `json:"result"`
+	Profile Profile `json:"profile"`
+	User    User    `json:"user"` // Account info
 }
 
 type User struct {

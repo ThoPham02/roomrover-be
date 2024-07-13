@@ -32,7 +32,7 @@ func NewObjSync(instanceId int) *ObjSync {
 //
 // Returns:
 // int64: The generated unique ID for the service object.
-func (oSync *ObjSync) GenServiceObjID(objId int) int64 {
+func (oSync *ObjSync) GenServiceObjID() int64 {
 	var ret int64 = 0
 
 	binsID := make([]byte, 8)
@@ -41,7 +41,7 @@ func (oSync *ObjSync) GenServiceObjID(objId int) int64 {
 	objB := make([]byte, 4)
 
 	var instanceMod = oSync.instanceId % 128 // max 128 instance
-	var objMod = objId % 32                  // max 32 type; 11111 -> type other
+	var objMod = 1 % 32                      // max 32 type; 11111 -> type other
 	oSync.mu.Lock()
 	defer oSync.mu.Unlock()
 

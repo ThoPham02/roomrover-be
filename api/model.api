@@ -30,5 +30,9 @@ type (
 		AvatarUrl string `json:"avatarUrl"`
 		Address   string `json:"address"`
 		Phone     string `json:"phone"`
+		CreatedAt int64  `json:"createdAt"`
+		UpdatedAt int64  `json:"updatedAt"`
+		CreatedBy int64  `json:"createdBy"`
+		UpdatedBy int64  `json:"updatedBy"`
 	}
 )
