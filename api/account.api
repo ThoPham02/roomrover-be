@@ -24,6 +24,7 @@ type (
 		UserName string `form:"user_name"`
 		Password string `form:"password"`
 		Email    string `form:"email"`
+		UserRole int64  `form:"user_role"`
 	}
 	RegisterRes {
 		Result Result `json:"result"`
@@ -37,15 +38,22 @@ type (
 	GetProfileRes {
 		Result  Result  `json:"result"`
 		Profile Profile `json:"profile"`
+		User    User    `json:"user"` // Account info
 	}
 )
 
 type (
 	UpdateProfileReq {
-		Profile Profile `form:"profile"`
+		FullName  string `form:"full_name,optional"`
+		Dob       int64  `form:"dob,optional"`
+		Phone     string `form:"phone,optional"`
+		Address   string `form:"address,optional"`
+		AvatarUrl string `form:"avatar_url,optional"`
 	}
 	UpdateProfileRes {
-		Result Result `json:"result"`
+		Result  Result  `json:"result"`
+		Profile Profile `json:"profile"`
+		User    User    `json:"user"` // Account info
 	}
 )
 

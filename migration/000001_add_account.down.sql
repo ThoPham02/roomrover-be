@@ -1,3 +1,3 @@
-DROP TABLE IF EXISTS "users";
+DROP TABLE IF EXISTS "users_tbl";
 
-DROP TABLE IF EXISTS "profiles";
+DROP TABLE IF EXISTS "profiles_tbl";
