@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"roomrover/config"
 
-	middleware "github.com/muhfajar/go-zero-cors-middleware"
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
@@ -20,19 +19,17 @@ var configFile = flag.String("f", "etc/server.yaml", "the config file")
 // @in header
 // @name Authorization
 func main() {
-	logx.Info(*configFile)
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 
-	cors := middleware.NewCORSMiddleware(&middleware.Options{})
+	server := rest.MustNewServer(c.RestConf, rest.WithCors("*"))
 
-	server := rest.MustNewServer(c.RestConf, rest.WithNotAllowedHandler(cors.Handler()))
-	server.Use(cors.Handle)
+	logx.DisableStat()
 	defer server.Stop()
 
 	accountService := accountApi.NewAccountService(server)
 	accountService.Start()
-	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 
+	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()
 }

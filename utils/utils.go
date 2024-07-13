@@ -1,7 +1,14 @@
 package utils
 
-import "context"
+import (
+	"context"
+	"encoding/json"
+)
 
 func GetUserIDFromContext(ctx context.Context) (userID int64, err error) {
-	return 0, nil
+	ret, err := ctx.Value(("userID")).(json.Number).Int64()
+	if err != nil {
+		return 0, err
+	}
+	return ret, nil
 }
