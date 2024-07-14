@@ -36,3 +36,20 @@ type (
 		UpdatedBy int64  `json:"updatedBy"`
 	}
 )
+
+// inventory model api
+type (
+	RoomGroup {
+		RoomGroupID int64  `json:"roomGroupID"`
+		Province    string `json:"province"`
+		District    string `json:"district"`
+		Ward        string `json:"ward"`
+		Price       int64  `json:"price"`
+		Acreage     int64  `json:"acreage"`
+		TotalRoom   int64  `json:"totalRoom"`
+		CreatedAt   int64  `json:"createdAt"`
+		UpdatedAt   int64  `json:"updatedAt"`
+		CreatedBy   int64  `json:"createdBy"`
+		UpdatedBy   int64  `json:"updatedBy"`
+	}
+)
