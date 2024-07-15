@@ -1,0 +1,37 @@
+info (
+	title:   "inventory models"
+	author:  "thopb"
+	email:   "thoahlgbg2002@gamil.com"
+	version: "1.0"
+)
+
+import "model.api"
+
+type (
+	FilterRoomGroupReq {
+		ProvinceCode int   `form:"province_code"`
+		DistrictCode int   `form:"district_code"`
+		WardCode     int   `form:"ward_code"`
+		PriceFrom    int64 `form:"price_from"`
+		PriceTo      int64 `form:"price_to"`
+		AcreageFrom  int64 `form:"acreage_from"`
+		AcreageTo    int64 `form:"acreage_to"`
+	}
+	FilterRoomGroupRes {
+		Result     Result      `json:"result"`
+		RoomGroups []RoomGroup `json:"rooms"`
+	}
+)
+
+@server (
+	jwt:    Auth
+	prefix: /rooms
+)
+service inventory-api {
+	@doc (
+		summary: "FilterRoomGroup"
+	)
+	@handler FilterRoomGroup
+	get /filter (FilterRoomGroupReq) returns (FilterRoomGroupRes)
+}
+

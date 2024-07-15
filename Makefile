@@ -15,9 +15,19 @@ ACCOUNT_DIR=$(SERVICE_DIR)/account
 ACCOUNT_API_DIR=$(ACCOUNT_DIR)/api
 ACCOUNT_MODEL_DIR=$(ACCOUNT_DIR)/model
 
+# inventory service
+INVENTORY_DIR=$(SERVICE_DIR)/inventory
+INVENTORY_API_DIR=$(INVENTORY_DIR)/api
+INVENTORY_MODEL_DIR=$(INVENTORY_DIR)/model
+
 # list table name
 USER_TBL=users_tbl
 PROFILE_TBL=profiles_tbl
+
+HOME_TBL=homes_tbl
+ROOM_TBL=rooms_tbl
+ROOM_GROUP_TBL=room_groups_tbl
+ROOM_ALBUM_TBL=room_albums_tbl
 
 dep-init:
 	go mod init $(MODULE_NAME)
@@ -37,10 +47,19 @@ migratedown:
 gen-account-service:
 	goctl api go -api $(API_DIR)/account.api -dir $(ACCOUNT_API_DIR)
 
+gen-inventory-service:
+	goctl api go -api $(API_DIR)/inventory.api -dir $(INVENTORY_API_DIR)
+
 # gen db model
 gen-account-model: 
 	goctl model pg datasource -url="${DATASOURCE}" -table="${USER_TBL}" -dir="$(ACCOUNT_MODEL_DIR)"
 	goctl model pg datasource -url="${DATASOURCE}" -table="${PROFILE_TBL}" -dir="$(ACCOUNT_MODEL_DIR)"
+
+gen-inventory-model:
+	goctl model pg datasource -url="${DATASOURCE}" -table="${HOME_TBL}" -dir="$(INVENTORY_MODEL_DIR)"
+	goctl model pg datasource -url="${DATASOURCE}" -table="${ROOM_TBL}" -dir="$(INVENTORY_MODEL_DIR)"
+	goctl model pg datasource -url="${DATASOURCE}" -table="${ROOM_GROUP_TBL}" -dir="$(INVENTORY_MODEL_DIR)"
+	goctl model pg datasource -url="${DATASOURCE}" -table="${ROOM_ALBUM_TBL}" -dir="$(INVENTORY_MODEL_DIR)"
 
 runs:
 	go run main.go -f etc/server.yaml
