@@ -10,12 +10,13 @@ import "model.api"
 type (
 	LoginReq {
 		UserName string `form:"user_name"` // user_name
-		Password string `form:"password"` //  password
+		Password string `form:"password"`  //  password
 	}
 	LoginRes {
-		Result Result `json:"result"`
-		Token  string `json:"token"` // jwt token for api
-		User   User   `json:"user"` // Account info
+		Result  Result  `json:"result"`
+		Token   string  `json:"token"` // jwt token for api
+		User    User    `json:"user"`  // Account info
+		Profile Profile `json:"profile"`
 	}
 )
 
@@ -27,14 +28,15 @@ type (
 		UserRole int64  `form:"user_role"`
 	}
 	RegisterRes {
-		Result Result `json:"result"`
-		Token  string `json:"token"` // jwt token for api
-		User   User   `json:"user"` // Account info
+		Result  Result  `json:"result"`
+		Token   string  `json:"token"` // jwt token for api
+		User    User    `json:"user"`  // Account info
+		Profile Profile `json:"profile"`
 	}
 )
 
 type (
-	GetProfileReq  {}
+	GetProfileReq struct{}
 	GetProfileRes {
 		Result  Result  `json:"result"`
 		Profile Profile `json:"profile"`
@@ -76,7 +78,7 @@ service account-api {
 	)
 	@handler Login
 	post /login (LoginReq) returns (LoginRes)
-
+	
 	@doc (
 		summary: "Register"
 	)
@@ -94,17 +96,16 @@ service account-api {
 	)
 	@handler GetProfile
 	get /info (GetProfileReq) returns (GetProfileRes)
-
+	
 	@doc (
 		summary: "UpdateProfile"
 	)
 	@handler UpdateProfile
 	put /info (UpdateProfileReq) returns (UpdateProfileRes)
-
+	
 	@doc (
 		summary: "ChangePassword"
 	)
 	@handler ChangePassword
 	put /change-password (ChangePasswordReq) returns (ChangePasswordRes)
 }
-
