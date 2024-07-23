@@ -1,4 +1,4 @@
-CREATE TABLE IF EXISTS "homes_tbl";
-CREATE TABLE IF EXISTS "room_types_tbl";
-CREATE TABLE IF EXISTS "rooms_tbl";
-CREATE TABLE IF EXISTS "room_albums_tbl";
+DROP TABLE IF EXISTS "homes_tbl";
+DROP TABLE IF EXISTS "room_class_tbl";
+DROP TABLE IF EXISTS "rooms_tbl";
+DROP TABLE IF EXISTS "room_albums_tbl";

@@ -13,13 +13,42 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
-				// FilterRoomGroup
+				// FilterRoomClass
 				Method:  http.MethodGet,
-				Path:    "/filter",
-				Handler: FilterRoomGroupHandler(serverCtx),
+				Path:    "/class/filter",
+				Handler: FilterRoomClassHandler(serverCtx),
+			},
+			{
+				// CreateHome
+				Method:  http.MethodPost,
+				Path:    "/home",
+				Handler: CreateHomeHandler(serverCtx),
+			},
+			{
+				// UpdateHome
+				Method:  http.MethodPut,
+				Path:    "/home",
+				Handler: UpdateHomeHandler(serverCtx),
+			},
+			{
+				// DeleteHome
+				Method:  http.MethodDelete,
+				Path:    "/home/:id",
+				Handler: DeleteHomeHandler(serverCtx),
+			},
+			{
+				// GetHome
+				Method:  http.MethodGet,
+				Path:    "/home/:id",
+				Handler: GetHomeHandler(serverCtx),
+			},
+			{
+				// FilterHome
+				Method:  http.MethodGet,
+				Path:    "/home/filter",
+				Handler: FilterHomeHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
-		rest.WithPrefix("/rooms"),
 	)
 }

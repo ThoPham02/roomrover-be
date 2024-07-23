@@ -26,7 +26,7 @@ PROFILE_TBL=profiles_tbl
 
 HOME_TBL=homes_tbl
 ROOM_TBL=rooms_tbl
-ROOM_GROUP_TBL=room_groups_tbl
+ROOM_GROUP_TBL=room_class_tbl
 ROOM_ALBUM_TBL=room_albums_tbl
 
 dep-init:
@@ -52,14 +52,14 @@ gen-inventory-service:
 
 # gen db model
 gen-account-model: 
-	goctl model pg datasource -url="${DATASOURCE}" -table="${USER_TBL}" -dir="$(ACCOUNT_MODEL_DIR)"
-	goctl model pg datasource -url="${DATASOURCE}" -table="${PROFILE_TBL}" -dir="$(ACCOUNT_MODEL_DIR)"
+	goctl model pg datasource -url="${DATASOURCE}" -table="${USER_TBL}" -dir="$(ACCOUNT_MODEL_DIR)" --ignore-columns=""
+	goctl model pg datasource -url="${DATASOURCE}" -table="${PROFILE_TBL}" -dir="$(ACCOUNT_MODEL_DIR)" --ignore-columns=""
 
 gen-inventory-model:
-	goctl model pg datasource -url="${DATASOURCE}" -table="${HOME_TBL}" -dir="$(INVENTORY_MODEL_DIR)"
-	goctl model pg datasource -url="${DATASOURCE}" -table="${ROOM_TBL}" -dir="$(INVENTORY_MODEL_DIR)"
-	goctl model pg datasource -url="${DATASOURCE}" -table="${ROOM_GROUP_TBL}" -dir="$(INVENTORY_MODEL_DIR)"
-	goctl model pg datasource -url="${DATASOURCE}" -table="${ROOM_ALBUM_TBL}" -dir="$(INVENTORY_MODEL_DIR)"
+	goctl model pg datasource -url="${DATASOURCE}" -table="${HOME_TBL}" -dir="$(INVENTORY_MODEL_DIR)" --ignore-columns=""
+	goctl model pg datasource -url="${DATASOURCE}" -table="${ROOM_TBL}" -dir="$(INVENTORY_MODEL_DIR)" --ignore-columns=""
+	goctl model pg datasource -url="${DATASOURCE}" -table="${ROOM_GROUP_TBL}" -dir="$(INVENTORY_MODEL_DIR)" --ignore-columns=""
+	goctl model pg datasource -url="${DATASOURCE}" -table="${ROOM_ALBUM_TBL}" -dir="$(INVENTORY_MODEL_DIR)" --ignore-columns=""
 
 runs:
 	go run main.go -f etc/server.yaml

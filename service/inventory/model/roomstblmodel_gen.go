@@ -16,8 +16,8 @@ import (
 var (
 	roomsTblFieldNames          = builder.RawFieldNames(&RoomsTbl{}, true)
 	roomsTblRows                = strings.Join(roomsTblFieldNames, ",")
-	roomsTblRowsExpectAutoSet   = strings.Join(stringx.Remove(roomsTblFieldNames, "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"), ",")
-	roomsTblRowsWithPlaceHolder = builder.PostgreSqlJoin(stringx.Remove(roomsTblFieldNames, "id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"))
+	roomsTblRowsExpectAutoSet   = strings.Join(stringx.Remove(roomsTblFieldNames), ",")
+	roomsTblRowsWithPlaceHolder = builder.PostgreSqlJoin(stringx.Remove(roomsTblFieldNames, "id"))
 )
 
 type (
@@ -35,8 +35,9 @@ type (
 
 	RoomsTbl struct {
 		Id          int64         `db:"id"`
+		OwnerId     int64         `db:"owner_id"`
 		Name        string        `db:"name"`
-		RoomGroupId int64         `db:"room_group_id"`
+		RoomClassId int64         `db:"room_class_id"`
 		Status      int64         `db:"status"` // 1: Unavailable, 2: Available, 4: Rented, 8: Inactive
 		CreatedAt   sql.NullInt64 `db:"created_at"`
 		CreatedBy   sql.NullInt64 `db:"created_by"`
@@ -73,14 +74,14 @@ func (m *defaultRoomsTblModel) FindOne(ctx context.Context, id int64) (*RoomsTbl
 }
 
 func (m *defaultRoomsTblModel) Insert(ctx context.Context, data *RoomsTbl) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6)", m.table, roomsTblRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.Name, data.RoomGroupId, data.Status, data.CreatedBy, data.UpdatedBy)
+	query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6, $7, $8, $9)", m.table, roomsTblRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.OwnerId, data.Name, data.RoomClassId, data.Status, data.CreatedAt, data.CreatedBy, data.UpdatedAt, data.UpdatedBy)
 	return ret, err
 }
 
 func (m *defaultRoomsTblModel) Update(ctx context.Context, data *RoomsTbl) error {
 	query := fmt.Sprintf("update %s set %s where id = $1", m.table, roomsTblRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.Id, data.Name, data.RoomGroupId, data.Status, data.CreatedBy, data.UpdatedBy)
+	_, err := m.conn.ExecCtx(ctx, query, data.Id, data.OwnerId, data.Name, data.RoomClassId, data.Status, data.CreatedAt, data.CreatedBy, data.UpdatedAt, data.UpdatedBy)
 	return err
 }
 

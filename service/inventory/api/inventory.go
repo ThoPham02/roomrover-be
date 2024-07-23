@@ -1,8 +1,7 @@
-package main
+package api
 
 import (
 	"flag"
-	"fmt"
 
 	"roomrover/service/inventory/api/internal/config"
 	"roomrover/service/inventory/api/internal/handler"
@@ -12,20 +11,28 @@ import (
 	"github.com/zeromicro/go-zero/rest"
 )
 
-var configFile = flag.String("f", "etc/inventory-api.yaml", "the config file")
+var configFile = flag.String("inventory-api", "etc/inventory-api.yaml", "the config file")
 
-func main() {
-	flag.Parse()
+type InventoryService struct {
+	C      config.Config
+	Server *rest.Server
+	Ctx    *svc.ServiceContext
+}
 
+func NewInventoryService(server *rest.Server) *InventoryService {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
-
-	server := rest.MustNewServer(c.RestConf)
-	defer server.Stop()
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
 
-	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
-	server.Start()
+	return &InventoryService{
+		C:      c,
+		Server: server,
+		Ctx:    ctx,
+	}
+}
+
+func (s *InventoryService) Start() error {
+	return nil
 }

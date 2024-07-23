@@ -9,22 +9,22 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type FilterRoomGroupLogic struct {
+type FilterRoomClassLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-// FilterRoomGroup
-func NewFilterRoomGroupLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FilterRoomGroupLogic {
-	return &FilterRoomGroupLogic{
+// FilterRoomClass
+func NewFilterRoomClassLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FilterRoomClassLogic {
+	return &FilterRoomClassLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *FilterRoomGroupLogic) FilterRoomGroup(req *types.FilterRoomGroupReq) (resp *types.FilterRoomGroupRes, err error) {
+func (l *FilterRoomClassLogic) FilterRoomClass(req *types.FilterRoomClassReq) (resp *types.FilterRoomClassRes, err error) {
 	// todo: add your logic here and delete this line
 
 	return

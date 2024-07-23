@@ -8,7 +8,7 @@ info (
 import "model.api"
 
 type (
-	FilterRoomGroupReq {
+	FilterRoomClassReq {
 		ProvinceCode int   `form:"province_code"`
 		DistrictCode int   `form:"district_code"`
 		WardCode     int   `form:"ward_code"`
@@ -17,21 +17,157 @@ type (
 		AcreageFrom  int64 `form:"acreage_from"`
 		AcreageTo    int64 `form:"acreage_to"`
 	}
-	FilterRoomGroupRes {
-		Result     Result      `json:"result"`
-		RoomGroups []RoomGroup `json:"rooms"`
+	FilterRoomClassRes {
+		Result      Result      `json:"result"`
+		RoomClasses []RoomClass `json:"roomClasses"`
 	}
 )
 
+type (
+	CreateHomeReq {
+		Name         string `form:"name"`
+		Description  string `form:"description"`
+		ProvinceCode int64  `form:"province_code"`
+		DistrictCode int64  `form:"district_code"`
+		WardCode     int64  `form:"ward_code"`
+		Address      string `form:"address"`
+		Wifi         int64  `form:"wifi"`
+		Electricity  int64  `form:"electricity"`
+		Water        int64  `form:"water"`
+		Cleaning     int64  `form:"cleaning"`
+		Parking      int64  `form:"parking"`
+		Security     int64  `form:"security"`
+		Other        string `form:"other"`
+	}
+	CreateHomeRes {
+		Result Result `json:"result"`
+		Home   Home   `json:"home"`
+	}
+	UpdateHomeReq {
+		Name         string `form:"name"`
+		Description  string `form:"description"`
+		ProvinceCode int64  `form:"province_code"`
+		DistrictCode int64  `form:"district_code"`
+		WardCode     int64  `form:"ward_code"`
+		Address      string `form:"address"`
+		Wifi         int64  `form:"wifi"`
+		Electricity  int64  `form:"electricity"`
+		Water        int64  `form:"water"`
+		Cleaning     int64  `form:"cleaning"`
+		Parking      int64  `form:"parking"`
+		Security     int64  `form:"security"`
+		Other        string `form:"other"`
+		Status       int64  `form:"status"`
+	}
+	UpdateHomeRes {
+		Result Result `json:"result"`
+		Home   Home   `json:"home"`
+	}
+	DeleteHomeReq {
+		ID int64 `path:"id"`
+	}
+	DeleteHomeRes {
+		Result Result `json:"result"`
+	}
+	GetHomeReq {
+		ID int64 `path:"id"`
+	}
+	GetHomeRes {
+		Result Result `json:"result"`
+		Home   Home   `json:"home"`
+	}
+	FilterHomeReq  {}
+	FilterHomeRes {
+		Result Result `json:"result"`
+		Homes  []Home `json:"homes"`
+	}
+)
+
+// type (
+//  CreateRoomClassReq {}
+//  CreateRoomClassRes {
+//   Result Result `json:"result"`
+//  }
+//  UpdateRoomClassReq {}
+//  UpdateRoomClassRes {
+//   Result Result `json:"result"`
+//  }
+//  DeleteRoomClassReq {}
+//  DeleteRoomClassRes {
+//   Result Result `json:"result"`
+//  }
+//  GetRoomClassReq {}
+//  GetRoomClassRes {
+//   Result     Result     `json:"result"`
+//   RoomClasss []RoomClass `json:"room_groups"`
+//  }
+//  FilterRoomClassReq {}
+//  FilterRoomClassRes {
+//   Result     Result      `json:"result"`
+//   RoomClasss []RoomClass `json:"room_groups"`
+//  }
+// )
+// type (
+//  CreateRoomReq {}
+//  CreateRoomRes {
+//   Result Result `json:"result"`
+//  }
+//  UpdateRoomReq {}
+//  UpdateRoomRes {
+//   Result Result `json:"result"`
+//  }
+//  DeleteRoomReq {}
+//  DeleteRoomRes {
+//   Result Result `json:"result"`
+//  }
+//  GetRoomReq {}
+//  GetRoomRes {
+//   Result Result `json:"result"`
+//  }
+//  FilterRoomReq {}
+//  FilterRoomRes {
+//   Result Result `json:"result"`
+//   Rooms  []Room `json:"rooms"`
+//  }
+// )
 @server (
-	jwt:    Auth
-	prefix: /rooms
+	jwt: Auth
 )
 service inventory-api {
 	@doc (
-		summary: "FilterRoomGroup"
+		summary: "FilterRoomClass"
 	)
-	@handler FilterRoomGroup
-	get /filter (FilterRoomGroupReq) returns (FilterRoomGroupRes)
+	@handler FilterRoomClass
+	get /class/filter (FilterRoomClassReq) returns (FilterRoomClassRes)
+
+	@doc (
+		summary: "CreateHome"
+	)
+	@handler CreateHome
+	post /home (CreateHomeReq) returns (CreateHomeRes)
+
+	@doc (
+		summary: "UpdateHome"
+	)
+	@handler UpdateHome
+	put /home (UpdateHomeReq) returns (UpdateHomeRes)
+
+	@doc (
+		summary: "DeleteHome"
+	)
+	@handler DeleteHome
+	delete /home/:id (DeleteHomeReq) returns (DeleteHomeRes)
+
+	@doc (
+		summary: "GetHome"
+	)
+	@handler GetHome
+	get /home/:id (GetHomeReq) returns (GetHomeRes)
+
+	@doc (
+		summary: "FilterHome"
+	)
+	@handler FilterHome
+	get /home/filter (FilterHomeReq) returns (FilterHomeRes)
 }
 
