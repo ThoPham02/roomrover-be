@@ -86,7 +86,6 @@ func (l *GetProfileLogic) GetProfile(req *types.GetProfileReq) (resp *types.GetP
 	}
 	if profileModel != nil {
 		profile = types.Profile{
-			UserID:    userID,
 			ProfileID: profileModel.ProfileId,
 			FullName:  profileModel.Fullname.String,
 			Dob:       profileModel.Dob.Int64,

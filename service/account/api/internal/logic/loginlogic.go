@@ -86,7 +86,6 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error
 	}
 	if profileModel != nil {
 		profile = types.Profile{
-			UserID:    user.UserID,
 			ProfileID: profileModel.ProfileId,
 			FullName:  profileModel.Fullname.String,
 			Dob:       profileModel.Dob.Int64,
