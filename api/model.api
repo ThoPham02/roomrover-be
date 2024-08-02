@@ -17,59 +17,14 @@ type (
 type (
 	User {
 		UserID    int64  `json:"userID"`
-		ProfileID int64  `json:"profileID"`
-		UserName  string `json:"userName"`
-		Email     string `json:"email"`
-	}
-
-	Profile {
-		ProfileID int64  `json:"profileID"`
+		Phone  string `json:"phone"`
 		FullName  string `json:"fullName"`
-		Dob       int64  `json:"dob"`
+		Birthday       int64  `json:"birthday"`
 		AvatarUrl string `json:"avatarUrl"`
 		Address   string `json:"address"`
-		Phone     string `json:"phone"`
 		CreatedAt int64  `json:"createdAt"`
 		UpdatedAt int64  `json:"updatedAt"`
-		CreatedBy int64  `json:"createdBy"`
-		UpdatedBy int64  `json:"updatedBy"`
 	}
 )
 
 // inventory model api
-type (
-	RoomClass {
-		RoomClassID int64  `json:"roomClassID"`
-		Province    string `json:"province"`
-		District    string `json:"district"`
-		Ward        string `json:"ward"`
-		Price       int64  `json:"price"`
-		Acreage     int64  `json:"acreage"`
-		TotalRoom   int64  `json:"totalRoom"`
-		CreatedAt   int64  `json:"createdAt"`
-		UpdatedAt   int64  `json:"updatedAt"`
-		CreatedBy   int64  `json:"createdBy"`
-		UpdatedBy   int64  `json:"updatedBy"`
-	}
-
-	Home {
-		HomeID      int64  `json:"homeID"`
-		Name        string `json:"name"`
-		Description string `json:"description"`
-		Province    string `json:"province"`
-		District    string `json:"district"`
-		Ward        string `json:"ward"`
-		Address     string `json:"address"`
-		Wifi        int64  `json:"wifi"`
-		Electricity int64  `json:"electricity"`
-		Water       int64  `json:"water"`
-		Cleaning    int64  `json:"cleaning"`
-		Parking     int64  `json:"parking"`
-		Security    int64  `json:"security"`
-		Other       string `json:"other"`
-		CreatedAt   int64  `json:"createdAt"`
-		UpdatedAt   int64  `json:"updatedAt"`
-		CreatedBy   int64  `json:"createdBy"`
-		UpdatedBy   int64  `json:"updatedBy"`
-	}
-)

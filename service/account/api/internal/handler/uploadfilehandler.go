@@ -9,16 +9,17 @@ import (
 	"roomrover/service/account/api/internal/types"
 )
 
-func GetProfileHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+// Upload File
+func UploadFileHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.GetProfileReq
+		var req types.UploadFileReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := logic.NewGetProfileLogic(r.Context(), svcCtx)
-		resp, err := l.GetProfile(&req)
+		l := logic.NewUploadFileLogic(r.Context(), svcCtx)
+		resp, err := l.UploadFile(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {

@@ -10,6 +10,9 @@ const (
 
 	DB_ERR_CODE = 2
 	DB_ERR_MESS = "Database error"
+
+	UNKNOWN_ERR_CODE = 3
+	UNKNOWN_ERR_MESS = "Unknown error"
 )
 
 // Account service response code from 10000-19999

@@ -1,7 +1,10 @@
 package common
 
 // Constants
-const ()
+const (
+	USER_ACTIVE   = 1
+	USER_INACTIVE = 2
+)
 
 // User Service
 const (

@@ -13,13 +13,13 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
-				// Login
+				// User Login
 				Method:  http.MethodPost,
 				Path:    "/login",
 				Handler: LoginHandler(serverCtx),
 			},
 			{
-				// Register
+				// Register New User
 				Method:  http.MethodPost,
 				Path:    "/register",
 				Handler: RegisterHandler(serverCtx),
@@ -31,22 +31,28 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
-				// ChangePassword
+				// Upload File
+				Method:  http.MethodPost,
+				Path:    "/avatar",
+				Handler: UploadFileHandler(serverCtx),
+			},
+			{
+				// Change User Password
 				Method:  http.MethodPut,
 				Path:    "/change-password",
 				Handler: ChangePasswordHandler(serverCtx),
 			},
 			{
-				// GetProfile
+				// Get User Info
 				Method:  http.MethodGet,
 				Path:    "/info",
-				Handler: GetProfileHandler(serverCtx),
+				Handler: GetUserHandler(serverCtx),
 			},
 			{
-				// UpdateProfile
+				// Update User Info
 				Method:  http.MethodPut,
 				Path:    "/info",
-				Handler: UpdateProfileHandler(serverCtx),
+				Handler: UpdateUserHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),

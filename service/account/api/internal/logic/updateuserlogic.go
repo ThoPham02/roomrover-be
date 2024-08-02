@@ -7,35 +7,35 @@ import (
 	"roomrover/common"
 	"roomrover/service/account/api/internal/svc"
 	"roomrover/service/account/api/internal/types"
-	"roomrover/service/account/utils"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type ChangePasswordLogic struct {
+type UpdateUserLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-// Change User Password
-func NewChangePasswordLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ChangePasswordLogic {
-	return &ChangePasswordLogic{
+// Update User Info
+func NewUpdateUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateUserLogic {
+	return &UpdateUserLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *ChangePasswordLogic) ChangePassword(req *types.ChangePasswordReq) (resp *types.ChangePasswordRes, err error) {
-	l.Logger.Info("ChangePassword request: ", req)
+func (l *UpdateUserLogic) UpdateUser(req *types.UpdateUserReq) (resp *types.UpdateUserRes, err error) {
+	l.Logger.Info("UpdateUser", req)
 
 	var userID int64
+	var user types.User
 
 	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
 		l.Logger.Error(err)
-		return &types.ChangePasswordRes{
+		return &types.UpdateUserRes{
 			Result: types.Result{
 				Code:    common.UNKNOWN_ERR_CODE,
 				Message: common.UNKNOWN_ERR_MESS,
@@ -48,14 +48,14 @@ func (l *ChangePasswordLogic) ChangePassword(req *types.ChangePasswordReq) (resp
 	if err != nil {
 		l.Logger.Error(err)
 		if err == sql.ErrNoRows {
-			return &types.ChangePasswordRes{
+			return &types.UpdateUserRes{
 				Result: types.Result{
 					Code:    common.USER_NOT_FOUND_CODE,
 					Message: common.USER_NOT_FOUND_MESS,
 				},
 			}, nil
 		}
-		return &types.ChangePasswordRes{
+		return &types.UpdateUserRes{
 			Result: types.Result{
 				Code:    common.DB_ERR_CODE,
 				Message: common.DB_ERR_MESS,
@@ -63,35 +63,15 @@ func (l *ChangePasswordLogic) ChangePassword(req *types.ChangePasswordReq) (resp
 		}, nil
 	}
 
-	// Check if the old password is correct
-	if !utils.ConfirmPassword(req.OldPassword, userModel.PasswordHash) {
-		return &types.ChangePasswordRes{
-			Result: types.Result{
-				Code:    common.INVALID_PASSWORD_CODE,
-				Message: common.INVALID_PASSWORD_MESS,
-			},
-		}, nil
-	}
-
-	// Change password
-	hashpw, err := utils.HashPassword(req.NewPassword)
-	if err != nil {
-		l.Logger.Error(err)
-		return &types.ChangePasswordRes{
-			Result: types.Result{
-				Code:    common.UNKNOWN_ERR_CODE,
-				Message: common.UNKNOWN_ERR_MESS,
-			},
-		}, nil
-	}
-
-	userModel.PasswordHash = hashpw
+	userModel.FullName = sql.NullString{String: req.FullName, Valid: true}
+	userModel.Birthday = sql.NullInt64{Int64: req.Dob, Valid: true}
+	userModel.AvatarUrl = sql.NullString{String: req.AvatarUrl, Valid: true}
 	userModel.UpdatedAt = common.GetCurrentTime()
 
 	err = l.svcCtx.UserModel.Update(l.ctx, userModel)
 	if err != nil {
 		l.Logger.Error(err)
-		return &types.ChangePasswordRes{
+		return &types.UpdateUserRes{
 			Result: types.Result{
 				Code:    common.DB_ERR_CODE,
 				Message: common.DB_ERR_MESS,
@@ -99,10 +79,23 @@ func (l *ChangePasswordLogic) ChangePassword(req *types.ChangePasswordReq) (resp
 		}, nil
 	}
 
-	return &types.ChangePasswordRes{
+	user = types.User{
+		UserID:    userID,
+		Phone:     userModel.Phone,
+		FullName:  userModel.FullName.String,
+		Birthday:  userModel.Birthday.Int64,
+		AvatarUrl: userModel.AvatarUrl.String,
+		Address:   userModel.Address.String,
+		CreatedAt: userModel.CreatedAt,
+		UpdatedAt: userModel.UpdatedAt,
+	}
+
+	l.Logger.Info("UpdateUser success")
+	return &types.UpdateUserRes{
 		Result: types.Result{
 			Code:    common.SUCCESS_CODE,
 			Message: common.SUCCESS_MESS,
 		},
+		User: user,
 	}, nil
 }

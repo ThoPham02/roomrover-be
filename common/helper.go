@@ -1,8 +1,9 @@
-package utils
+package common
 
 import (
 	"context"
 	"encoding/json"
+	"time"
 )
 
 func GetUserIDFromContext(ctx context.Context) (userID int64, err error) {
@@ -11,4 +12,8 @@ func GetUserIDFromContext(ctx context.Context) (userID int64, err error) {
 		return 0, err
 	}
 	return ret, nil
+}
+
+func GetCurrentTime() int64 {
+	return time.Now().UnixMilli()
 }

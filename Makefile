@@ -8,7 +8,7 @@ SERVICE_DIR=$(ROOT_DIR)/$(SERVICE)
 API_DIR=$(ROOT_DIR)/api
 SCHEMA_DIR=$(ROOT_DIR)/schema
 MIGRATION_DIR=$(ROOT_DIR)/migration
-DATASOURCE=postgresql://thopb:hkIenQPTp61nQYeMAUVhTDlMo6dcOhSa@dpg-cq962piju9rs73b0k27g-a.singapore-postgres.render.com/humgroom
+DATASOURCE=mysql://thopb:524020@localhost:3306/humgroom
 
 # account service
 ACCOUNT_DIR=$(SERVICE_DIR)/account
@@ -19,15 +19,6 @@ ACCOUNT_MODEL_DIR=$(ACCOUNT_DIR)/model
 INVENTORY_DIR=$(SERVICE_DIR)/inventory
 INVENTORY_API_DIR=$(INVENTORY_DIR)/api
 INVENTORY_MODEL_DIR=$(INVENTORY_DIR)/model
-
-# list table name
-USER_TBL=users_tbl
-PROFILE_TBL=profiles_tbl
-
-HOME_TBL=homes_tbl
-ROOM_TBL=rooms_tbl
-ROOM_GROUP_TBL=room_class_tbl
-ROOM_ALBUM_TBL=room_albums_tbl
 
 dep-init:
 	go mod init $(MODULE_NAME)
@@ -52,14 +43,10 @@ gen-inventory-service:
 
 # gen db model
 gen-account-model: 
-	goctl model pg datasource -url="${DATASOURCE}" -table="${USER_TBL}" -dir="$(ACCOUNT_MODEL_DIR)" --ignore-columns=""
-	goctl model pg datasource -url="${DATASOURCE}" -table="${PROFILE_TBL}" -dir="$(ACCOUNT_MODEL_DIR)" --ignore-columns=""
+	goctl model mysql ddl -src="${SCHEMA_DIR}/account.sql" -dir="${ACCOUNT_MODEL_DIR}" --ignore-columns=""
 
 gen-inventory-model:
-	goctl model pg datasource -url="${DATASOURCE}" -table="${HOME_TBL}" -dir="$(INVENTORY_MODEL_DIR)" --ignore-columns=""
-	goctl model pg datasource -url="${DATASOURCE}" -table="${ROOM_TBL}" -dir="$(INVENTORY_MODEL_DIR)" --ignore-columns=""
-	goctl model pg datasource -url="${DATASOURCE}" -table="${ROOM_GROUP_TBL}" -dir="$(INVENTORY_MODEL_DIR)" --ignore-columns=""
-	goctl model pg datasource -url="${DATASOURCE}" -table="${ROOM_ALBUM_TBL}" -dir="$(INVENTORY_MODEL_DIR)" --ignore-columns=""
+	goctl model mysql ddl -src="${SCHEMA_DIR}/inventory.sql" -dir="${INVENTORY_MODEL_DIR}" --ignore-columns=""
 
 runs:
 	go run main.go -f etc/server.yaml

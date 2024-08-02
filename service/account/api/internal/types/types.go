@@ -10,73 +10,35 @@ type ChangePasswordRes struct {
 	Result Result `json:"result"`
 }
 
-type GetProfileReq struct {
+type GetUserReq struct {
 }
 
-type GetProfileRes struct {
-	Result  Result  `json:"result"`
-	Profile Profile `json:"profile"`
-	User    User    `json:"user"` // Account info
-}
-
-type Home struct {
-	HomeID      int64  `json:"homeID"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Province    string `json:"province"`
-	District    string `json:"district"`
-	Ward        string `json:"ward"`
-	Address     string `json:"address"`
-	Wifi        int64  `json:"wifi"`
-	Electricity int64  `json:"electricity"`
-	Water       int64  `json:"water"`
-	Cleaning    int64  `json:"cleaning"`
-	Parking     int64  `json:"parking"`
-	Security    int64  `json:"security"`
-	Other       string `json:"other"`
-	CreatedAt   int64  `json:"createdAt"`
-	UpdatedAt   int64  `json:"updatedAt"`
-	CreatedBy   int64  `json:"createdBy"`
-	UpdatedBy   int64  `json:"updatedBy"`
+type GetUserRes struct {
+	Result Result `json:"result"`
+	User   User   `json:"user"`
 }
 
 type LoginReq struct {
-	UserName string `form:"user_name"` // user_name
-	Password string `form:"password"`  //  password
+	Phone    string `form:"phone"`    // user_name
+	Password string `form:"password"` //  password
 }
 
 type LoginRes struct {
-	Result  Result  `json:"result"`
-	Token   string  `json:"token"` // jwt token for api
-	User    User    `json:"user"`  // Account info
-	Profile Profile `json:"profile"`
-}
-
-type Profile struct {
-	ProfileID int64  `json:"profileID"`
-	FullName  string `json:"fullName"`
-	Dob       int64  `json:"dob"`
-	AvatarUrl string `json:"avatarUrl"`
-	Address   string `json:"address"`
-	Phone     string `json:"phone"`
-	CreatedAt int64  `json:"createdAt"`
-	UpdatedAt int64  `json:"updatedAt"`
-	CreatedBy int64  `json:"createdBy"`
-	UpdatedBy int64  `json:"updatedBy"`
+	Result Result `json:"result"`
+	Token  string `json:"token"` // jwt token for api
+	User   User   `json:"user"`  // Account info
 }
 
 type RegisterReq struct {
-	UserName string `form:"user_name"`
+	Phone    string `form:"user_name"`
 	Password string `form:"password"`
-	Email    string `form:"email"`
 	UserRole int64  `form:"user_role"`
 }
 
 type RegisterRes struct {
-	Result  Result  `json:"result"`
-	Token   string  `json:"token"` // jwt token for api
-	User    User    `json:"user"`  // Account info
-	Profile Profile `json:"profile"`
+	Result Result `json:"result"`
+	Token  string `json:"token"` // jwt token for api
+	User   User   `json:"user"`  // Account info
 }
 
 type Result struct {
@@ -84,37 +46,36 @@ type Result struct {
 	Message string `json:"message"` // Result message: detail response code
 }
 
-type RoomClass struct {
-	RoomClassID int64  `json:"roomClassID"`
-	Province    string `json:"province"`
-	District    string `json:"district"`
-	Ward        string `json:"ward"`
-	Price       int64  `json:"price"`
-	Acreage     int64  `json:"acreage"`
-	TotalRoom   int64  `json:"totalRoom"`
-	CreatedAt   int64  `json:"createdAt"`
-	UpdatedAt   int64  `json:"updatedAt"`
-	CreatedBy   int64  `json:"createdBy"`
-	UpdatedBy   int64  `json:"updatedBy"`
-}
-
-type UpdateProfileReq struct {
+type UpdateUserReq struct {
 	FullName  string `form:"full_name,optional"`
 	Dob       int64  `form:"dob,optional"`
-	Phone     string `form:"phone,optional"`
 	Address   string `form:"address,optional"`
 	AvatarUrl string `form:"avatar_url,optional"`
+	Gender    int64  `form:"gender"`
 }
 
-type UpdateProfileRes struct {
-	Result  Result  `json:"result"`
-	Profile Profile `json:"profile"`
-	User    User    `json:"user"` // Account info
+type UpdateUserRes struct {
+	Result Result `json:"result"`
+	User   User   `json:"user"` // Account info
+}
+
+type UploadFileReq struct {
+	UploadType int    `form:"upload_type"`
+	FileName   string `form:"file_name"`
+}
+
+type UploadFileRes struct {
+	Result    Result `json:"result"`
+	AvatarUrl string `json:"avatar_url"`
 }
 
 type User struct {
 	UserID    int64  `json:"userID"`
-	ProfileID int64  `json:"profileID"`
-	UserName  string `json:"userName"`
-	Email     string `json:"email"`
+	Phone     string `json:"phone"`
+	FullName  string `json:"fullName"`
+	Birthday  int64  `json:"birthday"`
+	AvatarUrl string `json:"avatarUrl"`
+	Address   string `json:"address"`
+	CreatedAt int64  `json:"createdAt"`
+	UpdatedAt int64  `json:"updatedAt"`
 }

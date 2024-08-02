@@ -9,16 +9,17 @@ import (
 	"roomrover/service/account/api/internal/types"
 )
 
-func UpdateProfileHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+// UpdateUser
+func UpdateUserHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.UpdateProfileReq
+		var req types.UpdateUserReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := logic.NewUpdateProfileLogic(r.Context(), svcCtx)
-		resp, err := l.UpdateProfile(&req)
+		l := logic.NewUpdateUserLogic(r.Context(), svcCtx)
+		resp, err := l.UpdateUser(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {
