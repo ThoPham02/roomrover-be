@@ -109,7 +109,6 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 		UpdatedBy: sql.NullInt64{Valid: true, Int64: userModel.UserId},
 	}
 	profile = types.Profile{
-		UserID:    userModel.UserId,
 		ProfileID: profileModel.ProfileId,
 		FullName:  profileModel.Fullname.String,
 		CreatedAt: currentTime,

@@ -16,8 +16,8 @@ import (
 var (
 	homesTblFieldNames          = builder.RawFieldNames(&HomesTbl{}, true)
 	homesTblRows                = strings.Join(homesTblFieldNames, ",")
-	homesTblRowsExpectAutoSet   = strings.Join(stringx.Remove(homesTblFieldNames, "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"), ",")
-	homesTblRowsWithPlaceHolder = builder.PostgreSqlJoin(stringx.Remove(homesTblFieldNames, "id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"))
+	homesTblRowsExpectAutoSet   = strings.Join(stringx.Remove(homesTblFieldNames), ",")
+	homesTblRowsWithPlaceHolder = builder.PostgreSqlJoin(stringx.Remove(homesTblFieldNames, "id"))
 )
 
 type (
@@ -35,6 +35,7 @@ type (
 
 	HomesTbl struct {
 		Id                 int64          `db:"id"`
+		OwnerId            int64          `db:"owner_id"`
 		Name               string         `db:"name"`
 		Description        sql.NullString `db:"description"`
 		ProvinceCode       int64          `db:"province_code"`
@@ -84,14 +85,14 @@ func (m *defaultHomesTblModel) FindOne(ctx context.Context, id int64) (*HomesTbl
 }
 
 func (m *defaultHomesTblModel) Insert(ctx context.Context, data *HomesTbl) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)", m.table, homesTblRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.Name, data.Description, data.ProvinceCode, data.DistrictCode, data.WardCode, data.Address, data.WifiService, data.ElectricityService, data.WaterService, data.CleaningService, data.ParkingService, data.SecurityService, data.OtherService, data.Status, data.CreatedBy, data.UpdatedBy)
+	query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)", m.table, homesTblRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.OwnerId, data.Name, data.Description, data.ProvinceCode, data.DistrictCode, data.WardCode, data.Address, data.WifiService, data.ElectricityService, data.WaterService, data.CleaningService, data.ParkingService, data.SecurityService, data.OtherService, data.Status, data.CreatedAt, data.CreatedBy, data.UpdatedAt, data.UpdatedBy)
 	return ret, err
 }
 
 func (m *defaultHomesTblModel) Update(ctx context.Context, data *HomesTbl) error {
 	query := fmt.Sprintf("update %s set %s where id = $1", m.table, homesTblRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.Id, data.Name, data.Description, data.ProvinceCode, data.DistrictCode, data.WardCode, data.Address, data.WifiService, data.ElectricityService, data.WaterService, data.CleaningService, data.ParkingService, data.SecurityService, data.OtherService, data.Status, data.CreatedBy, data.UpdatedBy)
+	_, err := m.conn.ExecCtx(ctx, query, data.Id, data.OwnerId, data.Name, data.Description, data.ProvinceCode, data.DistrictCode, data.WardCode, data.Address, data.WifiService, data.ElectricityService, data.WaterService, data.CleaningService, data.ParkingService, data.SecurityService, data.OtherService, data.Status, data.CreatedAt, data.CreatedBy, data.UpdatedAt, data.UpdatedBy)
 	return err
 }
 

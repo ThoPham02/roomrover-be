@@ -149,7 +149,6 @@ func (l *UpdateProfileLogic) UpdateProfile(req *types.UpdateProfileReq) (resp *t
 		Email:     userModel.Email,
 	}
 	profile = types.Profile{
-		UserID:    userID,
 		ProfileID: profileModel.ProfileId,
 		FullName:  profileModel.Fullname.String,
 		Dob:       profileModel.Dob.Int64,

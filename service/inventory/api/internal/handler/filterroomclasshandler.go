@@ -9,17 +9,17 @@ import (
 	"roomrover/service/inventory/api/internal/types"
 )
 
-// FilterRoomGroup
-func FilterRoomGroupHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+// FilterRoomClass
+func FilterRoomClassHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.FilterRoomGroupReq
+		var req types.FilterRoomClassReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := logic.NewFilterRoomGroupLogic(r.Context(), svcCtx)
-		resp, err := l.FilterRoomGroup(&req)
+		l := logic.NewFilterRoomClassLogic(r.Context(), svcCtx)
+		resp, err := l.FilterRoomClass(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {

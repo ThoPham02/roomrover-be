@@ -16,8 +16,8 @@ import (
 var (
 	profilesTblFieldNames          = builder.RawFieldNames(&ProfilesTbl{}, true)
 	profilesTblRows                = strings.Join(profilesTblFieldNames, ",")
-	profilesTblRowsExpectAutoSet   = strings.Join(stringx.Remove(profilesTblFieldNames, "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"), ",")
-	profilesTblRowsWithPlaceHolder = builder.PostgreSqlJoin(stringx.Remove(profilesTblFieldNames, "profile_id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"))
+	profilesTblRowsExpectAutoSet   = strings.Join(stringx.Remove(profilesTblFieldNames), ",")
+	profilesTblRowsWithPlaceHolder = builder.PostgreSqlJoin(stringx.Remove(profilesTblFieldNames, "profile_id"))
 )
 
 type (
@@ -75,14 +75,14 @@ func (m *defaultProfilesTblModel) FindOne(ctx context.Context, profileId int64) 
 }
 
 func (m *defaultProfilesTblModel) Insert(ctx context.Context, data *ProfilesTbl) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6, $7, $8)", m.table, profilesTblRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.ProfileId, data.Fullname, data.Dob, data.AvatarUrl, data.Address, data.Phone, data.CreatedBy, data.UpdatedBy)
+	query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)", m.table, profilesTblRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.ProfileId, data.Fullname, data.Dob, data.AvatarUrl, data.Address, data.Phone, data.CreatedAt, data.CreatedBy, data.UpdatedAt, data.UpdatedBy)
 	return ret, err
 }
 
 func (m *defaultProfilesTblModel) Update(ctx context.Context, data *ProfilesTbl) error {
 	query := fmt.Sprintf("update %s set %s where profile_id = $1", m.table, profilesTblRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.ProfileId, data.Fullname, data.Dob, data.AvatarUrl, data.Address, data.Phone, data.CreatedBy, data.UpdatedBy)
+	_, err := m.conn.ExecCtx(ctx, query, data.ProfileId, data.Fullname, data.Dob, data.AvatarUrl, data.Address, data.Phone, data.CreatedAt, data.CreatedBy, data.UpdatedAt, data.UpdatedBy)
 	return err
 }
 

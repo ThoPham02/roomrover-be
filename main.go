@@ -10,6 +10,7 @@ import (
 	"github.com/zeromicro/go-zero/rest"
 
 	accountApi "roomrover/service/account/api"
+	inventoryApi "roomrover/service/inventory/api"
 )
 
 var configFile = flag.String("f", "etc/server.yaml", "the config file")
@@ -29,6 +30,9 @@ func main() {
 
 	accountService := accountApi.NewAccountService(server)
 	accountService.Start()
+
+	inventoryService := inventoryApi.NewInventoryService(server)
+	inventoryService.Start()
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()

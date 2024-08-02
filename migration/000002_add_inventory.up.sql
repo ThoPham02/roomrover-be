@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS "homes_tbl" (
     "id" BIGINT,
+    "owner_id" BIGINT NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "description" TEXT,
     "province_code" INT NOT NULL,
@@ -29,8 +30,9 @@ COMMENT ON COLUMN "homes_tbl"."parking_service" IS 'VND/MONTH -1: No, 0: Free';
 COMMENT ON COLUMN "homes_tbl"."security_service" IS 'VND/MONTH -1: No, 0: Free';
 COMMENT ON COLUMN "homes_tbl"."status" IS '1: Draft, 2: Active, 4: Inactive';
 
-CREATE TABLE IF NOT EXISTS "room_groups_tbl" (
+CREATE TABLE IF NOT EXISTS "room_class_tbl" (
     "id" BIGINT,
+    "owner_id" BIGINT NOT NULL,
     "home_id" BIGINT NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "unit_price" DOUBLE PRECISION NOT NULL,
@@ -45,13 +47,14 @@ CREATE TABLE IF NOT EXISTS "room_groups_tbl" (
     PRIMARY KEY ("id")
 );
 
-COMMENT ON COLUMN "room_groups_tbl"."type" IS '1: Apartment, 2: House, 4: Villa';
-COMMENT ON COLUMN "room_groups_tbl"."status" IS '1: Draft, 2: Active, 4: Inactive';
+COMMENT ON COLUMN "room_class_tbl"."type" IS '1: Apartment, 2: House, 4: Villa';
+COMMENT ON COLUMN "room_class_tbl"."status" IS '1: Draft, 2: Active, 4: Inactive';
 
 CREATE TABLE IF NOT EXISTS "rooms_tbl" (
     "id" BIGINT,
+    "owner_id" BIGINT NOT NULL,
     "name" VARCHAR(255) NOT NULL,
-    "room_group_id" BIGINT NOT NULL,
+    "room_class_id" BIGINT NOT NULL,
     "status" INT NOT NULL DEFAULT 0,
     "created_at" BIGINT,
     "created_by" BIGINT,
@@ -64,7 +67,8 @@ COMMENT ON COLUMN "rooms_tbl"."status" IS '1: Unavailable, 2: Available, 4: Rent
 
 CREATE TABLE IF NOT EXISTS "room_albums_tbl" (
     "id" BIGINT,
-    "room_group_id" BIGINT NOT NULL,
+    "room_id" BIGINT NOT NULL,
+    "room_class_id" BIGINT NOT NULL,
     "url" VARCHAR(255) NOT NULL,
     "status" INT NOT NULL DEFAULT 0,
     "created_at" BIGINT,

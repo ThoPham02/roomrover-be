@@ -16,8 +16,8 @@ import (
 var (
 	usersTblFieldNames          = builder.RawFieldNames(&UsersTbl{}, true)
 	usersTblRows                = strings.Join(usersTblFieldNames, ",")
-	usersTblRowsExpectAutoSet   = strings.Join(stringx.Remove(usersTblFieldNames, "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"), ",")
-	usersTblRowsWithPlaceHolder = builder.PostgreSqlJoin(stringx.Remove(usersTblFieldNames, "user_id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"))
+	usersTblRowsExpectAutoSet   = strings.Join(stringx.Remove(usersTblFieldNames), ",")
+	usersTblRowsWithPlaceHolder = builder.PostgreSqlJoin(stringx.Remove(usersTblFieldNames, "user_id"))
 )
 
 type (

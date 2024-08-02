@@ -16,8 +16,8 @@ import (
 var (
 	roomAlbumsTblFieldNames          = builder.RawFieldNames(&RoomAlbumsTbl{}, true)
 	roomAlbumsTblRows                = strings.Join(roomAlbumsTblFieldNames, ",")
-	roomAlbumsTblRowsExpectAutoSet   = strings.Join(stringx.Remove(roomAlbumsTblFieldNames, "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"), ",")
-	roomAlbumsTblRowsWithPlaceHolder = builder.PostgreSqlJoin(stringx.Remove(roomAlbumsTblFieldNames, "id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"))
+	roomAlbumsTblRowsExpectAutoSet   = strings.Join(stringx.Remove(roomAlbumsTblFieldNames), ",")
+	roomAlbumsTblRowsWithPlaceHolder = builder.PostgreSqlJoin(stringx.Remove(roomAlbumsTblFieldNames, "id"))
 )
 
 type (
@@ -35,7 +35,8 @@ type (
 
 	RoomAlbumsTbl struct {
 		Id          int64         `db:"id"`
-		RoomGroupId int64         `db:"room_group_id"`
+		RoomId      int64         `db:"room_id"`
+		RoomClassId int64         `db:"room_class_id"`
 		Url         string        `db:"url"`
 		Status      int64         `db:"status"`
 		CreatedAt   sql.NullInt64 `db:"created_at"`
@@ -73,14 +74,14 @@ func (m *defaultRoomAlbumsTblModel) FindOne(ctx context.Context, id int64) (*Roo
 }
 
 func (m *defaultRoomAlbumsTblModel) Insert(ctx context.Context, data *RoomAlbumsTbl) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6)", m.table, roomAlbumsTblRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.RoomGroupId, data.Url, data.Status, data.CreatedBy, data.UpdatedBy)
+	query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6, $7, $8, $9)", m.table, roomAlbumsTblRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.RoomId, data.RoomClassId, data.Url, data.Status, data.CreatedAt, data.CreatedBy, data.UpdatedAt, data.UpdatedBy)
 	return ret, err
 }
 
 func (m *defaultRoomAlbumsTblModel) Update(ctx context.Context, data *RoomAlbumsTbl) error {
 	query := fmt.Sprintf("update %s set %s where id = $1", m.table, roomAlbumsTblRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.Id, data.RoomGroupId, data.Url, data.Status, data.CreatedBy, data.UpdatedBy)
+	_, err := m.conn.ExecCtx(ctx, query, data.Id, data.RoomId, data.RoomClassId, data.Url, data.Status, data.CreatedAt, data.CreatedBy, data.UpdatedAt, data.UpdatedBy)
 	return err
 }
 
