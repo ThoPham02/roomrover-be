@@ -45,7 +45,7 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 
 	// Check if the user exists
 	userModel, err := l.svcCtx.UserModel.FindOneByPhone(l.ctx, req.Phone)
-	if err != nil && err != sql.ErrNoRows {
+	if err != nil && err != model.ErrNotFound {
 		l.Logger.Error(err)
 		return &types.RegisterRes{
 			Result: types.Result{

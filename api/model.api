@@ -17,9 +17,9 @@ type (
 type (
 	User {
 		UserID    int64  `json:"userID"`
-		Phone  string `json:"phone"`
+		Phone     string `json:"phone"`
 		FullName  string `json:"fullName"`
-		Birthday       int64  `json:"birthday"`
+		Birthday  int64  `json:"birthday"`
 		AvatarUrl string `json:"avatarUrl"`
 		Address   string `json:"address"`
 		CreatedAt int64  `json:"createdAt"`
@@ -28,3 +28,67 @@ type (
 )
 
 // inventory model api
+type (
+	House {
+		HouseID   int64          `json:"houseID"`
+		HouseName string         `json:"houseName"`
+		Type      int            `json:"type"`
+		Services  []HouseService `json:"services"`
+
+		ProvinceID int    `json:"provinceID"`
+		DistrictID int    `json:"districtID"`
+		WardID     int    `json:"wardID"`
+		Address    string `json:"address"`
+
+		CreatedAt int64 `json:"createdAt"`
+		UpdatedAt int64 `json:"updatedAt"`
+	}
+
+	HouseService {
+		ServiceID int64   `json:"serviceID"`
+		Name      string  `json:"name"`
+		Price     float64 `json:"price"`
+		Type      int     `json:"type"`
+		CreatedAt int64   `json:"createdAt"`
+		UpdatedAt int64   `json:"updatedAt"`
+	}
+
+	Class {
+		ClassID   int64   `json:"classID"`
+		ClassName string  `json:"className"`
+		Price     float64 `json:"price"`
+		Acreage   int64   `json:"acreage"`
+		ClassUrl  string  `json:"classUrl"`
+		Rooms     []Room  `json:"rooms"`
+		Albums    []Album `json:"albums"`
+
+		LenssorID   int64  `json:"lensorID"`
+		LenssorName string `json:"lensorName"`
+
+		ProvinceID int    `json:"provinceID"`
+		DistrictID int    `json:"districtID"`
+		WardID     int    `json:"wardID"`
+		Address    string `json:"address"`
+
+		CreatedAt int64 `json:"createdAt"`
+		UpdatedAt int64 `json:"updatedAt"`
+	}
+
+	Album {
+		AlbumID   int64  `json:"albumID"`
+		AlbumName string `json:"albumName"`
+		AlbumUrl  string `json:"albumUrl"`
+
+		CreatedAt int64 `json:"createdAt"`
+		UpdatedAt int64 `json:"updatedAt"`
+	}
+
+	Room {
+		RoomID   int64  `json:"roomID"`
+		RoomName string `json:"roomName"`
+		Status   int    `json:"status"`
+
+		CreatedAt int64 `json:"createdAt"`
+		UpdatedAt int64 `json:"updatedAt"`
+	}
+)

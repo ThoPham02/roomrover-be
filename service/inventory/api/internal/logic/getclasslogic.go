@@ -9,22 +9,22 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type DeleteHomeLogic struct {
+type GetClassLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-// DeleteHome
-func NewDeleteHomeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteHomeLogic {
-	return &DeleteHomeLogic{
+// GetClass
+func NewGetClassLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetClassLogic {
+	return &GetClassLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *DeleteHomeLogic) DeleteHome(req *types.DeleteHomeReq) (resp *types.DeleteHomeRes, err error) {
+func (l *GetClassLogic) GetClass(req *types.GetClassReq) (resp *types.GetClassRes, err error) {
 	// todo: add your logic here and delete this line
 
 	return

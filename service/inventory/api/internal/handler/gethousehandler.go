@@ -9,17 +9,17 @@ import (
 	"roomrover/service/inventory/api/internal/types"
 )
 
-// FilterHome
-func FilterHomeHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+// GetHouse
+func GetHouseHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.FilterHomeReq
+		var req types.GetHouseReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := logic.NewFilterHomeLogic(r.Context(), svcCtx)
-		resp, err := l.FilterHome(&req)
+		l := logic.NewGetHouseLogic(r.Context(), svcCtx)
+		resp, err := l.GetHouse(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {

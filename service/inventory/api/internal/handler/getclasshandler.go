@@ -9,17 +9,17 @@ import (
 	"roomrover/service/inventory/api/internal/types"
 )
 
-// GetHome
-func GetHomeHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+// GetClass
+func GetClassHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.GetHomeReq
+		var req types.GetClassReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := logic.NewGetHomeLogic(r.Context(), svcCtx)
-		resp, err := l.GetHome(&req)
+		l := logic.NewGetClassLogic(r.Context(), svcCtx)
+		resp, err := l.GetClass(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {

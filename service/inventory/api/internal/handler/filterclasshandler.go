@@ -9,17 +9,17 @@ import (
 	"roomrover/service/inventory/api/internal/types"
 )
 
-// DeleteHome
-func DeleteHomeHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+// FilterClass
+func FilterClassHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.DeleteHomeReq
+		var req types.FilterClassReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := logic.NewDeleteHomeLogic(r.Context(), svcCtx)
-		resp, err := l.DeleteHome(&req)
+		l := logic.NewFilterClassLogic(r.Context(), svcCtx)
+		resp, err := l.FilterClass(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {

@@ -7,6 +7,7 @@ import (
 	"roomrover/common"
 	"roomrover/service/account/api/internal/svc"
 	"roomrover/service/account/api/internal/types"
+	"roomrover/service/account/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -47,7 +48,7 @@ func (l *UpdateUserLogic) UpdateUser(req *types.UpdateUserReq) (resp *types.Upda
 	userModel, err := l.svcCtx.UserModel.FindOne(l.ctx, userID)
 	if err != nil {
 		l.Logger.Error(err)
-		if err == sql.ErrNoRows {
+		if err == model.ErrNotFound {
 			return &types.UpdateUserRes{
 				Result: types.Result{
 					Code:    common.USER_NOT_FOUND_CODE,

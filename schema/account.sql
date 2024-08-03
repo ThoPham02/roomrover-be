@@ -12,4 +12,4 @@ CREATE TABLE `users` (
     `created_at` BIGINT NOT NULL,
     `updated_at` BIGINT NOT NULL,
     PRIMARY KEY (user_id)
-) ENGINE = InnoDB COLLATE utf8mb4_general_ci COMMENT 'users table';
+);

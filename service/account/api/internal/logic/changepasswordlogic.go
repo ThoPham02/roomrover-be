@@ -2,11 +2,11 @@ package logic
 
 import (
 	"context"
-	"database/sql"
 
 	"roomrover/common"
 	"roomrover/service/account/api/internal/svc"
 	"roomrover/service/account/api/internal/types"
+	"roomrover/service/account/model"
 	"roomrover/service/account/utils"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -47,7 +47,7 @@ func (l *ChangePasswordLogic) ChangePassword(req *types.ChangePasswordReq) (resp
 	userModel, err := l.svcCtx.UserModel.FindOne(l.ctx, userID)
 	if err != nil {
 		l.Logger.Error(err)
-		if err == sql.ErrNoRows {
+		if err == model.ErrNotFound {
 			return &types.ChangePasswordRes{
 				Result: types.Result{
 					Code:    common.USER_NOT_FOUND_CODE,

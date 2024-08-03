@@ -9,17 +9,17 @@ import (
 	"roomrover/service/inventory/api/internal/types"
 )
 
-// CreateHome
-func CreateHomeHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+// DeleteHouse
+func DeleteHouseHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.CreateHomeReq
+		var req types.DeleteHouseReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := logic.NewCreateHomeLogic(r.Context(), svcCtx)
-		resp, err := l.CreateHome(&req)
+		l := logic.NewDeleteHouseLogic(r.Context(), svcCtx)
+		resp, err := l.DeleteHouse(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {

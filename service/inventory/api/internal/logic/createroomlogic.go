@@ -9,24 +9,23 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type CreateHomeLogic struct {
+type CreateRoomLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-// CreateHome
-func NewCreateHomeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateHomeLogic {
-	return &CreateHomeLogic{
+// CreateRoom
+func NewCreateRoomLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateRoomLogic {
+	return &CreateRoomLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *CreateHomeLogic) CreateHome(req *types.CreateHomeReq) (resp *types.CreateHomeRes, err error) {
-	
-
+func (l *CreateRoomLogic) CreateRoom(req *types.CreateRoomReq) (resp *types.CreateRoomRes, err error) {
+	// todo: add your logic here and delete this line
 
 	return
 }

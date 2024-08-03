@@ -9,17 +9,17 @@ import (
 	"roomrover/service/inventory/api/internal/types"
 )
 
-// UpdateHome
-func UpdateHomeHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+// DeleteClass
+func DeleteClassHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.UpdateHomeReq
+		var req types.DeleteClassReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := logic.NewUpdateHomeLogic(r.Context(), svcCtx)
-		resp, err := l.UpdateHome(&req)
+		l := logic.NewDeleteClassLogic(r.Context(), svcCtx)
+		resp, err := l.DeleteClass(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {

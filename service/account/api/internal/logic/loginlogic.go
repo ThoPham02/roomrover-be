@@ -2,11 +2,11 @@ package logic
 
 import (
 	"context"
-	"database/sql"
 
 	"roomrover/common"
 	"roomrover/service/account/api/internal/svc"
 	"roomrover/service/account/api/internal/types"
+	"roomrover/service/account/model"
 	"roomrover/service/account/utils"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -37,7 +37,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error
 	userModel, err := l.svcCtx.UserModel.FindOneByPhone(l.ctx, req.Phone)
 	if err != nil {
 		l.Logger.Error(err)
-		if err == sql.ErrNoRows {
+		if err == model.ErrNotFound {
 			return &types.LoginRes{
 				Result: types.Result{
 					Code:    common.USER_NOT_FOUND_CODE,
