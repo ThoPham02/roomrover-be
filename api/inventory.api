@@ -8,70 +8,63 @@ info (
 import "model.api"
 
 type (
-	FilterRoomClassReq {
-		Search      string `form:"search"`
-		ProvinceID  int    `form:"province_code"`
-		DistrictID  int    `form:"district_code"`
-		WardID      int    `form:"ward_code"`
-		Address     string `form:"address"`
-		PriceFrom   int64  `form:"price_from"`
-		PriceTo     int64  `form:"price_to"`
-		AcreageFrom int64  `form:"acreage_from"`
-		AcreageTo   int64  `form:"acreage_to"`
+	UploadFileHouseReq {
+		HouseID  int64  `form:"houseID"`
+		FileName string `form:"fileName"`
 	}
-	FilterRoomClassRes {
-		Result  Result  `json:"result"`
-		Classes []Class `json:"classes"`
+	UploadFileHouseRes {
+		Result Result `json:"result"`
+		Url    string `json:"url"`
 	}
 )
 
 type (
 	CreateHouseReq {
-		HouseName  string         `form:"house_name"`
-		Type       int            `form:"type"`
-		Services   []HouseService `form:"services"`
-		ProvinceID int            `form:"province_id"`
-		DistrictID int            `form:"district_id"`
-		WardID     int            `form:"ward_id"`
-		Address    string         `form:"address"`
+		Name        string `form:"name"`
+		Description string `form:"description"`
+		Type        int64  `form:"type"`
+		Area        int64  `form:"area"`
+		Price       int64  `form:"price"`
+		Address     string `form:"address"`
+		WardID      int64  `form:"wardID"`
+		DistrictID  int64  `form:"districtID"`
+		ProvinceID  int64  `form:"provinceID"`
 	}
 	CreateHouseRes {
 		Result Result `json:"result"`
 		House  House  `json:"house"`
 	}
+	GetHouseReq {
+		HouseID int64 `path:"houseID"`
+	}
+	GetHouseRes {
+		Result Result `json:"result"`
+		House  House  `json:"house"`
+	}
 	UpdateHouseReq {
-		ID         int64          `path:"id"`
-		HouseName  string         `form:"house_name"`
-		Type       int            `form:"type"`
-		Services   []HouseService `form:"services"`
-		ProvinceID int            `form:"province_id"`
-		DistrictID int            `form:"district_id"`
-		WardID     int            `form:"ward_id"`
-		Address    string         `form:"address"`
+		HouseID   int64  `form:"houseID"`
+		Title     string `form:"title"`
+		Price     int64  `form:"price"`
+		Area      int64  `form:"area"`
+		Address   string `form:"address"`
+		Longitude string `form:"longitude"`
+		Latitude  string `form:"latitude"`
 	}
 	UpdateHouseRes {
 		Result Result `json:"result"`
 		House  House  `json:"house"`
 	}
 	DeleteHouseReq {
-		ID int64 `path:"id"`
+		HouseID int64 `path:"houseID"`
 	}
 	DeleteHouseRes {
 		Result Result `json:"result"`
 	}
-	GetHouseReq {
-		ID int64 `path:"id"`
-	}
-	GetHouseRes {
-		Result Result `json:"result"`
-		House  House  `json:"house"`
-	}
 	FilterHouseReq {
-		Search     string `form:"search"`
-		ProvinceID int    `form:"province_code"`
-		DistrictID int    `form:"district_code"`
-		WardID     int    `form:"ward_code"`
-		Address    string `form:"address"`
+		Area      int64  `form:"area,optional"`
+		Price     int64  `form:"price,optional"`
+		Longitude string `form:"longitude,optional"`
+		Latitude  string `form:"latitude,optional"`
 	}
 	FilterHouseRes {
 		Result Result  `json:"result"`
@@ -80,173 +73,119 @@ type (
 )
 
 type (
-	CreateClassReq {
-		ClassName   string `form:"class_name"`
-		LensorID    int64  `form:"lensor_id"`
-		Price       int64  `form:"price"`
-		Acreage     int64  `form:"acreage"`
-		Name        string `form:"name"`
-		Description string `form:"description"`
-	}
-	CreateClassRes {
-		Result Result `json:"result"`
-		Class  Class  `json:"class"`
-	}
-	UpdateClassReq {
-		ID          int64  `path:"id"`
-		ClassName   string `form:"class_name"`
-		LensorID    int64  `form:"lensor_id"`
-		Price       int64  `form:"price"`
-		Acreage     int64  `form:"acreage"`
-		Name        string `form:"name"`
-		Description string `form:"description"`
-		Status      int    `form:"status"`
-	}
-	UpdateClassRes {
-		Result Result `json:"result"`
-		Class  Class  `json:"class"`
-	}
-	DeleteClassReq {
-		ID int64 `path:"id"`
-	}
-	DeleteClassRes {
-		Result Result `json:"result"`
-	}
-	GetClassReq {
-		ID int64 `path:"id"`
-	}
-	GetClassRes {
-		Result Result `json:"result"`
-		Class  Class  `json:"class"`
-	}
-	FilterClassReq {
-		Search     string `form:"search"`
-		ProvinceID int    `form:"province_code"`
-		DistrictID int    `form:"district_code"`
-		WardID     int    `form:"ward_code"`
-		Address    string `form:"address"`
-	}
-	FilterClassRes {
-		Result  Result  `json:"result"`
-		Classes []Class `json:"classes"`
-	}
-)
-
-type (
 	CreateRoomReq {
-		RoomName string `form:"room_name"`
-		ClassID  int64  `form:"class_id"`
+		HouseID     int64  `form:"houseID"`
+		Name        string `form:"name"`
+		Description string `form:"description"`
+		Price       int64  `form:"price"`
+		Area        int64  `form:"area"`
 	}
 	CreateRoomRes {
 		Result Result `json:"result"`
 		Room   Room   `json:"room"`
 	}
+	GetRoomByHouseReq {
+		HouseID int64 `path:"houseID"`
+	}
+	GetRoomByHouseRes {
+		Result Result `json:"result"`
+		Rooms  []Room `json:"rooms"`
+	}
+	GetRoomReq {
+		RoomID int64 `path:"roomID"`
+	}
+	GetRoomRes {
+		Result Result `json:"result"`
+		Room   Room   `json:"room"`
+	}
+	UpdateRoomReq {
+		RoomID      int64  `form:"roomID"`
+		Name        string `form:"name"`
+		Description string `form:"description"`
+		Price       int64  `form:"price"`
+		Area        int64  `form:"area"`
+	}
+	UpdateRoomRes {
+		Result Result `json:"result"`
+		Room   Room   `json:"room"`
+	}
 	DeleteRoomReq {
-		ID int64 `path:"id"`
+		RoomID int64 `path:"roomID"`
 	}
 	DeleteRoomRes {
 		Result Result `json:"result"`
 	}
-	GetRoomsByHouseReq {
-		HouseID int64 `form:"house_id"`
-	}
-	FilterRoomRes {
-		Result Result `json:"result"`
-		Rooms  []Room `json:"rooms"`
-	}
 )
 
 @server (
-	jwt: Auth
+	jwt:    Auth
+	prefix: /invent
 )
-service inventory-api {
+service invent-api {
 	@doc (
-		summary: "FilterRoomClass"
+		summary: "Upload file house"
 	)
-	@handler FilterRoomClass
-	get /class/filter (FilterRoomClassReq) returns (FilterRoomClassRes)
-}
+	@handler UploadFileHouse
+	post /upload/house (UploadFileHouseReq) returns (UploadFileHouseRes)
 
-@server (
-	jwt: Auth
-)
-service inventory-api {
 	@doc (
-		summary: "CreateHouse"
+		summary: "Create house"
 	)
 	@handler CreateHouse
-	post /house/create (CreateHouseReq) returns (CreateHouseRes)
+	post /house (CreateHouseReq) returns (CreateHouseRes)
 
 	@doc (
-		summary: "UpdateHouse"
-	)
-	@handler UpdateHouse
-	post /house/:id (UpdateHouseReq) returns (UpdateHouseRes)
-
-	@doc (
-		summary: "DeleteHouse"
-	)
-	@handler DeleteHouse
-	post /house/:id (DeleteHouseReq) returns (DeleteHouseRes)
-
-	@doc (
-		summary: "GetHouse"
+		summary: "Get house"
 	)
 	@handler GetHouse
-	get /house/:id (GetHouseReq) returns (GetHouseRes)
+	get /house (GetHouseReq) returns (GetHouseRes)
 
 	@doc (
-		summary: "FilterHouse"
+		summary: "Update house"
+	)
+	@handler UpdateHouse
+	put /house (UpdateHouseReq) returns (UpdateHouseRes)
+
+	@doc (
+		summary: "Delete house"
+	)
+	@handler DeleteHouse
+	delete /house (DeleteHouseReq) returns (DeleteHouseRes)
+
+	@doc (
+		summary: "Filter house"
 	)
 	@handler FilterHouse
-	get /house/filter (FilterHouseReq) returns (FilterHouseRes)
+	post /house/filter (FilterHouseReq) returns (FilterHouseRes)
 
 	@doc (
-		summary: "CreateClass"
-	)
-	@handler CreateClass
-	post /class/create (CreateClassReq) returns (CreateClassRes)
-
-	@doc (
-		summary: "UpdateClass"
-	)
-	@handler UpdateClass
-	post /class/:id (UpdateClassReq) returns (UpdateClassRes)
-
-	@doc (
-		summary: "DeleteClass"
-	)
-	@handler DeleteClass
-	post /class/:id (DeleteClassReq) returns (DeleteClassRes)
-
-	@doc (
-		summary: "GetClass"
-	)
-	@handler GetClass
-	get /class/:id (GetClassReq) returns (GetClassRes)
-
-	@doc (
-		summary: "FilterClass"
-	)
-	@handler FilterClass
-	get /class/filter (FilterClassReq) returns (FilterClassRes)
-
-	@doc (
-		summary: "CreateRoom"
+		summary: "Create room"
 	)
 	@handler CreateRoom
-	post /room/create (CreateRoomReq) returns (CreateRoomRes)
+	post /room (CreateRoomReq) returns (CreateRoomRes)
 
 	@doc (
-		summary: "DeleteRoom"
+		summary: "Get room by house"
+	)
+	@handler GetRoomByHouse
+	get /room/house (GetRoomByHouseReq) returns (GetRoomByHouseRes)
+
+	@doc (
+		summary: "Get room"
+	)
+	@handler GetRoom
+	get /room (GetRoomReq) returns (GetRoomRes)
+
+	@doc (
+		summary: "Update room"
+	)
+	@handler UpdateRoom
+	put /room (UpdateRoomReq) returns (UpdateRoomRes)
+
+	@doc (
+		summary: "Delete room"
 	)
 	@handler DeleteRoom
-	post /room/:id (DeleteRoomReq) returns (DeleteRoomRes)
-
-	@doc (
-		summary: "GetRoomsByHouse"
-	)
-	@handler GetRoomsByHouse
-	get /room/filter (GetRoomsByHouseReq) returns (FilterRoomRes)
+	delete /room (DeleteRoomReq) returns (DeleteRoomRes)
 }
 

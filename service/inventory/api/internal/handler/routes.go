@@ -13,96 +13,73 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
-				// FilterRoomClass
-				Method:  http.MethodGet,
-				Path:    "/class/filter",
-				Handler: FilterRoomClassHandler(serverCtx),
-			},
-		},
-		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
-	)
-
-	server.AddRoutes(
-		[]rest.Route{
-			{
-				// UpdateClass
+				// Create house
 				Method:  http.MethodPost,
-				Path:    "/class/:id",
-				Handler: UpdateClassHandler(serverCtx),
-			},
-			{
-				// DeleteClass
-				Method:  http.MethodPost,
-				Path:    "/class/:id",
-				Handler: DeleteClassHandler(serverCtx),
-			},
-			{
-				// GetClass
-				Method:  http.MethodGet,
-				Path:    "/class/:id",
-				Handler: GetClassHandler(serverCtx),
-			},
-			{
-				// CreateClass
-				Method:  http.MethodPost,
-				Path:    "/class/create",
-				Handler: CreateClassHandler(serverCtx),
-			},
-			{
-				// FilterClass
-				Method:  http.MethodGet,
-				Path:    "/class/filter",
-				Handler: FilterClassHandler(serverCtx),
-			},
-			{
-				// UpdateHouse
-				Method:  http.MethodPost,
-				Path:    "/house/:id",
-				Handler: UpdateHouseHandler(serverCtx),
-			},
-			{
-				// DeleteHouse
-				Method:  http.MethodPost,
-				Path:    "/house/:id",
-				Handler: DeleteHouseHandler(serverCtx),
-			},
-			{
-				// GetHouse
-				Method:  http.MethodGet,
-				Path:    "/house/:id",
-				Handler: GetHouseHandler(serverCtx),
-			},
-			{
-				// CreateHouse
-				Method:  http.MethodPost,
-				Path:    "/house/create",
+				Path:    "/house",
 				Handler: CreateHouseHandler(serverCtx),
 			},
 			{
-				// FilterHouse
+				// Get house
 				Method:  http.MethodGet,
+				Path:    "/house",
+				Handler: GetHouseHandler(serverCtx),
+			},
+			{
+				// Update house
+				Method:  http.MethodPut,
+				Path:    "/house",
+				Handler: UpdateHouseHandler(serverCtx),
+			},
+			{
+				// Delete house
+				Method:  http.MethodDelete,
+				Path:    "/house",
+				Handler: DeleteHouseHandler(serverCtx),
+			},
+			{
+				// Filter house
+				Method:  http.MethodPost,
 				Path:    "/house/filter",
 				Handler: FilterHouseHandler(serverCtx),
 			},
 			{
-				// DeleteRoom
+				// Create room
 				Method:  http.MethodPost,
-				Path:    "/room/:id",
-				Handler: DeleteRoomHandler(serverCtx),
-			},
-			{
-				// CreateRoom
-				Method:  http.MethodPost,
-				Path:    "/room/create",
+				Path:    "/room",
 				Handler: CreateRoomHandler(serverCtx),
 			},
 			{
-				// GetRoomsByHouse
+				// Get room
 				Method:  http.MethodGet,
-				Path:    "/room/filter",
-				Handler: GetRoomsByHouseHandler(serverCtx),
+				Path:    "/room",
+				Handler: GetRoomHandler(serverCtx),
+			},
+			{
+				// Update room
+				Method:  http.MethodPut,
+				Path:    "/room",
+				Handler: UpdateRoomHandler(serverCtx),
+			},
+			{
+				// Delete room
+				Method:  http.MethodDelete,
+				Path:    "/room",
+				Handler: DeleteRoomHandler(serverCtx),
+			},
+			{
+				// Get room by house
+				Method:  http.MethodGet,
+				Path:    "/room/house",
+				Handler: GetRoomByHouseHandler(serverCtx),
+			},
+			{
+				// Upload file house
+				Method:  http.MethodPost,
+				Path:    "/upload/house",
+				Handler: UploadFileHouseHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithPrefix("/invent"),
 	)
 }

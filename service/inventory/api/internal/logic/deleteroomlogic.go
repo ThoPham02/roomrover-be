@@ -15,7 +15,7 @@ type DeleteRoomLogic struct {
 	svcCtx *svc.ServiceContext
 }
 
-// DeleteRoom
+// Delete room
 func NewDeleteRoomLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteRoomLogic {
 	return &DeleteRoomLogic{
 		Logger: logx.WithContext(ctx),

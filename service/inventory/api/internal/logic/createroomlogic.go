@@ -15,7 +15,7 @@ type CreateRoomLogic struct {
 	svcCtx *svc.ServiceContext
 }
 
-// CreateRoom
+// Create room
 func NewCreateRoomLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateRoomLogic {
 	return &CreateRoomLogic{
 		Logger: logx.WithContext(ctx),

@@ -1,0 +1,90 @@
+info (
+	title:   "contract models"
+	author:  "thopb"
+	email:   "thoahlgbg2002@gamil.com"
+	version: "1.0"
+)
+
+import "model.api"
+
+type (
+	CreateContractReq {
+		RenterID       int64  `form:"renterID"`
+		RoomID         int64  `form:"roomID"`
+		ContractRenter string `form:"contractRenter"`
+		ContractDetail string `form:"contractDetail"`
+		Description    string `form:"description"`
+		ContractUrl    string `form:"contractUrl"`
+		StartDate      int64  `form:"startDate"`
+		EndDate        int64  `form:"endDate"`
+		Type           int64  `form:"type"`
+		Deposit        int64  `form:"deposit"`
+		Deadline       int64  `form:"deadline"`
+	}
+	CreateContractRes {
+		Result   Result   `json:"result"`
+		Contract Contract `json:"contract"`
+	}
+	GetContractReq {
+		ID int64 `path:"id"`
+	}
+	GetContractRes {
+		Result   Result   `json:"result"`
+		Contract Contract `json:"contract"`
+	}
+	UpdateContractReq {
+		ID             int64  `path:"id"`
+		RenterID       int64  `form:"renterID"`
+		RoomID         int64  `form:"roomID"`
+		ContractRenter string `form:"contractRenter"`
+		ContractDetail string `form:"contractDetail"`
+		Description    string `form:"description"`
+		ContractUrl    string `form:"contractUrl"`
+		StartDate      int64  `form:"startDate"`
+		EndDate        int64  `form:"endDate"`
+		Type           int64  `form:"type"`
+		Deposit        int64  `form:"deposit"`
+		Deadline       int64  `form:"deadline"`
+	}
+	UpdateContractRes {
+		Result   Result   `json:"result"`
+		Contract Contract `json:"contract"`
+	}
+	DeleteContractReq {
+		ID int64 `path:"id"`
+	}
+	DeleteContractRes {
+		Result Result `json:"result"`
+	}
+)
+
+@server (
+	jwt:    Auth
+	prefix: /invent
+)
+service contract-api {
+	@doc (
+		summary: "Create contract"
+	)
+	@handler CreateContract
+	post /contract (CreateContractReq) returns (CreateContractRes)
+
+	@doc (
+		summary: "Get contract"
+	)
+	@handler GetContract
+	get /contract/:id (GetContractReq) returns (GetContractRes)
+
+	@doc (
+		summary: "Update contract"
+	)
+	@handler UpdateContract
+	put /contract/id (UpdateContractReq) returns (UpdateContractRes)
+
+	@doc (
+		summary: "Delete contract"
+	)
+	@handler DeleteContract
+	delete /contract/:id (DeleteContractReq) returns (DeleteContractRes)
+}
+

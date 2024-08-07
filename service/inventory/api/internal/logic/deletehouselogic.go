@@ -15,7 +15,7 @@ type DeleteHouseLogic struct {
 	svcCtx *svc.ServiceContext
 }
 
-// DeleteHouse
+// Delete house
 func NewDeleteHouseLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteHouseLogic {
 	return &DeleteHouseLogic{
 		Logger: logx.WithContext(ctx),

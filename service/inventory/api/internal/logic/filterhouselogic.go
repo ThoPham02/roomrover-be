@@ -15,7 +15,7 @@ type FilterHouseLogic struct {
 	svcCtx *svc.ServiceContext
 }
 
-// FilterHouse
+// Filter house
 func NewFilterHouseLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FilterHouseLogic {
 	return &FilterHouseLogic{
 		Logger: logx.WithContext(ctx),

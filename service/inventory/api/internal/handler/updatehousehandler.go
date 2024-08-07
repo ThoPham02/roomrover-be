@@ -9,7 +9,7 @@ import (
 	"roomrover/service/inventory/api/internal/types"
 )
 
-// UpdateHouse
+// Update house
 func UpdateHouseHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.UpdateHouseReq
