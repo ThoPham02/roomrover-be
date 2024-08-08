@@ -36,7 +36,11 @@ func main() {
 	inventService.Start()
 
 	contractService := contractApi.NewContractService(server)
+	contractFunc := contractApi.NewContractFunction(contractService)
 	contractService.Start()
+	contractFunc.Start()
+
+	inventService.Ctx.SetContractFunction(contractFunc)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()

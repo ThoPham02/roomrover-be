@@ -67,6 +67,7 @@ type CreateHouseReq struct {
 	WardID      int64  `form:"wardID"`
 	DistrictID  int64  `form:"districtID"`
 	ProvinceID  int64  `form:"provinceID"`
+	Albums      string `form:"albums"`
 }
 
 type CreateHouseRes struct {

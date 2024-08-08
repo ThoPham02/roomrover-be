@@ -29,6 +29,7 @@ type (
 		WardID      int64  `form:"wardID"`
 		DistrictID  int64  `form:"districtID"`
 		ProvinceID  int64  `form:"provinceID"`
+		Albums      string `form:"albums"`
 	}
 	CreateHouseRes {
 		Result Result `json:"result"`

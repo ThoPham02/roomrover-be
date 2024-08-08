@@ -1,0 +1,9 @@
+info (
+	title:   "payment models"
+	author:  "thopb"
+	email:   "thoahlgbg2002@gamil.com"
+	version: "1.0"
+)
+
+import "model.api"
+
