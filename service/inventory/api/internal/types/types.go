@@ -230,13 +230,16 @@ type Service struct {
 }
 
 type UpdateHouseReq struct {
-	HouseID   int64  `form:"houseID"`
-	Title     string `form:"title"`
-	Price     int64  `form:"price"`
-	Area      int64  `form:"area"`
-	Address   string `form:"address"`
-	Longitude string `form:"longitude"`
-	Latitude  string `form:"latitude"`
+	ID          int64  `path:"id"`
+	Name        string `form:"name"`
+	Description string `form:"description"`
+	Type        int64  `form:"type"`
+	Area        int64  `form:"area"`
+	Price       int64  `form:"price"`
+	Address     string `form:"address"`
+	WardID      int64  `form:"wardID"`
+	DistrictID  int64  `form:"districtID"`
+	ProvinceID  int64  `form:"provinceID"`
 }
 
 type UpdateHouseRes struct {

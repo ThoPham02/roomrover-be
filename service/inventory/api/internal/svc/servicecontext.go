@@ -4,6 +4,7 @@ import (
 	"roomrover/service/contract/function"
 	"roomrover/service/inventory/api/internal/config"
 	"roomrover/service/inventory/model"
+	"roomrover/storage"
 	"roomrover/sync"
 
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
@@ -12,6 +13,7 @@ import (
 type ServiceContext struct {
 	Config  config.Config
 	ObjSync *sync.ObjSync
+	Storage *storage.StorageClient
 
 	HouseModel   model.HouseTblModel
 	RoomModel    model.RoomTblModel
@@ -25,6 +27,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:  c,
 		ObjSync: sync.NewObjSync(0),
+		Storage: storage.NewStorageClient(c.Storage.Endpoint, c.Storage.AccessKey, c.Storage.SecretKey),
 
 		HouseModel:   model.NewHouseTblModel(sqlx.NewMysql(c.DataSource)),
 		RoomModel:    model.NewRoomTblModel(sqlx.NewMysql(c.DataSource)),

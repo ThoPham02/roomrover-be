@@ -9,4 +9,9 @@ type Config struct {
 		AccessExpire int64
 	}
 	DataSource string
+	Storage    struct {
+		Endpoint  string
+		AccessKey string
+		SecretKey string
+	}
 }
