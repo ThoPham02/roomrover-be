@@ -6,6 +6,6 @@ Auth:
   AccessExpire: 604800000
 Datasource: mysql://root:password@tcp(127.0.01:3306)/humgroom
 Storage:
-  Endpoint: 10.84.86.38:7480
-  AccessKey: xxxxxxxxxxxxxxxxxxxxxxx
-  SecretKey: xxxxxxxxxxxxxxxxxxxxxxx
+  CloudName: "ddhsgiwcv"
+  APIKey: "584168378272983"
+  APISecret: "VSBpeP9AKFEzssd3BCvxhc6tyoI"

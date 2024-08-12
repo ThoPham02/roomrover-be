@@ -1,44 +1,46 @@
 package storage
 
 import (
-	"bytes"
 	"context"
+	"os"
 
-	"github.com/minio/minio-go/v7"
-	"github.com/minio/minio-go/v7/pkg/credentials"
+	"github.com/cloudinary/cloudinary-go/v2"
+	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
+	"github.com/google/uuid"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type StorageClient struct {
-	logx.Logger
-	Client    *minio.Client
-	ParentDir string
+type CloudinaryClient struct {
+	Logger logx.Logger
+	Client *cloudinary.Cloudinary
+	Folder string
 }
 
-func NewStorageClient(endpoint, accessKey, secretKey string) *StorageClient {
-	client, err := minio.New(endpoint, &minio.Options{
-		Creds:  credentials.NewStaticV4(accessKey, secretKey, ""),
-		Secure: false,
-	})
+func NewCloudinaryClient(CloudName, APIKey, APISecret, folder string) *CloudinaryClient {
+	cld, err := cloudinary.NewFromParams(CloudName, APIKey, APISecret)
 	if err != nil {
 		panic(err)
 	}
 
 	ctx := context.Background()
 
-	return &StorageClient{
+	return &CloudinaryClient{
 		Logger: logx.WithContext(ctx),
-		Client: client,
+		Client: cld,
+		Folder: folder,
 	}
 }
 
-func (sc *StorageClient) PushFile(ctx context.Context, name string, data *bytes.Buffer) (string, error) {
-	baseBucket := "tenant-6"
-
-	_, err := sc.Client.PutObject(ctx, baseBucket, "temp/"+name, data, int64(data.Len()), minio.PutObjectOptions{})
+func (c *CloudinaryClient) UploadImage(ctx context.Context, file *os.File) (string, error) {
+	publicID := uuid.New().String()
+	f, err := c.Client.Upload.Upload(ctx, file, uploader.UploadParams{
+		Folder:  c.Folder,
+		PublicID: publicID,
+	})
 	if err != nil {
+		c.Logger.Errorf("failed to upload image: %v", err)
 		return "", err
 	}
 
-	return baseBucket + "/temp/" + name, nil
+	return f.SecureURL, nil
 }

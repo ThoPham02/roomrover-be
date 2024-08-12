@@ -10,8 +10,8 @@ type Config struct {
 	}
 	DataSource string
 	Storage    struct {
-		Endpoint  string
-		AccessKey string
-		SecretKey string
+		CloudName string
+		APIKey    string
+		APISecret string
 	}
 }
