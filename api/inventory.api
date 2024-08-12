@@ -9,8 +9,7 @@ import "model.api"
 
 type (
 	UploadFileHouseReq {
-		HouseID  int64  `form:"houseID"`
-		FileName string `form:"fileName"`
+		HouseID int64 `form:"houseID"`
 	}
 	UploadFileHouseRes {
 		Result Result `json:"result"`

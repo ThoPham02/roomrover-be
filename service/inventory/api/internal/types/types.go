@@ -261,8 +261,7 @@ type UpdateRoomRes struct {
 }
 
 type UploadFileHouseReq struct {
-	HouseID  int64  `form:"houseID"`
-	FileName string `form:"fileName"`
+	HouseID int64 `form:"houseID"`
 }
 
 type UploadFileHouseRes struct {

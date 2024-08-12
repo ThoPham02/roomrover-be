@@ -18,7 +18,7 @@ func UploadFileHouseHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := logic.NewUploadFileHouseLogic(r.Context(), svcCtx)
+		l := logic.NewUploadFileHouseLogic(r.Context(), svcCtx, r)
 		resp, err := l.UploadFileHouse(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)

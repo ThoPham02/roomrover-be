@@ -2,7 +2,8 @@ package storage
 
 import (
 	"context"
-	"os"
+	"mime/multipart"
+	"strconv"
 
 	"github.com/cloudinary/cloudinary-go/v2"
 	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
@@ -31,10 +32,10 @@ func NewCloudinaryClient(CloudName, APIKey, APISecret, folder string) *Cloudinar
 	}
 }
 
-func (c *CloudinaryClient) UploadImage(ctx context.Context, file *os.File) (string, error) {
-	publicID := uuid.New().String()
+func (c *CloudinaryClient) UploadImage(ctx context.Context, file multipart.File, id int64) (string, error) {
+	publicID := strconv.FormatInt(id, 10) + "/" + uuid.New().String()
 	f, err := c.Client.Upload.Upload(ctx, file, uploader.UploadParams{
-		Folder:  c.Folder,
+		Folder:   c.Folder,
 		PublicID: publicID,
 	})
 	if err != nil {
