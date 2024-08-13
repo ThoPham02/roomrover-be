@@ -3,6 +3,7 @@ CREATE TABLE `house_tbl` (
     `user_id` BIGINT NOT NULL,
     `name` VARCHAR(255) NOT NULL COLLATE utf8mb4_unicode_ci,
     `description` TEXT NOT NULL COLLATE utf8mb4_unicode_ci,
+    `util` INT NOT NULL,
     `type` BIGINT NOT NULL,
 
     `area` BIGINT NOT NULL,

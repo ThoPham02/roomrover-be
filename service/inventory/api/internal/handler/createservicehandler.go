@@ -9,17 +9,17 @@ import (
 	"roomrover/service/inventory/api/internal/types"
 )
 
-// Update house
-func UpdateHouseHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+// Create Service
+func CreateServiceHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.UpdateHouseReq
+		var req types.CreateServiceReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := logic.NewUpdateHouseLogic(r.Context(), svcCtx)
-		resp, err := l.UpdateHouse(&req)
+		l := logic.NewCreateServiceLogic(r.Context(), svcCtx)
+		resp, err := l.CreateService(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {

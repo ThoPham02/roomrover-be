@@ -2,3 +2,7 @@ Name: server
 Host: 0.0.0.0
 Port: 8888
 Timeout: 30000
+Auth:
+  AccessSecret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  AccessExpire: 604800000
+Datasource: thopb:524020@tcp(127.0.0.1:3306)/room

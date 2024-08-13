@@ -22,6 +22,7 @@ type (
 		Name        string `form:"name"`
 		Description string `form:"description"`
 		Type        int64  `form:"type"`
+		Util        int64  `form:"util"`
 		Area        int64  `form:"area"`
 		Price       int64  `form:"price"`
 		Address     string `form:"address"`
@@ -34,44 +35,12 @@ type (
 		Result Result `json:"result"`
 		House  House  `json:"house"`
 	}
-	GetHouseReq {
-		HouseID int64 `path:"houseID"`
+	UpdateStatusReq {
+		HouseID int64 `form:"houseID"`
+		Status  int64 `form:"status"`
 	}
-	GetHouseRes {
+	UpdateStatusRes {
 		Result Result `json:"result"`
-		House  House  `json:"house"`
-	}
-	UpdateHouseReq {
-		ID          int64  `path:"id"`
-		Name        string `form:"name"`
-		Description string `form:"description"`
-		Type        int64  `form:"type"`
-		Area        int64  `form:"area"`
-		Price       int64  `form:"price"`
-		Address     string `form:"address"`
-		WardID      int64  `form:"wardID"`
-		DistrictID  int64  `form:"districtID"`
-		ProvinceID  int64  `form:"provinceID"`
-	}
-	UpdateHouseRes {
-		Result Result `json:"result"`
-		House  House  `json:"house"`
-	}
-	DeleteHouseReq {
-		HouseID int64 `path:"houseID"`
-	}
-	DeleteHouseRes {
-		Result Result `json:"result"`
-	}
-	FilterHouseReq {
-		Area      int64  `form:"area,optional"`
-		Price     int64  `form:"price,optional"`
-		Longitude string `form:"longitude,optional"`
-		Latitude  string `form:"latitude,optional"`
-	}
-	FilterHouseRes {
-		Result Result  `json:"result"`
-		Houses []House `json:"houses"`
 	}
 )
 
@@ -87,36 +56,18 @@ type (
 		Result Result `json:"result"`
 		Room   Room   `json:"room"`
 	}
-	GetRoomByHouseReq {
-		HouseID int64 `path:"houseID"`
+)
+
+type (
+	CreateServiceReq {
+		HouseID int64  `form:"houseID"`
+		Name    string `form:"name"`
+		Price   int64  `form:"price"`
+		Type    int64  `form:"type"`
 	}
-	GetRoomByHouseRes {
-		Result Result `json:"result"`
-		Rooms  []Room `json:"rooms"`
-	}
-	GetRoomReq {
-		RoomID int64 `path:"roomID"`
-	}
-	GetRoomRes {
-		Result Result `json:"result"`
-		Room   Room   `json:"room"`
-	}
-	UpdateRoomReq {
-		RoomID      int64  `form:"roomID"`
-		Name        string `form:"name"`
-		Description string `form:"description"`
-		Price       int64  `form:"price"`
-		Area        int64  `form:"area"`
-	}
-	UpdateRoomRes {
-		Result Result `json:"result"`
-		Room   Room   `json:"room"`
-	}
-	DeleteRoomReq {
-		RoomID int64 `path:"roomID"`
-	}
-	DeleteRoomRes {
-		Result Result `json:"result"`
+	CreateServiceRes {
+		Result  Result  `json:"result"`
+		Service Service `json:"service"`
 	}
 )
 
@@ -129,7 +80,7 @@ service invent-api {
 		summary: "Upload file house"
 	)
 	@handler UploadFileHouse
-	post /upload/house (UploadFileHouseReq) returns (UploadFileHouseRes)
+	post /upload (UploadFileHouseReq) returns (UploadFileHouseRes)
 
 	@doc (
 		summary: "Create house"
@@ -138,57 +89,21 @@ service invent-api {
 	post /house (CreateHouseReq) returns (CreateHouseRes)
 
 	@doc (
-		summary: "Get house"
-	)
-	@handler GetHouse
-	get /house (GetHouseReq) returns (GetHouseRes)
-
-	@doc (
-		summary: "Update house"
-	)
-	@handler UpdateHouse
-	put /house (UpdateHouseReq) returns (UpdateHouseRes)
-
-	@doc (
-		summary: "Delete house"
-	)
-	@handler DeleteHouse
-	delete /house (DeleteHouseReq) returns (DeleteHouseRes)
-
-	@doc (
-		summary: "Filter house"
-	)
-	@handler FilterHouse
-	post /house/filter (FilterHouseReq) returns (FilterHouseRes)
-
-	@doc (
 		summary: "Create room"
 	)
 	@handler CreateRoom
 	post /room (CreateRoomReq) returns (CreateRoomRes)
 
 	@doc (
-		summary: "Get room by house"
+		summary: "Create Service"
 	)
-	@handler GetRoomByHouse
-	get /room/house (GetRoomByHouseReq) returns (GetRoomByHouseRes)
+	@handler CreateService
+	post /service (CreateServiceReq) returns (CreateServiceRes)
 
 	@doc (
-		summary: "Get room"
+		summary: "Update House Status"
 	)
-	@handler GetRoom
-	get /room (GetRoomReq) returns (GetRoomRes)
-
-	@doc (
-		summary: "Update room"
-	)
-	@handler UpdateRoom
-	put /room (UpdateRoomReq) returns (UpdateRoomRes)
-
-	@doc (
-		summary: "Delete room"
-	)
-	@handler DeleteRoom
-	delete /room (DeleteRoomReq) returns (DeleteRoomRes)
+	@handler UpdateHouseStatus
+	put /house/status (UpdateStatusReq) returns (UpdateStatusRes)
 }
 

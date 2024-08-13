@@ -144,7 +144,7 @@ type PaymentUsed struct {
 }
 
 type RegisterReq struct {
-	Phone    string `form:"user_name"`
+	Phone    string `form:"phone"`
 	Password string `form:"password"`
 	UserRole int64  `form:"user_role"`
 }

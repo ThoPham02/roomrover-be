@@ -61,6 +61,7 @@ type CreateHouseReq struct {
 	Name        string `form:"name"`
 	Description string `form:"description"`
 	Type        int64  `form:"type"`
+	Util        int64  `form:"util"`
 	Area        int64  `form:"area"`
 	Price       int64  `form:"price"`
 	Address     string `form:"address"`
@@ -88,59 +89,16 @@ type CreateRoomRes struct {
 	Room   Room   `json:"room"`
 }
 
-type DeleteHouseReq struct {
-	HouseID int64 `path:"houseID"`
+type CreateServiceReq struct {
+	HouseID int64  `form:"houseID"`
+	Name    string `form:"name"`
+	Price   int64  `form:"price"`
+	Type    int64  `form:"type"`
 }
 
-type DeleteHouseRes struct {
-	Result Result `json:"result"`
-}
-
-type DeleteRoomReq struct {
-	RoomID int64 `path:"roomID"`
-}
-
-type DeleteRoomRes struct {
-	Result Result `json:"result"`
-}
-
-type FilterHouseReq struct {
-	Area      int64  `form:"area,optional"`
-	Price     int64  `form:"price,optional"`
-	Longitude string `form:"longitude,optional"`
-	Latitude  string `form:"latitude,optional"`
-}
-
-type FilterHouseRes struct {
-	Result Result  `json:"result"`
-	Houses []House `json:"houses"`
-}
-
-type GetHouseReq struct {
-	HouseID int64 `path:"houseID"`
-}
-
-type GetHouseRes struct {
-	Result Result `json:"result"`
-	House  House  `json:"house"`
-}
-
-type GetRoomByHouseReq struct {
-	HouseID int64 `path:"houseID"`
-}
-
-type GetRoomByHouseRes struct {
-	Result Result `json:"result"`
-	Rooms  []Room `json:"rooms"`
-}
-
-type GetRoomReq struct {
-	RoomID int64 `path:"roomID"`
-}
-
-type GetRoomRes struct {
-	Result Result `json:"result"`
-	Room   Room   `json:"room"`
+type CreateServiceRes struct {
+	Result  Result  `json:"result"`
+	Service Service `json:"service"`
 }
 
 type House struct {
@@ -229,35 +187,13 @@ type Service struct {
 	UpdatedBy int64  `json:"updatedBy"`
 }
 
-type UpdateHouseReq struct {
-	ID          int64  `path:"id"`
-	Name        string `form:"name"`
-	Description string `form:"description"`
-	Type        int64  `form:"type"`
-	Area        int64  `form:"area"`
-	Price       int64  `form:"price"`
-	Address     string `form:"address"`
-	WardID      int64  `form:"wardID"`
-	DistrictID  int64  `form:"districtID"`
-	ProvinceID  int64  `form:"provinceID"`
+type UpdateStatusReq struct {
+	HouseID int64 `form:"houseID"`
+	Status  int64 `form:"status"`
 }
 
-type UpdateHouseRes struct {
+type UpdateStatusRes struct {
 	Result Result `json:"result"`
-	House  House  `json:"house"`
-}
-
-type UpdateRoomReq struct {
-	RoomID      int64  `form:"roomID"`
-	Name        string `form:"name"`
-	Description string `form:"description"`
-	Price       int64  `form:"price"`
-	Area        int64  `form:"area"`
-}
-
-type UpdateRoomRes struct {
-	Result Result `json:"result"`
-	Room   Room   `json:"room"`
 }
 
 type UploadFileHouseReq struct {

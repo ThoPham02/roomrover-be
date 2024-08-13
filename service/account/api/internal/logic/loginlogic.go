@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"time"
 
 	"roomrover/common"
 	"roomrover/service/account/api/internal/svc"
@@ -30,8 +31,10 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error) {
 	l.Logger.Infof("Login request: %v", req)
 
-	var currentTime = common.GetCurrentTime()
 	var user types.User
+	var iat = time.Now().Unix()
+	var accessSecret = l.svcCtx.Config.Auth.AccessSecret
+	var accessExpire = l.svcCtx.Config.Auth.AccessExpire
 
 	// Check if the user exists
 	userModel, err := l.svcCtx.UserModel.FindOneByPhone(l.ctx, req.Phone)
@@ -75,7 +78,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error
 	}
 
 	// Generate token
-	token, err := utils.GetJwtToken(l.svcCtx.Config.Auth.AccessSecret, currentTime, l.svcCtx.Config.Auth.AccessExpire, userModel.UserId, user)
+	token, err := utils.GetJwtToken(accessSecret, iat, accessExpire, userModel.UserId, user)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.LoginRes{

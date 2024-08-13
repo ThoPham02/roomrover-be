@@ -19,28 +19,10 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: CreateHouseHandler(serverCtx),
 			},
 			{
-				// Get house
-				Method:  http.MethodGet,
-				Path:    "/house",
-				Handler: GetHouseHandler(serverCtx),
-			},
-			{
-				// Update house
+				// Update House Status
 				Method:  http.MethodPut,
-				Path:    "/house",
-				Handler: UpdateHouseHandler(serverCtx),
-			},
-			{
-				// Delete house
-				Method:  http.MethodDelete,
-				Path:    "/house",
-				Handler: DeleteHouseHandler(serverCtx),
-			},
-			{
-				// Filter house
-				Method:  http.MethodPost,
-				Path:    "/house/filter",
-				Handler: FilterHouseHandler(serverCtx),
+				Path:    "/house/status",
+				Handler: UpdateHouseStatusHandler(serverCtx),
 			},
 			{
 				// Create room
@@ -49,33 +31,15 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: CreateRoomHandler(serverCtx),
 			},
 			{
-				// Get room
-				Method:  http.MethodGet,
-				Path:    "/room",
-				Handler: GetRoomHandler(serverCtx),
-			},
-			{
-				// Update room
-				Method:  http.MethodPut,
-				Path:    "/room",
-				Handler: UpdateRoomHandler(serverCtx),
-			},
-			{
-				// Delete room
-				Method:  http.MethodDelete,
-				Path:    "/room",
-				Handler: DeleteRoomHandler(serverCtx),
-			},
-			{
-				// Get room by house
-				Method:  http.MethodGet,
-				Path:    "/room/house",
-				Handler: GetRoomByHouseHandler(serverCtx),
+				// Create Service
+				Method:  http.MethodPost,
+				Path:    "/service",
+				Handler: CreateServiceHandler(serverCtx),
 			},
 			{
 				// Upload file house
 				Method:  http.MethodPost,
-				Path:    "/upload/house",
+				Path:    "/upload",
 				Handler: UploadFileHouseHandler(serverCtx),
 			},
 		},

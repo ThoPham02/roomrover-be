@@ -60,7 +60,6 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 				},
 			}, nil
 		}
-
 	}
 
 	houseModel = &model.HouseTbl{
@@ -68,18 +67,22 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 		UserId:      userID,
 		Name:        req.Name,
 		Description: req.Description,
-		Type:        req.Type,
-		Area:        req.Area,
-		Price:       req.Price,
-		Status:      common.HOUSE_STATUS_DRAFT,
-		Address:     req.Address,
-		WardId:      req.WardID,
-		DistrictId:  req.DistrictID,
-		ProvinceId:  req.ProvinceID,
-		CreatedAt:   currentTime,
-		UpdatedAt:   currentTime,
-		CreatedBy:   userID,
-		UpdatedBy:   userID,
+		Util:        req.Util,
+
+		Type:   req.Type,
+		Area:   req.Area,
+		Price:  req.Price,
+		Status: common.HOUSE_STATUS_DRAFT,
+
+		Address:    req.Address,
+		WardId:     req.WardID,
+		DistrictId: req.DistrictID,
+		ProvinceId: req.ProvinceID,
+
+		CreatedAt: currentTime,
+		UpdatedAt: currentTime,
+		CreatedBy: userID,
+		UpdatedBy: userID,
 	}
 
 	for _, album := range albums {

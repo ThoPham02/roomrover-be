@@ -3,5 +3,5 @@ Host: 0.0.0.0
 Port: 8888
 Auth:
   AccessSecret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-  AccessExpire: 604800000
-Datasource: mysql://root:password@tcp(127.0.01:3306)/humgroom
+  AccessExpire: 604800
+Datasource: thopb:524020@tcp(127.0.0.1:3306)/room

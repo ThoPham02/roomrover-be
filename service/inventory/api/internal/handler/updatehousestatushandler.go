@@ -9,17 +9,17 @@ import (
 	"roomrover/service/inventory/api/internal/types"
 )
 
-// Get room
-func GetRoomHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+// Update House Status
+func UpdateHouseStatusHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.GetRoomReq
+		var req types.UpdateStatusReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := logic.NewGetRoomLogic(r.Context(), svcCtx)
-		resp, err := l.GetRoom(&req)
+		l := logic.NewUpdateHouseStatusLogic(r.Context(), svcCtx)
+		resp, err := l.UpdateHouseStatus(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {
