@@ -33,6 +33,8 @@ func (l *CreateServiceLogic) CreateService(req *types.CreateServiceReq) (resp *t
 	var currentTime = common.GetCurrentTime()
 	var service types.Service
 
+	var serviceModel *model.ServiceTbl
+
 	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
 		l.Logger.Error(err)
@@ -44,7 +46,7 @@ func (l *CreateServiceLogic) CreateService(req *types.CreateServiceReq) (resp *t
 		}, nil
 	}
 
-	_, err = l.svcCtx.ServiceModel.Insert(l.ctx, &model.ServiceTbl{
+	serviceModel = &model.ServiceTbl{
 		Id:        l.svcCtx.ObjSync.GenServiceObjID(),
 		HouseId:   req.HouseID,
 		Name:      req.Name,
@@ -54,7 +56,9 @@ func (l *CreateServiceLogic) CreateService(req *types.CreateServiceReq) (resp *t
 		UpdatedAt: currentTime,
 		CreatedBy: userID,
 		UpdatedBy: userID,
-	})
+	}
+
+	_, err = l.svcCtx.ServiceModel.Insert(l.ctx, serviceModel)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.CreateServiceRes{
@@ -63,6 +67,18 @@ func (l *CreateServiceLogic) CreateService(req *types.CreateServiceReq) (resp *t
 				Message: common.UNKNOWN_ERR_MESS,
 			},
 		}, nil
+	}
+
+	service = types.Service{
+		ServiceID: serviceModel.Id,
+		HouseID:   serviceModel.HouseId,
+		Name:      serviceModel.Name,
+		Price:     serviceModel.Price,
+		Type:      serviceModel.Type,
+		CreatedAt: serviceModel.CreatedAt,
+		UpdatedAt: serviceModel.UpdatedAt,
+		CreatedBy: serviceModel.CreatedBy,
+		UpdatedBy: serviceModel.UpdatedBy,
 	}
 
 	l.Logger.Info("CreateService", userID)

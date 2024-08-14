@@ -35,6 +35,8 @@ func (l *CreateRoomLogic) CreateRoom(req *types.CreateRoomReq) (resp *types.Crea
 	var houseModel *model.HouseTbl
 	var roomModel *model.RoomTbl
 
+	var room types.Room
+
 	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
 		l.Logger.Error(err)
@@ -97,11 +99,23 @@ func (l *CreateRoomLogic) CreateRoom(req *types.CreateRoomReq) (resp *types.Crea
 		}, nil
 	}
 
+	room = types.Room{
+		RoomID:    roomModel.Id,
+		HouseID:   roomModel.HouseId,
+		Name:      roomModel.Name,
+		Status:    roomModel.Status,
+		CreatedAt: roomModel.CreatedAt,
+		UpdatedAt: roomModel.UpdatedAt,
+		CreatedBy: roomModel.CreatedBy,
+		UpdatedBy: roomModel.UpdatedBy,
+	}
+
 	l.Logger.Info("CreateRoom success: ", userID)
 	return &types.CreateRoomRes{
 		Result: types.Result{
 			Code:    common.SUCCESS_CODE,
 			Message: common.SUCCESS_MESS,
 		},
+		Room: room,
 	}, nil
 }

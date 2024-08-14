@@ -34,6 +34,7 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 	var currentTime = common.GetCurrentTime()
 
 	var albums []types.Album
+	var house types.House
 
 	var houseModel *model.HouseTbl
 	var albumModels []*model.AlbumTbl
@@ -123,11 +124,32 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 		}
 	}
 
+	house = types.House{
+		HouseID:     houseModel.Id,
+		UserID:      houseModel.UserId,
+		Name:        houseModel.Name,
+		Description: houseModel.Description,
+		Type:        houseModel.Type,
+		Area:        houseModel.Area,
+		Price:       houseModel.Price,
+		Status:      houseModel.Status,
+		Address:     houseModel.Address,
+		WardID:      houseModel.WardId,
+		DistrictID:  houseModel.DistrictId,
+		ProvinceID:  houseModel.ProvinceId,
+		CreatedAt:   houseModel.CreatedAt,
+		UpdatedAt:   houseModel.UpdatedAt,
+		CreatedBy:   houseModel.CreatedBy,
+		UpdatedBy:   houseModel.UpdatedBy,
+		Albums:      albums,
+	}
+
 	l.Logger.Info("CreateHouse success: ", userID)
 	return &types.CreateHouseRes{
 		Result: types.Result{
 			Code:    common.SUCCESS_CODE,
 			Message: common.SUCCESS_MESS,
 		},
+		House: house,
 	}, nil
 }
