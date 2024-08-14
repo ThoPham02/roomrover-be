@@ -11,38 +11,36 @@ import (
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				// Create house
-				Method:  http.MethodPost,
-				Path:    "/house",
-				Handler: CreateHouseHandler(serverCtx),
-			},
-			{
-				// Update House Status
-				Method:  http.MethodPut,
-				Path:    "/house/status",
-				Handler: UpdateHouseStatusHandler(serverCtx),
-			},
-			{
-				// Create room
-				Method:  http.MethodPost,
-				Path:    "/room",
-				Handler: CreateRoomHandler(serverCtx),
-			},
-			{
-				// Create Service
-				Method:  http.MethodPost,
-				Path:    "/service",
-				Handler: CreateServiceHandler(serverCtx),
-			},
-			{
-				// Upload file house
-				Method:  http.MethodPost,
-				Path:    "/upload",
-				Handler: UploadFileHouseHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.UserTokenMiddleware},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/upload",
+					Handler: UploadFileHouseHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/house",
+					Handler: CreateHouseHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/room",
+					Handler: CreateRoomHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/service",
+					Handler: CreateServiceHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPut,
+					Path:    "/house/status",
+					Handler: UpdateHouseStatusHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithPrefix("/invent"),
 	)

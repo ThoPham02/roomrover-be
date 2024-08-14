@@ -3,17 +3,20 @@ package svc
 import (
 	"roomrover/service/contract/function"
 	"roomrover/service/inventory/api/internal/config"
+	"roomrover/service/inventory/api/internal/middleware"
 	"roomrover/service/inventory/model"
 	"roomrover/storage"
 	"roomrover/sync"
 
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
+	"github.com/zeromicro/go-zero/rest"
 )
 
 type ServiceContext struct {
-	Config    config.Config
-	ObjSync   *sync.ObjSync
-	CldClient *storage.CloudinaryClient
+	UserTokenMiddleware rest.Middleware
+	Config              config.Config
+	ObjSync             *sync.ObjSync
+	CldClient           *storage.CloudinaryClient
 
 	HouseModel   model.HouseTblModel
 	RoomModel    model.RoomTblModel
@@ -25,9 +28,10 @@ type ServiceContext struct {
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
-		Config:    c,
-		ObjSync:   sync.NewObjSync(0),
-		CldClient: storage.NewCloudinaryClient(c.Storage.CloudName, c.Storage.APIKey, c.Storage.APISecret, "inventory"),
+		UserTokenMiddleware: middleware.NewUserTokenMiddleware().Handle,
+		Config:              c,
+		ObjSync:             sync.NewObjSync(0),
+		CldClient:           storage.NewCloudinaryClient(c.Storage.CloudName, c.Storage.APIKey, c.Storage.APISecret, "inventory"),
 
 		HouseModel:   model.NewHouseTblModel(sqlx.NewMysql(c.DataSource)),
 		RoomModel:    model.NewRoomTblModel(sqlx.NewMysql(c.DataSource)),

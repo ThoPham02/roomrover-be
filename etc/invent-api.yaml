@@ -3,7 +3,7 @@ Host: 0.0.0.0
 Port: 8888
 Auth:
   AccessSecret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-  AccessExpire: 604800000000
+  AccessExpire: 604800
 Datasource: thopb:524020@tcp(127.0.0.1:3306)/room
 Storage:
   CloudName: "ddhsgiwcv"

@@ -77,6 +77,9 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error
 		}, nil
 	}
 
+	l.Logger.Info(iat)
+	l.Logger.Info(accessExpire)
+
 	// Generate token
 	token, err := utils.GetJwtToken(accessSecret, iat, accessExpire, userModel.UserId, user)
 	if err != nil {

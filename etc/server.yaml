@@ -4,5 +4,5 @@ Port: 8888
 Timeout: 30000
 Auth:
   AccessSecret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-  AccessExpire: 604800000
+  AccessExpire: 604800
 Datasource: thopb:524020@tcp(127.0.0.1:3306)/room

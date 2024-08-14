@@ -73,6 +73,7 @@ type (
 
 @server (
 	jwt:    Auth
+	middleware: UserTokenMiddleware
 	prefix: /invent
 )
 service invent-api {
@@ -81,29 +82,28 @@ service invent-api {
 	)
 	@handler UploadFileHouse
 	post /upload (UploadFileHouseReq) returns (UploadFileHouseRes)
-
+	
 	@doc (
 		summary: "Create house"
 	)
 	@handler CreateHouse
 	post /house (CreateHouseReq) returns (CreateHouseRes)
-
+	
 	@doc (
 		summary: "Create room"
 	)
 	@handler CreateRoom
 	post /room (CreateRoomReq) returns (CreateRoomRes)
-
+	
 	@doc (
 		summary: "Create Service"
 	)
 	@handler CreateService
 	post /service (CreateServiceReq) returns (CreateServiceRes)
-
+	
 	@doc (
 		summary: "Update House Status"
 	)
 	@handler UpdateHouseStatus
 	put /house/status (UpdateStatusReq) returns (UpdateStatusRes)
 }
-
