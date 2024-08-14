@@ -38,6 +38,15 @@ type UpdateStatusRes struct {
 	Result Result `json:"result"`
 }
 
+type GetHouseReq struct {
+	ID int64 `path:"id"`
+}
+
+type GetHouseRes struct {
+	Result Result `json:"result"`
+	House  House  `json:"house"`
+}
+
 type CreateRoomReq struct {
 	HouseID     int64  `form:"houseID"`
 	Name        string `form:"name"`

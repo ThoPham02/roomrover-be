@@ -25,6 +25,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: CreateHouseHandler(serverCtx),
 				},
 				{
+					Method:  http.MethodGet,
+					Path:    "/house/:id",
+					Handler: GetHouseHandler(serverCtx),
+				},
+				{
 					Method:  http.MethodPost,
 					Path:    "/room",
 					Handler: CreateRoomHandler(serverCtx),

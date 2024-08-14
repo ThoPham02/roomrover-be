@@ -35,12 +35,21 @@ type (
 		Result Result `json:"result"`
 		House  House  `json:"house"`
 	}
+
 	UpdateStatusReq {
 		HouseID int64 `form:"houseID"`
 		Status  int64 `form:"status"`
 	}
 	UpdateStatusRes {
 		Result Result `json:"result"`
+	}
+
+	GetHouseReq {
+		ID int64 `path:"id"`
+	}
+	GetHouseRes {
+		Result Result `json:"result"`
+		House  House  `json:"house"`
 	}
 )
 
@@ -88,6 +97,12 @@ service invent-api {
 	)
 	@handler CreateHouse
 	post /house (CreateHouseReq) returns (CreateHouseRes)
+	
+	@doc (
+		summary: "Get House"
+	)
+	@handler GetHouse
+	get /house/:id (GetHouseReq) returns (GetHouseRes)
 	
 	@doc (
 		summary: "Create room"
