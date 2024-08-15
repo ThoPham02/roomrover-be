@@ -1,7 +1,5 @@
 CREATE TABLE `contract_tbl` (
     `id` BIGINT,
-    `renter_id` BIGINT NOT NULL,
-    `lessor_id` BIGINT NOT NULL,
     `room_id` BIGINT NOT NULL,
     `status` BIGINT NOT NULL,
 

@@ -83,23 +83,22 @@ type Service struct {
 }
 
 type Contract struct {
-	ContractID     int64          `json:"contractID"`
-	RenterID       int64          `json:"renterID"`
-	RoomID         int64          `json:"roomID"`
-	Description    string         `json:"description"`
-	ContractUrl    string         `json:"contractUrl"`
-	StartDate      int64          `json:"startDate"`
-	EndDate        int64          `json:"endDate"`
-	Status         int64          `json:"status"`
-	Type           int64          `json:"type"`
-	Deposit        int64          `json:"deposit"`
-	Deadline       int64          `json:"deadline"`
-	CreatedAt      int64          `json:"createdAt"`
-	UpdatedAt      int64          `json:"updatedAt"`
-	CreatedBy      int64          `json:"createdBy"`
-	UpdatedBy      int64          `json:"updatedBy"`
-	ContractRenter ContractRenter `json:"contractRenter"`
-	ContractDetail ContractDetail `json:"contractDetail"`
+	ContractID      int64            `json:"contractID"`
+	RoomID          int64            `json:"roomID"`
+	Description     string           `json:"description"`
+	ContractUrl     string           `json:"contractUrl"`
+	Start           int64            `json:"start"`
+	End             int64            `json:"end"`
+	Status          int64            `json:"status"`
+	Type            int64            `json:"type"`
+	Deposit         int64            `json:"deposit"`
+	Deadline        int64            `json:"deadline"`
+	CreatedAt       int64            `json:"createdAt"`
+	UpdatedAt       int64            `json:"updatedAt"`
+	CreatedBy       int64            `json:"createdBy"`
+	UpdatedBy       int64            `json:"updatedBy"`
+	ContractRenters []ContractRenter `json:"contractRenters"`
+	ContractDetails []ContractDetail `json:"contractDetails"`
 }
 
 type ContractRenter struct {
@@ -108,10 +107,6 @@ type ContractRenter struct {
 	RenterID   int64 `json:"renterID"`
 	Type       int64 `json:"type"`
 	Status     int64 `json:"status"`
-	CreatedAt  int64 `json:"createdAt"`
-	UpdatedAt  int64 `json:"updatedAt"`
-	CreatedBy  int64 `json:"createdBy"`
-	UpdatedBy  int64 `json:"updatedBy"`
 }
 
 type ContractDetail struct {
@@ -120,11 +115,7 @@ type ContractDetail struct {
 	ServiceID  int64 `json:"serviceID"`
 	Price      int64 `json:"price"`
 	Index      int64 `json:"index"`
-	Status     int64 `json:"status"`
-	CreatedAt  int64 `json:"createdAt"`
-	UpdatedAt  int64 `json:"updatedAt"`
-	CreatedBy  int64 `json:"createdBy"`
-	UpdatedBy  int64 `json:"updatedBy"`
+	Type       int64 `json:"type"`
 }
 
 type Payment struct {

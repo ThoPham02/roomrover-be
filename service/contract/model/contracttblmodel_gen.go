@@ -36,8 +36,6 @@ type (
 
 	ContractTbl struct {
 		Id          int64          `db:"id"`
-		RenterId    int64          `db:"renter_id"`
-		LessorId    int64          `db:"lessor_id"`
 		RoomId      int64          `db:"room_id"`
 		Status      int64          `db:"status"`
 		ContractUrl sql.NullString `db:"contract_url"`
@@ -84,14 +82,14 @@ func (m *defaultContractTblModel) FindOne(ctx context.Context, id int64) (*Contr
 }
 
 func (m *defaultContractTblModel) Insert(ctx context.Context, data *ContractTbl) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, contractTblRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.RenterId, data.LessorId, data.RoomId, data.Status, data.ContractUrl, data.Description, data.Start, data.End, data.NextBill, data.Type, data.Deposit, data.Deadline, data.DepositUrl, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, contractTblRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.RoomId, data.Status, data.ContractUrl, data.Description, data.Start, data.End, data.NextBill, data.Type, data.Deposit, data.Deadline, data.DepositUrl, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy)
 	return ret, err
 }
 
 func (m *defaultContractTblModel) Update(ctx context.Context, data *ContractTbl) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, contractTblRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.RenterId, data.LessorId, data.RoomId, data.Status, data.ContractUrl, data.Description, data.Start, data.End, data.NextBill, data.Type, data.Deposit, data.Deadline, data.DepositUrl, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.RoomId, data.Status, data.ContractUrl, data.Description, data.Start, data.End, data.NextBill, data.Type, data.Deposit, data.Deadline, data.DepositUrl, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy, data.Id)
 	return err
 }
 

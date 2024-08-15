@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"roomrover/service/inventory/function"
+	"roomrover/service/inventory/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -26,4 +27,8 @@ func NewInventoryFunction(svc *InventService) *InventoryFunction {
 
 func (contractFunc *InventoryFunction) Start() error {
 	return nil
+}
+
+func (sc *InventoryFunction) GetRoomByID(roomID int64) (room *model.RoomTbl, err error) {
+	return sc.InventService.Ctx.RoomModel.FindOne(context.Background(), roomID)
 }
