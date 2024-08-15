@@ -7,3 +7,25 @@ info (
 
 import "model.api"
 
+type (
+	UploadFilePaymentReq {
+		ID int64 `form:"id"`
+	}
+	UploadFilePaymentRes {
+		Result Result `json:"result"`
+		Url    string `json:"url"`
+	}
+)
+
+@server (
+	jwt:    Auth
+	middleware: UserTokenMiddleware
+	prefix: /payment
+)
+service invent-api {
+	@doc (
+		summary: "Upload file house"
+	)
+	@handler UploadFilePayment
+	post /upload (UploadFilePaymentReq) returns (UploadFilePaymentRes)
+}

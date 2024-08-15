@@ -76,4 +76,7 @@ gen-model: gen-account-model gen-inventory-model gen-contract-model gen-payment-
 runs:
 	go run main.go -f etc/server.yaml
 
+job:
+	go run ./cmd/job.go -f etc/job.yaml
+
 # docker:

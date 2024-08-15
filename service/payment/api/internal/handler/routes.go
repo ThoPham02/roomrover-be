@@ -4,7 +4,7 @@ package handler
 import (
 	"net/http"
 
-	"roomrover/service/contract/api/internal/svc"
+	"roomrover/service/payment/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
 )
@@ -16,12 +16,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/contract",
-					Handler: CreateContractHandler(serverCtx),
+					Path:    "/upload",
+					Handler: UploadFilePaymentHandler(serverCtx),
 				},
 			}...,
 		),
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
-		rest.WithPrefix("/invent"),
+		rest.WithPrefix("/payment"),
 	)
 }

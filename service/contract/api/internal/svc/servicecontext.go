@@ -2,15 +2,16 @@ package svc
 
 import (
 	"roomrover/service/contract/api/internal/config"
+	"roomrover/service/contract/api/internal/middleware"
 	"roomrover/service/contract/model"
-	"roomrover/sync"
 
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
+	"github.com/zeromicro/go-zero/rest"
 )
 
 type ServiceContext struct {
-	Config  config.Config
-	ObjSync *sync.ObjSync
+	Config              config.Config
+	UserTokenMiddleware rest.Middleware
 
 	ContractModel          model.ContractTblModel
 	ContractRenterTblModel model.ContractRenterTblModel
@@ -19,8 +20,8 @@ type ServiceContext struct {
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
-		Config:  c,
-		ObjSync: sync.NewObjSync(0),
+		Config:              c,
+		UserTokenMiddleware: middleware.NewUserTokenMiddleware().Handle,
 
 		ContractModel:          model.NewContractTblModel(sqlx.NewMysql(c.DataSource)),
 		ContractRenterTblModel: model.NewContractRenterTblModel(sqlx.NewMysql(c.DataSource)),
