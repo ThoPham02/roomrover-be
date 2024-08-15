@@ -32,15 +32,23 @@ func main() {
 
 	accountService := accountApi.NewAccountService(server)
 	accountService.Start()
+	accountFunc := accountApi.NewAccountFunction(accountService)
+	accountFunc.Start()
+
 	inventService := inventApi.NewInventService(server)
 	inventService.Start()
+	inventFunc := inventApi.NewInventoryFunction(inventService)
+	inventFunc.Start()
+
 	contractService := contractApi.NewContractService(server)
 	contractService.Start()
-	paymentService := paymentApi.NewPaymentService(server)
-	paymentService.Start()
-
 	contractFunc := contractApi.NewContractFunction(contractService)
 	contractFunc.Start()
+
+	paymentService := paymentApi.NewPaymentService(server)
+	paymentService.Start()
+	paymentFunc := paymentApi.NewPaymentFunction(paymentService)
+	paymentFunc.Start()
 
 	inventService.Ctx.SetContractFunction(contractFunc)
 
