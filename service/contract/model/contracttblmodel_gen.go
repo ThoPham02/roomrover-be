@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
+	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/core/stringx"
 )
@@ -36,15 +37,18 @@ type (
 	ContractTbl struct {
 		Id          int64          `db:"id"`
 		RenterId    int64          `db:"renter_id"`
+		LessorId    int64          `db:"lessor_id"`
 		RoomId      int64          `db:"room_id"`
-		Description string         `db:"description"`
-		ContractUrl sql.NullString `db:"contract_url"`
-		StartDate   int64          `db:"start_date"`
-		EndDate     int64          `db:"end_date"`
 		Status      int64          `db:"status"`
+		ContractUrl sql.NullString `db:"contract_url"`
+		Description string         `db:"description"`
+		Start       int64          `db:"start"`
+		End         int64          `db:"end"`
+		NextBill    int64          `db:"next_bill"`
 		Type        int64          `db:"type"` // 0: k coc, 1: coc
 		Deposit     int64          `db:"deposit"`
 		Deadline    int64          `db:"deadline"`
+		DepositUrl  sql.NullString `db:"deposit_url"`
 		CreatedAt   int64          `db:"created_at"`
 		UpdatedAt   int64          `db:"updated_at"`
 		CreatedBy   int64          `db:"created_by"`
@@ -72,7 +76,7 @@ func (m *defaultContractTblModel) FindOne(ctx context.Context, id int64) (*Contr
 	switch err {
 	case nil:
 		return &resp, nil
-	case sqlx.ErrNotFound:
+	case sqlc.ErrNotFound:
 		return nil, ErrNotFound
 	default:
 		return nil, err
@@ -80,14 +84,14 @@ func (m *defaultContractTblModel) FindOne(ctx context.Context, id int64) (*Contr
 }
 
 func (m *defaultContractTblModel) Insert(ctx context.Context, data *ContractTbl) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, contractTblRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.RenterId, data.RoomId, data.Description, data.ContractUrl, data.StartDate, data.EndDate, data.Status, data.Type, data.Deposit, data.Deadline, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, contractTblRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.RenterId, data.LessorId, data.RoomId, data.Status, data.ContractUrl, data.Description, data.Start, data.End, data.NextBill, data.Type, data.Deposit, data.Deadline, data.DepositUrl, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy)
 	return ret, err
 }
 
 func (m *defaultContractTblModel) Update(ctx context.Context, data *ContractTbl) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, contractTblRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.RenterId, data.RoomId, data.Description, data.ContractUrl, data.StartDate, data.EndDate, data.Status, data.Type, data.Deposit, data.Deadline, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.RenterId, data.LessorId, data.RoomId, data.Status, data.ContractUrl, data.Description, data.Start, data.End, data.NextBill, data.Type, data.Deposit, data.Deadline, data.DepositUrl, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy, data.Id)
 	return err
 }
 

@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
+	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/core/stringx"
 )
@@ -38,11 +39,6 @@ type (
 		ContractId int64 `db:"contract_id"`
 		RenterId   int64 `db:"renter_id"`
 		Type       int64 `db:"type"`
-		Status     int64 `db:"status"`
-		CreatedAt  int64 `db:"created_at"`
-		UpdatedAt  int64 `db:"updated_at"`
-		CreatedBy  int64 `db:"created_by"`
-		UpdatedBy  int64 `db:"updated_by"`
 	}
 )
 
@@ -66,7 +62,7 @@ func (m *defaultContractRenterTblModel) FindOne(ctx context.Context, id int64) (
 	switch err {
 	case nil:
 		return &resp, nil
-	case sqlx.ErrNotFound:
+	case sqlc.ErrNotFound:
 		return nil, ErrNotFound
 	default:
 		return nil, err
@@ -74,14 +70,14 @@ func (m *defaultContractRenterTblModel) FindOne(ctx context.Context, id int64) (
 }
 
 func (m *defaultContractRenterTblModel) Insert(ctx context.Context, data *ContractRenterTbl) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, contractRenterTblRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.ContractId, data.RenterId, data.Type, data.Status, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?)", m.table, contractRenterTblRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.ContractId, data.RenterId, data.Type)
 	return ret, err
 }
 
 func (m *defaultContractRenterTblModel) Update(ctx context.Context, data *ContractRenterTbl) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, contractRenterTblRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.ContractId, data.RenterId, data.Type, data.Status, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.ContractId, data.RenterId, data.Type, data.Id)
 	return err
 }
 

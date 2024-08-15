@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
+	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/core/stringx"
 )
@@ -70,7 +71,7 @@ func (m *defaultUsersModel) FindOne(ctx context.Context, userId int64) (*Users, 
 	switch err {
 	case nil:
 		return &resp, nil
-	case sqlx.ErrNotFound:
+	case sqlc.ErrNotFound:
 		return nil, ErrNotFound
 	default:
 		return nil, err
@@ -84,7 +85,7 @@ func (m *defaultUsersModel) FindOneByPhone(ctx context.Context, phone string) (*
 	switch err {
 	case nil:
 		return &resp, nil
-	case sqlx.ErrNotFound:
+	case sqlc.ErrNotFound:
 		return nil, ErrNotFound
 	default:
 		return nil, err

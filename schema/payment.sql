@@ -1,9 +1,11 @@
-CREATE TABLE `payment_tbl` (
+CREATE TABLE `bill` (
     `id` BIGINT,
     `contract_id` BIGINT NOT NULL,
+    `total` BIGINT NOT NULL,
+    `paid` BIGINT NOT NULL,
+    `status` BIGINT NOT NULL,
     `month` BIGINT NOT NULL,
-	`total` BIGINT NOT NULL,
-    `status` BIGINT NOT NULL,
+
     `created_at` BIGINT NOT NULL,
     `updated_at` BIGINT NOT NULL,
     `created_by` BIGINT NOT NULL,
@@ -11,29 +13,25 @@ CREATE TABLE `payment_tbl` (
     PRIMARY KEY (`id`)
 )
 
-CREATE TABLE `payment_used_tbl` (
+CREATE TABLE `bill_detail` (
     `id` BIGINT,
-    `payment_id` BIGINT NOT NULL,
-    `service_id` BIGINT NOT NULL,
-    `index` BIGINT NOT NULL,
-    `status` BIGINT NOT NULL,
-    `created_at` BIGINT NOT NULL,
-    `updated_at` BIGINT NOT NULL,
-    `created_by` BIGINT NOT NULL,
-    `updated_by` BIGINT NOT NULL,
+    `bill_id` BIGINT NOT NULL,
+    `contract_service_id` BIGINT NOT NULL,
+    `price` BIGINT NOT NULL,
+    `type` BIGINT NOT NULL,
+    `quantity` BIGINT NOT NULL,
     PRIMARY KEY (`id`)
 )
 
-CREATE TABLE `payment_detail_tbl` (
+CREATE TABLE `payment` (
     `id` BIGINT,
-    `payment_id` BIGINT NOT NULL,
+    `bill_id` BIGINT NOT NULL,
     `amount` BIGINT NOT NULL,
     `type` BIGINT NOT NULL,
-    `utl` VARCHAR(255) NOT NULL,
+    `url` VARCHAR(255) NOT NULL,
     `created_at` BIGINT NOT NULL,
     `updated_at` BIGINT NOT NULL,
     `created_by` BIGINT NOT NULL,
     `updated_by` BIGINT NOT NULL,
     PRIMARY KEY (`id`)
 )
-
