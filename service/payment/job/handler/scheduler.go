@@ -9,12 +9,11 @@ import (
 )
 
 func RegisterCronjob(cr *cron.Cron, serverCtx *svc.ServiceContext) {
-
+	createBillByTime := CreateBillHandler(serverCtx)
+	cr.AddFunc(serverCtx.Config.CreateBillByTimeJob.Time, createBillByTime)
 }
 
 func Run(cr *cron.Cron) {
-	select {
-	case <-time.After(time.Hour * 24 * 365 * 100):
-		fmt.Println("stoped! ")
-	}
+	time.Sleep(time.Hour * 24 * 365 * 100)
+	fmt.Println("stopped!")
 }

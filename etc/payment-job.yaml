@@ -1,1 +1,4 @@
 Name: payment-job
+CreateBillByTimeJob:
+  BeforeDay: 0
+  Time: "* * * * *"

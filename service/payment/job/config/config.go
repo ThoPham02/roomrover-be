@@ -4,8 +4,8 @@ import "github.com/zeromicro/go-zero/core/service"
 
 type Config struct {
 	service.ServiceConf
-	// UpdatePromotionProductByTimeJob struct {
-	// 	CloseTimeBeforeDay int
-	// 	Time               string
-	// }
+	CreateBillByTimeJob struct {
+		Time      string
+		BeforeDay int
+	}
 }
