@@ -22,7 +22,7 @@ type (
 	middleware: UserTokenMiddleware
 	prefix: /payment
 )
-service invent-api {
+service payment-api {
 	@doc (
 		summary: "Upload file house"
 	)

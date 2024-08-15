@@ -12,6 +12,7 @@ import (
 	accountApi "roomrover/service/account/api"
 	contractApi "roomrover/service/contract/api"
 	inventApi "roomrover/service/inventory/api"
+	paymentApi "roomrover/service/payment/api"
 )
 
 var configFile = flag.String("f", "etc/server.yaml", "the config file")
@@ -31,13 +32,14 @@ func main() {
 
 	accountService := accountApi.NewAccountService(server)
 	accountService.Start()
-
 	inventService := inventApi.NewInventService(server)
 	inventService.Start()
-
 	contractService := contractApi.NewContractService(server)
-	contractFunc := contractApi.NewContractFunction(contractService)
 	contractService.Start()
+	paymentService := paymentApi.NewPaymentService(server)
+	paymentService.Start()
+
+	contractFunc := contractApi.NewContractFunction(contractService)
 	contractFunc.Start()
 
 	inventService.Ctx.SetContractFunction(contractFunc)
