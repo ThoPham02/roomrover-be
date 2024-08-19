@@ -8,166 +8,117 @@ info (
 import "model.api"
 
 type (
-	FilterRoomClassReq {
-		ProvinceCode int   `form:"province_code"`
-		DistrictCode int   `form:"district_code"`
-		WardCode     int   `form:"ward_code"`
-		PriceFrom    int64 `form:"price_from"`
-		PriceTo      int64 `form:"price_to"`
-		AcreageFrom  int64 `form:"acreage_from"`
-		AcreageTo    int64 `form:"acreage_to"`
+	UploadFileHouseReq {
+		HouseID int64 `form:"houseID"`
 	}
-	FilterRoomClassRes {
-		Result      Result      `json:"result"`
-		RoomClasses []RoomClass `json:"roomClasses"`
+	UploadFileHouseRes {
+		Result Result `json:"result"`
+		Url    string `json:"url"`
 	}
 )
 
 type (
-	CreateHomeReq {
-		Name         string `form:"name"`
-		Description  string `form:"description"`
-		ProvinceCode int64  `form:"province_code"`
-		DistrictCode int64  `form:"district_code"`
-		WardCode     int64  `form:"ward_code"`
-		Address      string `form:"address"`
-		Wifi         int64  `form:"wifi"`
-		Electricity  int64  `form:"electricity"`
-		Water        int64  `form:"water"`
-		Cleaning     int64  `form:"cleaning"`
-		Parking      int64  `form:"parking"`
-		Security     int64  `form:"security"`
-		Other        string `form:"other"`
+	CreateHouseReq {
+		Name        string `form:"name"`
+		Description string `form:"description"`
+		Type        int64  `form:"type"`
+		Util        int64  `form:"util"`
+		Area        int64  `form:"area"`
+		Price       int64  `form:"price"`
+		Address     string `form:"address"`
+		WardID      int64  `form:"wardID"`
+		DistrictID  int64  `form:"districtID"`
+		ProvinceID  int64  `form:"provinceID"`
+		Albums      string `form:"albums"`
 	}
-	CreateHomeRes {
+	CreateHouseRes {
 		Result Result `json:"result"`
-		Home   Home   `json:"home"`
+		House  House  `json:"house"`
 	}
-	UpdateHomeReq {
-		Name         string `form:"name"`
-		Description  string `form:"description"`
-		ProvinceCode int64  `form:"province_code"`
-		DistrictCode int64  `form:"district_code"`
-		WardCode     int64  `form:"ward_code"`
-		Address      string `form:"address"`
-		Wifi         int64  `form:"wifi"`
-		Electricity  int64  `form:"electricity"`
-		Water        int64  `form:"water"`
-		Cleaning     int64  `form:"cleaning"`
-		Parking      int64  `form:"parking"`
-		Security     int64  `form:"security"`
-		Other        string `form:"other"`
-		Status       int64  `form:"status"`
+
+	UpdateStatusReq {
+		HouseID int64 `form:"houseID"`
+		Status  int64 `form:"status"`
 	}
-	UpdateHomeRes {
+	UpdateStatusRes {
 		Result Result `json:"result"`
-		Home   Home   `json:"home"`
 	}
-	DeleteHomeReq {
+
+	GetHouseReq {
 		ID int64 `path:"id"`
 	}
-	DeleteHomeRes {
+	GetHouseRes {
 		Result Result `json:"result"`
-	}
-	GetHomeReq {
-		ID int64 `path:"id"`
-	}
-	GetHomeRes {
-		Result Result `json:"result"`
-		Home   Home   `json:"home"`
-	}
-	FilterHomeReq  {}
-	FilterHomeRes {
-		Result Result `json:"result"`
-		Homes  []Home `json:"homes"`
+		House  House  `json:"house"`
 	}
 )
 
-// type (
-//  CreateRoomClassReq {}
-//  CreateRoomClassRes {
-//   Result Result `json:"result"`
-//  }
-//  UpdateRoomClassReq {}
-//  UpdateRoomClassRes {
-//   Result Result `json:"result"`
-//  }
-//  DeleteRoomClassReq {}
-//  DeleteRoomClassRes {
-//   Result Result `json:"result"`
-//  }
-//  GetRoomClassReq {}
-//  GetRoomClassRes {
-//   Result     Result     `json:"result"`
-//   RoomClasss []RoomClass `json:"room_groups"`
-//  }
-//  FilterRoomClassReq {}
-//  FilterRoomClassRes {
-//   Result     Result      `json:"result"`
-//   RoomClasss []RoomClass `json:"room_groups"`
-//  }
-// )
-// type (
-//  CreateRoomReq {}
-//  CreateRoomRes {
-//   Result Result `json:"result"`
-//  }
-//  UpdateRoomReq {}
-//  UpdateRoomRes {
-//   Result Result `json:"result"`
-//  }
-//  DeleteRoomReq {}
-//  DeleteRoomRes {
-//   Result Result `json:"result"`
-//  }
-//  GetRoomReq {}
-//  GetRoomRes {
-//   Result Result `json:"result"`
-//  }
-//  FilterRoomReq {}
-//  FilterRoomRes {
-//   Result Result `json:"result"`
-//   Rooms  []Room `json:"rooms"`
-//  }
-// )
+type (
+	CreateRoomReq {
+		HouseID     int64  `form:"houseID"`
+		Name        string `form:"name"`
+		Description string `form:"description"`
+		Price       int64  `form:"price"`
+		Area        int64  `form:"area"`
+	}
+	CreateRoomRes {
+		Result Result `json:"result"`
+		Room   Room   `json:"room"`
+	}
+)
+
+type (
+	CreateServiceReq {
+		HouseID int64  `form:"houseID"`
+		Name    string `form:"name"`
+		Price   int64  `form:"price"`
+		Type    int64  `form:"type"`
+	}
+	CreateServiceRes {
+		Result  Result  `json:"result"`
+		Service Service `json:"service"`
+	}
+)
+
 @server (
-	jwt: Auth
+	jwt:    Auth
+	middleware: UserTokenMiddleware
+	prefix: /invent
 )
-service inventory-api {
+service invent-api {
 	@doc (
-		summary: "FilterRoomClass"
+		summary: "Upload file house"
 	)
-	@handler FilterRoomClass
-	get /class/filter (FilterRoomClassReq) returns (FilterRoomClassRes)
-
+	@handler UploadFileHouse
+	post /upload (UploadFileHouseReq) returns (UploadFileHouseRes)
+	
 	@doc (
-		summary: "CreateHome"
+		summary: "Create house"
 	)
-	@handler CreateHome
-	post /home (CreateHomeReq) returns (CreateHomeRes)
-
+	@handler CreateHouse
+	post /house (CreateHouseReq) returns (CreateHouseRes)
+	
 	@doc (
-		summary: "UpdateHome"
+		summary: "Get House"
 	)
-	@handler UpdateHome
-	put /home (UpdateHomeReq) returns (UpdateHomeRes)
-
+	@handler GetHouse
+	get /house/:id (GetHouseReq) returns (GetHouseRes)
+	
 	@doc (
-		summary: "DeleteHome"
+		summary: "Create room"
 	)
-	@handler DeleteHome
-	delete /home/:id (DeleteHomeReq) returns (DeleteHomeRes)
-
+	@handler CreateRoom
+	post /room (CreateRoomReq) returns (CreateRoomRes)
+	
 	@doc (
-		summary: "GetHome"
+		summary: "Create Service"
 	)
-	@handler GetHome
-	get /home/:id (GetHomeReq) returns (GetHomeRes)
-
+	@handler CreateService
+	post /service (CreateServiceReq) returns (CreateServiceRes)
+	
 	@doc (
-		summary: "FilterHome"
+		summary: "Update House Status"
 	)
-	@handler FilterHome
-	get /home/filter (FilterHomeReq) returns (FilterHomeRes)
+	@handler UpdateHouseStatus
+	put /house/status (UpdateStatusReq) returns (UpdateStatusRes)
 }
-

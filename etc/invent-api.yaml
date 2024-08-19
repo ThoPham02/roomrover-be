@@ -1,0 +1,11 @@
+Name: invent-api
+Host: 0.0.0.0
+Port: 8888
+Auth:
+  AccessSecret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  AccessExpire: 604800
+Datasource: thopb:524020@tcp(127.0.0.1:3306)/room
+Storage:
+  CloudName: "ddhsgiwcv"
+  APIKey: "584168378272983"
+  APISecret: "VSBpeP9AKFEzssd3BCvxhc6tyoI"

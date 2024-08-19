@@ -10,7 +10,9 @@ import (
 	"github.com/zeromicro/go-zero/rest"
 
 	accountApi "roomrover/service/account/api"
-	inventoryApi "roomrover/service/inventory/api"
+	contractApi "roomrover/service/contract/api"
+	inventApi "roomrover/service/inventory/api"
+	paymentApi "roomrover/service/payment/api"
 )
 
 var configFile = flag.String("f", "etc/server.yaml", "the config file")
@@ -30,9 +32,27 @@ func main() {
 
 	accountService := accountApi.NewAccountService(server)
 	accountService.Start()
+	accountFunc := accountApi.NewAccountFunction(accountService)
+	accountFunc.Start()
 
-	inventoryService := inventoryApi.NewInventoryService(server)
-	inventoryService.Start()
+	inventService := inventApi.NewInventService(server)
+	inventService.Start()
+	inventFunc := inventApi.NewInventoryFunction(inventService)
+	inventFunc.Start()
+
+	contractService := contractApi.NewContractService(server)
+	contractService.Start()
+	contractFunc := contractApi.NewContractFunction(contractService)
+	contractFunc.Start()
+
+	paymentService := paymentApi.NewPaymentService(server)
+	paymentService.Start()
+	paymentFunc := paymentApi.NewPaymentFunction(paymentService)
+	paymentFunc.Start()
+
+	inventService.Ctx.SetContractFunction(contractFunc)
+	contractService.Ctx.SetAccountFunction(accountFunc)
+	contractService.Ctx.SetInventFunction(inventFunc)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()

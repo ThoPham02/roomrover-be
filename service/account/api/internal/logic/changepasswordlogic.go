@@ -7,8 +7,7 @@ import (
 	"roomrover/service/account/api/internal/svc"
 	"roomrover/service/account/api/internal/types"
 	"roomrover/service/account/model"
-	localUtils "roomrover/service/account/utils"
-	"roomrover/utils"
+	"roomrover/service/account/utils"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -19,6 +18,7 @@ type ChangePasswordLogic struct {
 	svcCtx *svc.ServiceContext
 }
 
+// Change User Password
 func NewChangePasswordLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ChangePasswordLogic {
 	return &ChangePasswordLogic{
 		Logger: logx.WithContext(ctx),
@@ -28,26 +28,33 @@ func NewChangePasswordLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ch
 }
 
 func (l *ChangePasswordLogic) ChangePassword(req *types.ChangePasswordReq) (resp *types.ChangePasswordRes, err error) {
-	l.Logger.Info("ChangePasswordLogic: ", req)
+	l.Logger.Info("ChangePassword request: ", req)
 
 	var userID int64
 
-	var userModel *model.UsersTbl
-
-	userID, err = utils.GetUserIDFromContext(l.ctx)
+	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.ChangePasswordRes{
 			Result: types.Result{
-				Code:    common.INVALID_REQUEST_CODE,
-				Message: common.INVALID_REQUEST_MESS,
+				Code:    common.UNKNOWN_ERR_CODE,
+				Message: common.UNKNOWN_ERR_MESS,
 			},
 		}, nil
 	}
 
-	userModel, err = l.svcCtx.UserModel.FindOne(l.ctx, userID)
+	// Check if the user exists
+	userModel, err := l.svcCtx.UserModel.FindOne(l.ctx, userID)
 	if err != nil {
 		l.Logger.Error(err)
+		if err == model.ErrNotFound {
+			return &types.ChangePasswordRes{
+				Result: types.Result{
+					Code:    common.USER_NOT_FOUND_CODE,
+					Message: common.USER_NOT_FOUND_MESS,
+				},
+			}, nil
+		}
 		return &types.ChangePasswordRes{
 			Result: types.Result{
 				Code:    common.DB_ERR_CODE,
@@ -56,7 +63,8 @@ func (l *ChangePasswordLogic) ChangePassword(req *types.ChangePasswordReq) (resp
 		}, nil
 	}
 
-	if !localUtils.ConfirmPassword(req.OldPassword, userModel.PasswordHash) {
+	// Check if the old password is correct
+	if !utils.ConfirmPassword(req.OldPassword, userModel.PasswordHash) {
 		return &types.ChangePasswordRes{
 			Result: types.Result{
 				Code:    common.INVALID_PASSWORD_CODE,
@@ -65,16 +73,20 @@ func (l *ChangePasswordLogic) ChangePassword(req *types.ChangePasswordReq) (resp
 		}, nil
 	}
 
-	userModel.PasswordHash, err = localUtils.HashPassword(req.NewPassword)
+	// Change password
+	hashpw, err := utils.HashPassword(req.NewPassword)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.ChangePasswordRes{
 			Result: types.Result{
-				Code:    common.INVALID_PASSWORD_CODE,
-				Message: common.INVALID_PASSWORD_MESS,
+				Code:    common.UNKNOWN_ERR_CODE,
+				Message: common.UNKNOWN_ERR_MESS,
 			},
 		}, nil
 	}
+
+	userModel.PasswordHash = hashpw
+	userModel.UpdatedAt = common.GetCurrentTime()
 
 	err = l.svcCtx.UserModel.Update(l.ctx, userModel)
 	if err != nil {
@@ -87,7 +99,6 @@ func (l *ChangePasswordLogic) ChangePassword(req *types.ChangePasswordReq) (resp
 		}, nil
 	}
 
-	l.Logger.Info("ChangePasswordLogic Success: ", userID)
 	return &types.ChangePasswordRes{
 		Result: types.Result{
 			Code:    common.SUCCESS_CODE,

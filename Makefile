@@ -8,7 +8,7 @@ SERVICE_DIR=$(ROOT_DIR)/$(SERVICE)
 API_DIR=$(ROOT_DIR)/api
 SCHEMA_DIR=$(ROOT_DIR)/schema
 MIGRATION_DIR=$(ROOT_DIR)/migration
-DATASOURCE=postgresql://thopb:hkIenQPTp61nQYeMAUVhTDlMo6dcOhSa@dpg-cq962piju9rs73b0k27g-a.singapore-postgres.render.com/humgroom
+DATASOURCE=mysql://thopb:524020@localhost:3306/humgroom
 
 # account service
 ACCOUNT_DIR=$(SERVICE_DIR)/account
@@ -20,14 +20,15 @@ INVENTORY_DIR=$(SERVICE_DIR)/inventory
 INVENTORY_API_DIR=$(INVENTORY_DIR)/api
 INVENTORY_MODEL_DIR=$(INVENTORY_DIR)/model
 
-# list table name
-USER_TBL=users_tbl
-PROFILE_TBL=profiles_tbl
+# contract service
+CONTRACT_DIR=$(SERVICE_DIR)/contract
+CONTRACT_API_DIR=$(CONTRACT_DIR)/api
+CONTRACT_MODEL_DIR=$(CONTRACT_DIR)/model
 
-HOME_TBL=homes_tbl
-ROOM_TBL=rooms_tbl
-ROOM_GROUP_TBL=room_class_tbl
-ROOM_ALBUM_TBL=room_albums_tbl
+# payment service
+PAYMENT_DIR=$(SERVICE_DIR)/payment
+PAYMENT_API_DIR=$(PAYMENT_DIR)/api
+PAYMENT_MODEL_DIR=$(PAYMENT_DIR)/model
 
 dep-init:
 	go mod init $(MODULE_NAME)
@@ -50,17 +51,32 @@ gen-account-service:
 gen-inventory-service:
 	goctl api go -api $(API_DIR)/inventory.api -dir $(INVENTORY_API_DIR)
 
+gen-contract-service:
+	goctl api go -api $(API_DIR)/contract.api -dir $(CONTRACT_API_DIR)
+
+gen-payment-service:
+	goctl api go -api $(API_DIR)/payment.api -dir $(PAYMENT_API_DIR)
+
 # gen db model
 gen-account-model: 
-	goctl model pg datasource -url="${DATASOURCE}" -table="${USER_TBL}" -dir="$(ACCOUNT_MODEL_DIR)" --ignore-columns=""
-	goctl model pg datasource -url="${DATASOURCE}" -table="${PROFILE_TBL}" -dir="$(ACCOUNT_MODEL_DIR)" --ignore-columns=""
+	goctl model mysql ddl -src="${SCHEMA_DIR}/account.sql" -dir="${ACCOUNT_MODEL_DIR}" --ignore-columns=""
 
 gen-inventory-model:
-	goctl model pg datasource -url="${DATASOURCE}" -table="${HOME_TBL}" -dir="$(INVENTORY_MODEL_DIR)" --ignore-columns=""
-	goctl model pg datasource -url="${DATASOURCE}" -table="${ROOM_TBL}" -dir="$(INVENTORY_MODEL_DIR)" --ignore-columns=""
-	goctl model pg datasource -url="${DATASOURCE}" -table="${ROOM_GROUP_TBL}" -dir="$(INVENTORY_MODEL_DIR)" --ignore-columns=""
-	goctl model pg datasource -url="${DATASOURCE}" -table="${ROOM_ALBUM_TBL}" -dir="$(INVENTORY_MODEL_DIR)" --ignore-columns=""
+	goctl model mysql ddl -src="${SCHEMA_DIR}/inventory.sql" -dir="${INVENTORY_MODEL_DIR}" --ignore-columns=""
+
+gen-contract-model:
+	goctl model mysql ddl -src="${SCHEMA_DIR}/contract.sql" -dir="${CONTRACT_MODEL_DIR}" --ignore-columns=""
+
+gen-payment-model:
+	goctl model mysql ddl -src="${SCHEMA_DIR}/payment.sql" -dir="${PAYMENT_MODEL_DIR}" --ignore-columns=""
+
+gen-service: gen-account-service gen-inventory-service gen-contract-service gen-payment-service
+gen-model: gen-account-model gen-inventory-model gen-contract-model gen-payment-model
 
 runs:
 	go run main.go -f etc/server.yaml
 
+job:
+	go run ./cmd/job.go -f etc/job.yaml
+
+# docker:

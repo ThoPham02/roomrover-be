@@ -3,7 +3,5 @@ Host: 0.0.0.0
 Port: 8888
 Auth:
   AccessSecret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-  AccessExpire: 604800000
-Database:
-  Name: "postgres"
-  Datasource: postgresql://thopb:hkIenQPTp61nQYeMAUVhTDlMo6dcOhSa@dpg-cq962piju9rs73b0k27g-a.singapore-postgres.render.com/humgroom
+  AccessExpire: 604800
+Datasource: thopb:524020@tcp(127.0.0.1:3306)/room

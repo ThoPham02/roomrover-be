@@ -1,25 +1,33 @@
 version: '3.3'
 
 services:
-  psql:
-    container_name: room-psql
-    image: postgres:latest
+  database:
+    container_name: room-sql
+    image: mysql:latest
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: room
+      MYSQL_USER: thopb
+      MYSQL_PASSWORD: 524020
     ports:
-      - "${POSTGRES_PORT}:5432"
+      - "3306:3306"
     volumes:
-      - ./schema/data:/var/lib/postgresql/data
-  
-  app:
-    container_name: room-app
-    build:
-      context: .
-      dockerfile: Dockerfile
-      image: room-app
-    ports:
-      - "8888:8888"
-    depends_on:
-      - psql
+      - ./database:/docker-entrypoint-initdb.d
+    networks:
+      - room-network
+    
+  # backend:
+  #   container_name: room-backend
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8888:8888"
+  #   depends_on:
+  #     - database
+  #   networks:
+  #     - room-network
+
+networks:
+  room-network:
+    driver: bridge

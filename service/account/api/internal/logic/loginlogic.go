@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"database/sql"
 	"time"
 
 	"roomrover/common"
@@ -20,6 +19,7 @@ type LoginLogic struct {
 	svcCtx *svc.ServiceContext
 }
 
+// User Login
 func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic {
 	return &LoginLogic{
 		Logger: logx.WithContext(ctx),
@@ -29,18 +29,25 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 }
 
 func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error) {
-	l.Logger.Info("Login Success", req)
+	l.Logger.Infof("Login request: %v", req)
 
-	var userModel *model.UsersTbl
-	var profileModel *model.ProfilesTbl
-	var token string
-	var currentTime int64 = time.Now().Unix()
 	var user types.User
-	var profile types.Profile
+	var iat = time.Now().Unix()
+	var accessSecret = l.svcCtx.Config.Auth.AccessSecret
+	var accessExpire = l.svcCtx.Config.Auth.AccessExpire
 
-	userModel, err = l.svcCtx.UserModel.FindOneByUsername(l.ctx, req.UserName)
-	if err != nil && err != sql.ErrNoRows {
+	// Check if the user exists
+	userModel, err := l.svcCtx.UserModel.FindOneByPhone(l.ctx, req.Phone)
+	if err != nil {
 		l.Logger.Error(err)
+		if err == model.ErrNotFound {
+			return &types.LoginRes{
+				Result: types.Result{
+					Code:    common.USER_NOT_FOUND_CODE,
+					Message: common.USER_NOT_FOUND_MESS,
+				},
+			}, nil
+		}
 		return &types.LoginRes{
 			Result: types.Result{
 				Code:    common.DB_ERR_CODE,
@@ -48,17 +55,20 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error
 			},
 		}, nil
 	}
-	if userModel == nil {
-		return &types.LoginRes{
-			Result: types.Result{
-				Code:    common.USER_NOT_FOUND_CODE,
-				Message: common.USER_NOT_FOUND_MESS,
-			},
-		}, nil
+
+	user = types.User{
+		UserID:    userModel.UserId,
+		Phone:     userModel.Phone,
+		FullName:  userModel.FullName.String,
+		Birthday:  userModel.Birthday.Int64,
+		AvatarUrl: userModel.AvatarUrl.String,
+		Address:   userModel.Address.String,
+		CreatedAt: userModel.CreatedAt,
+		UpdatedAt: userModel.UpdatedAt,
 	}
 
-	var checkPassword bool = utils.ConfirmPassword(req.Password, userModel.PasswordHash)
-	if !checkPassword {
+	// Check if the password is correct
+	if !utils.ConfirmPassword(req.Password, userModel.PasswordHash) {
 		return &types.LoginRes{
 			Result: types.Result{
 				Code:    common.INVALID_PASSWORD_CODE,
@@ -67,57 +77,28 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error
 		}, nil
 	}
 
-	user = types.User{
-		UserID:    userModel.UserId,
-		ProfileID: userModel.ProfileId.Int64,
-		UserName:  userModel.Username,
-		Email:     userModel.Email,
-	}
+	l.Logger.Info(iat)
+	l.Logger.Info(accessExpire)
 
-	profileModel, err = l.svcCtx.ProfileModel.FindOne(l.ctx, userModel.ProfileId.Int64)
-	if err != nil && err != sql.ErrNoRows {
-		l.Logger.Error(err)
-		return &types.LoginRes{
-			Result: types.Result{
-				Code:    common.DB_ERR_CODE,
-				Message: common.DB_ERR_MESS,
-			},
-		}, nil
-	}
-	if profileModel != nil {
-		profile = types.Profile{
-			ProfileID: profileModel.ProfileId,
-			FullName:  profileModel.Fullname.String,
-			Dob:       profileModel.Dob.Int64,
-			AvatarUrl: profileModel.AvatarUrl.String,
-			Address:   profileModel.Address.String,
-			Phone:     profileModel.Phone.String,
-			CreatedAt: profileModel.CreatedAt.Int64,
-			UpdatedAt: profileModel.UpdatedAt.Int64,
-			CreatedBy: profileModel.CreatedBy.Int64,
-			UpdatedBy: profileModel.UpdatedBy.Int64,
-		}
-	}
-
-	token, err = utils.GetJwtToken(l.svcCtx.Config.Auth.AccessSecret, currentTime, l.svcCtx.Config.Auth.AccessExpire, userModel.UserId, user)
+	// Generate token
+	token, err := utils.GetJwtToken(accessSecret, iat, accessExpire, userModel.UserId, user)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.LoginRes{
 			Result: types.Result{
-				Code:    common.DB_ERR_CODE,
-				Message: common.DB_ERR_MESS,
+				Code:    common.UNKNOWN_ERR_CODE,
+				Message: common.UNKNOWN_ERR_MESS,
 			},
 		}, nil
 	}
 
-	l.Logger.Info("Login Success", user)
+	l.Logger.Info("Login success")
 	return &types.LoginRes{
 		Result: types.Result{
 			Code:    common.SUCCESS_CODE,
 			Message: common.SUCCESS_MESS,
 		},
-		Token:   token,
-		User:    user,
-		Profile: profile,
+		Token: token,
+		User:  user,
 	}, nil
 }

@@ -17,18 +17,68 @@ type (
 type (
 	User {
 		UserID    int64  `json:"userID"`
-		ProfileID int64  `json:"profileID"`
-		UserName  string `json:"userName"`
-		Email     string `json:"email"`
-	}
-
-	Profile {
-		ProfileID int64  `json:"profileID"`
+		Phone     string `json:"phone"`
 		FullName  string `json:"fullName"`
-		Dob       int64  `json:"dob"`
+		Birthday  int64  `json:"birthday"`
 		AvatarUrl string `json:"avatarUrl"`
 		Address   string `json:"address"`
-		Phone     string `json:"phone"`
+		CreatedAt int64  `json:"createdAt"`
+		UpdatedAt int64  `json:"updatedAt"`
+	}
+)
+
+// inventory model api
+type (
+	House {
+		HouseID    int64  `json:"houseID"`
+		UserID     int64  `json:"userID"`
+		Name       string `json:"name"`
+		Description string `json:"description"`
+		Type       int64  `json:"type"`
+		Area       int64  `json:"area"`
+		Price      int64  `json:"price"`
+		Status     int64  `json:"status"`
+		Address    string `json:"address"`
+		WardID     int64  `json:"wardID"`
+		DistrictID int64  `json:"districtID"`
+		ProvinceID int64  `json:"provinceID"`
+		CreatedAt  int64  `json:"createdAt"`
+		UpdatedAt  int64  `json:"updatedAt"`
+		CreatedBy  int64  `json:"createdBy"`
+		UpdatedBy  int64  `json:"updatedBy"`
+		Albums     []Album `json:"albums"`
+		Rooms      []Room  `json:"rooms"`
+		Services   []Service `json:"services"`
+	}
+
+	Album {
+		AlbumID   int64  `json:"albumID"`
+		HouseID   int64  `json:"houseID"`
+		Url       string `json:"url"`
+		Type      int64  `json:"type"`
+		CreatedAt int64  `json:"createdAt"`
+		UpdatedAt int64  `json:"updatedAt"`
+		CreatedBy int64  `json:"createdBy"`
+		UpdatedBy int64  `json:"updatedBy"`
+	}
+
+	Room {
+		RoomID    int64  `json:"roomID"`
+		HouseID   int64  `json:"houseID"`
+		Name      string `json:"name"`
+		Status    int64  `json:"status"`
+		CreatedAt int64  `json:"createdAt"`
+		UpdatedAt int64  `json:"updatedAt"`
+		CreatedBy int64  `json:"createdBy"`
+		UpdatedBy int64  `json:"updatedBy"`
+	}
+
+	Service {
+		ServiceID int64  `json:"serviceID"`
+		HouseID   int64  `json:"houseID"`
+		Name      string `json:"name"`
+		Price     int64  `json:"price"`
+		Type      int64  `json:"type"`
 		CreatedAt int64  `json:"createdAt"`
 		UpdatedAt int64  `json:"updatedAt"`
 		CreatedBy int64  `json:"createdBy"`
@@ -36,40 +86,84 @@ type (
 	}
 )
 
-// inventory model api
+// contract model api
 type (
-	RoomClass {
-		RoomClassID int64  `json:"roomClassID"`
-		Province    string `json:"province"`
-		District    string `json:"district"`
-		Ward        string `json:"ward"`
-		Price       int64  `json:"price"`
-		Acreage     int64  `json:"acreage"`
-		TotalRoom   int64  `json:"totalRoom"`
-		CreatedAt   int64  `json:"createdAt"`
-		UpdatedAt   int64  `json:"updatedAt"`
-		CreatedBy   int64  `json:"createdBy"`
-		UpdatedBy   int64  `json:"updatedBy"`
+	Contract {
+		ContractID   int64  `json:"contractID"`
+		RoomID       int64  `json:"roomID"`
+		Description  string `json:"description"`
+		ContractUrl  string `json:"contractUrl"`
+		Start    	 int64  `json:"start"`
+		End      	 int64  `json:"end"`
+		Status       int64  `json:"status"`
+		Type         int64  `json:"type"`
+		Deposit      int64  `json:"deposit"`
+		Deadline     int64  `json:"deadline"`
+		CreatedAt    int64  `json:"createdAt"`
+		UpdatedAt    int64  `json:"updatedAt"`
+		CreatedBy    int64  `json:"createdBy"`
+		UpdatedBy    int64  `json:"updatedBy"`
+		ContractRenters []ContractRenter `json:"contractRenters"`
+		ContractDetails []ContractDetail `json:"contractDetails"`
 	}
 
-	Home {
-		HomeID      int64  `json:"homeID"`
-		Name        string `json:"name"`
-		Description string `json:"description"`
-		Province    string `json:"province"`
-		District    string `json:"district"`
-		Ward        string `json:"ward"`
-		Address     string `json:"address"`
-		Wifi        int64  `json:"wifi"`
-		Electricity int64  `json:"electricity"`
-		Water       int64  `json:"water"`
-		Cleaning    int64  `json:"cleaning"`
-		Parking     int64  `json:"parking"`
-		Security    int64  `json:"security"`
-		Other       string `json:"other"`
-		CreatedAt   int64  `json:"createdAt"`
-		UpdatedAt   int64  `json:"updatedAt"`
-		CreatedBy   int64  `json:"createdBy"`
-		UpdatedBy   int64  `json:"updatedBy"`
+	ContractRenter {
+		ID int64  `json:"id"`
+		ContractID       int64  `json:"contractID"`
+		RenterID         int64  `json:"renterID"`
+		Type             int64  `json:"type"`
+		Status           int64  `json:"status"`
+	}
+
+	ContractDetail {
+		ID int64  `json:"id"`
+		ContractID       int64  `json:"contractID"`
+		ServiceID        int64  `json:"serviceID"`
+		Price            int64  `json:"price"`
+		Index            int64  `json:"index"`
+		Type           int64  `json:"type"`
 	}
 )
+
+
+// payment model api
+type (
+	Payment {
+		ID         int64  `json:"id"`
+		ContractID int64  `json:"contractID"`
+		Month      int64  `json:"month"`
+		Total      int64  `json:"total"`
+		Status     int64  `json:"status"`
+		CreatedAt  int64  `json:"createdAt"`
+		UpdatedAt  int64  `json:"updatedAt"`
+		CreatedBy  int64  `json:"createdBy"`
+		UpdatedBy  int64  `json:"updatedBy"`
+	}
+
+	PaymentUsed {
+		ID        int64  `json:"id"`
+		PaymentID int64  `json:"paymentID"`
+		ServiceID int64  `json:"serviceID"`
+		Index     int64  `json:"index"`
+		Status    int64  `json:"status"`
+		CreatedAt int64  `json:"createdAt"`
+		UpdatedAt int64  `json:"updatedAt"`
+		CreatedBy int64  `json:"createdBy"`
+		UpdatedBy int64  `json:"updatedBy"`
+	}
+
+	PaymentDetail {
+		ID         int64  `json:"id"`
+		PaymentID  int64  `json:"paymentID"`
+		Amount     int64  `json:"amount"`
+		Type       int64  `json:"type"`
+		Utl        string `json:"utl"`
+		CreatedAt  int64  `json:"createdAt"`
+		UpdatedAt  int64  `json:"updatedAt"`
+		CreatedBy  int64  `json:"createdBy"`
+		UpdatedBy  int64  `json:"updatedBy"`
+	}
+)
+
+
+
