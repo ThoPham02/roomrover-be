@@ -30,3 +30,20 @@ func GetNextMonthDate(start int64, n int) int64 {
 
 	return nextMonth.UnixMilli()
 }
+
+func GetBillIndexByTime(start, current int64) int64 {
+	if start >= current {
+		return 0
+	}
+
+	// returns the number of months difference
+	t1 := time.UnixMilli(start)
+	t2 := time.UnixMilli(current)
+
+	y1, m1, _ := t1.Date()
+	y2, m2, _ := t2.Date()
+
+	months := (y2-y1)*12 + int(m2) - int(m1)
+
+	return int64(months)
+}

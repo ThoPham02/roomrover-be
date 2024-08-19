@@ -1,4 +1,5 @@
 Name: payment-job
+Datasource: thopb:524020@tcp(127.0.0.1:3306)/room
 CreateBillByTimeJob:
   BeforeDay: 0
   Time: "* * * * *"

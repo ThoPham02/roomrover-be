@@ -16,6 +16,7 @@ type (
 		contractTblModel
 		withSession(session sqlx.Session) ContractTblModel
 		GetContractByRoomID(ctx context.Context, roomID int64) (*ContractTbl, error)
+		GetContractByTime(ctx context.Context, time int64) ([]*ContractTbl, error)
 	}
 
 	customContractTblModel struct {
@@ -43,6 +44,21 @@ func (m *customContractTblModel) GetContractByRoomID(ctx context.Context, roomID
 		return &resp, nil
 	case sqlx.ErrNotFound:
 		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
+func (m *customContractTblModel) GetContractByTime(ctx context.Context, time int64) ([]*ContractTbl, error) {
+	var startTime = time - 2*86400000 // lay ra 2 ngay truoc
+	query := fmt.Sprintf("select %s from %s where `next_bill` between ? and ?", contractTblRows, m.table)
+	var resp []*ContractTbl
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, startTime, time)
+	switch err {
+	case nil:
+		return resp, nil
+	case sqlx.ErrNotFound:
+		return nil, nil
 	default:
 		return nil, err
 	}
