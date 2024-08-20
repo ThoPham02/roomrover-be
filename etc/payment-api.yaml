@@ -1,7 +1,6 @@
-Name: server
+Name: payment-api
 Host: 0.0.0.0
 Port: 8888
-Timeout: 30000
 Auth:
   AccessSecret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   AccessExpire: 604800

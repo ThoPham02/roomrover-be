@@ -15,18 +15,25 @@ services:
       - ./database:/docker-entrypoint-initdb.d
     networks:
       - room-network
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     
-  # backend:
-  #   container_name: room-backend
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "8888:8888"
-  #   depends_on:
-  #     - database
-  #   networks:
-  #     - room-network
+  backend:
+    container_name: room-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - room-network
 
 networks:
   room-network:
