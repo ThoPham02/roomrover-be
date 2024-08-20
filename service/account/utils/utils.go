@@ -63,7 +63,7 @@ func ConfirmPassword(password string, hashpassword string) bool {
 // - A string representing the generated JWT token.
 // - An error if there was an issue generating the token.
 //
-// Note: The token is signed using the HS256 algorithm.
+// Note: The token is signed using the RSA algorithm.
 func GetJwtToken(secretKey string, iat, seconds int64, userID int64, payload interface{}) (string, error) {
 	claims := make(jwt.MapClaims)
 	claims["exp"] = iat + seconds

@@ -12,15 +12,10 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./database:/docker-entrypoint-initdb.d
+      - ./data:/var/lib/mysql
     networks:
       - room-network
     restart: always
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
     
   backend:
     container_name: room-backend
@@ -30,8 +25,7 @@ services:
     ports:
       - "8888:8888"
     depends_on:
-      database:
-        condition: service_healthy
+      - database
     networks:
       - room-network
 
