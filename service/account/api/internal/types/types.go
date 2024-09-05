@@ -72,10 +72,13 @@ type Result struct {
 type User struct {
 	UserID    int64  `json:"userID"`
 	Phone     string `json:"phone"`
-	FullName  string `json:"fullName"`
-	Birthday  int64  `json:"birthday"`
-	AvatarUrl string `json:"avatarUrl"`
+	Role      int64  `json:"role"`
+	Status    int64  `json:"status"`
 	Address   string `json:"address"`
+	FullName  string `json:"fullName"`
+	AvatarUrl string `json:"avatarUrl"`
+	Birthday  int64  `json:"birthday"`
+	Gender    int64  `json:"gender"`
 	CreatedAt int64  `json:"createdAt"`
 	UpdatedAt int64  `json:"updatedAt"`
 }

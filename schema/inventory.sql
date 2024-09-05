@@ -20,7 +20,7 @@ CREATE TABLE `house_tbl` (
     `created_by` BIGINT NOT NULL,
     `updated_by` BIGINT NOT NULL,
     PRIMARY KEY (`id`)
-)
+);
 
 CREATE TABLE `album_tbl` (
     `id` BIGINT,
@@ -32,7 +32,7 @@ CREATE TABLE `album_tbl` (
     `created_by` BIGINT NOT NULL,
     `updated_by` BIGINT NOT NULL,
     PRIMARY KEY (`id`)
-)
+);
 
 CREATE TABLE `room_tbl` (
     `id` BIGINT,
@@ -44,7 +44,7 @@ CREATE TABLE `room_tbl` (
     `created_by` BIGINT NOT NULL,
     `updated_by` BIGINT NOT NULL,
     PRIMARY KEY (`id`)
-)
+);
 
 CREATE TABLE `service_tbl` (
     `id` BIGINT,
@@ -57,4 +57,4 @@ CREATE TABLE `service_tbl` (
     `created_by` BIGINT NOT NULL,
     `updated_by` BIGINT NOT NULL,
     PRIMARY KEY (`id`)
-)
+);

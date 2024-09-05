@@ -59,10 +59,13 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error
 	user = types.User{
 		UserID:    userModel.UserId,
 		Phone:     userModel.Phone,
-		FullName:  userModel.FullName.String,
-		Birthday:  userModel.Birthday.Int64,
-		AvatarUrl: userModel.AvatarUrl.String,
+		Role:      userModel.Role.Int64,
+		Status:    userModel.Status,
 		Address:   userModel.Address.String,
+		FullName:  userModel.FullName.String,
+		AvatarUrl: userModel.AvatarUrl.String,
+		Birthday:  userModel.Birthday.Int64,
+		Gender:    userModel.Gender.Int64,
 		CreatedAt: userModel.CreatedAt,
 		UpdatedAt: userModel.UpdatedAt,
 	}
@@ -76,9 +79,6 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error
 			},
 		}, nil
 	}
-
-	l.Logger.Info(iat)
-	l.Logger.Info(accessExpire)
 
 	// Generate token
 	token, err := utils.GetJwtToken(accessSecret, iat, accessExpire, userModel.UserId, user)

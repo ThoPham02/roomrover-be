@@ -19,7 +19,7 @@ CREATE TABLE `contract_tbl` (
     `created_by` BIGINT NOT NULL,
     `updated_by` BIGINT NOT NULL,
     PRIMARY KEY (`id`)
-)
+);
 
 CREATE TABLE `contract_renter_tbl` (
     `id` BIGINT,
@@ -27,7 +27,7 @@ CREATE TABLE `contract_renter_tbl` (
     `renter_id` BIGINT NOT NULL,
     `type` BIGINT NOT NULL,
     PRIMARY KEY (`id`)
-)
+);
 
 CREATE TABLE `contract_detail_tbl` (
     `id` BIGINT,
@@ -37,4 +37,4 @@ CREATE TABLE `contract_detail_tbl` (
     `type` BIGINT NOT NULL,
     `index` BIGINT NOT NULL,
     PRIMARY KEY (`id`)
-)
+);
