@@ -18,10 +18,13 @@ type (
 	User {
 		UserID    int64  `json:"userID"`
 		Phone     string `json:"phone"`
-		FullName  string `json:"fullName"`
-		Birthday  int64  `json:"birthday"`
-		AvatarUrl string `json:"avatarUrl"`
+		Role      int64  `json:"role"`
+		Status    int64  `json:"status"`
 		Address   string `json:"address"`
+		FullName  string `json:"fullName"`
+		AvatarUrl string `json:"avatarUrl"`
+		Birthday  int64  `json:"birthday"`
+		Gender    int64  `json:"gender"`
 		CreatedAt int64  `json:"createdAt"`
 		UpdatedAt int64  `json:"updatedAt"`
 	}
@@ -30,25 +33,25 @@ type (
 // inventory model api
 type (
 	House {
-		HouseID    int64  `json:"houseID"`
-		UserID     int64  `json:"userID"`
-		Name       string `json:"name"`
-		Description string `json:"description"`
-		Type       int64  `json:"type"`
-		Area       int64  `json:"area"`
-		Price      int64  `json:"price"`
-		Status     int64  `json:"status"`
-		Address    string `json:"address"`
-		WardID     int64  `json:"wardID"`
-		DistrictID int64  `json:"districtID"`
-		ProvinceID int64  `json:"provinceID"`
-		CreatedAt  int64  `json:"createdAt"`
-		UpdatedAt  int64  `json:"updatedAt"`
-		CreatedBy  int64  `json:"createdBy"`
-		UpdatedBy  int64  `json:"updatedBy"`
-		Albums     []Album `json:"albums"`
-		Rooms      []Room  `json:"rooms"`
-		Services   []Service `json:"services"`
+		HouseID     int64     `json:"houseID"`
+		UserID      int64     `json:"userID"`
+		Name        string    `json:"name"`
+		Description string    `json:"description"`
+		Type        int64     `json:"type"`
+		Area        int64     `json:"area"`
+		Price       int64     `json:"price"`
+		Status      int64     `json:"status"`
+		Address     string    `json:"address"`
+		WardID      int64     `json:"wardID"`
+		DistrictID  int64     `json:"districtID"`
+		ProvinceID  int64     `json:"provinceID"`
+		CreatedAt   int64     `json:"createdAt"`
+		UpdatedAt   int64     `json:"updatedAt"`
+		CreatedBy   int64     `json:"createdBy"`
+		UpdatedBy   int64     `json:"updatedBy"`
+		Albums      []Album   `json:"albums"`
+		Rooms       []Room    `json:"rooms"`
+		Services    []Service `json:"services"`
 	}
 
 	Album {
@@ -89,81 +92,77 @@ type (
 // contract model api
 type (
 	Contract {
-		ContractID   int64  `json:"contractID"`
-		RoomID       int64  `json:"roomID"`
-		Description  string `json:"description"`
-		ContractUrl  string `json:"contractUrl"`
-		Start    	 int64  `json:"start"`
-		End      	 int64  `json:"end"`
-		Status       int64  `json:"status"`
-		Type         int64  `json:"type"`
-		Deposit      int64  `json:"deposit"`
-		Deadline     int64  `json:"deadline"`
-		CreatedAt    int64  `json:"createdAt"`
-		UpdatedAt    int64  `json:"updatedAt"`
-		CreatedBy    int64  `json:"createdBy"`
-		UpdatedBy    int64  `json:"updatedBy"`
+		ContractID      int64            `json:"contractID"`
+		RoomID          int64            `json:"roomID"`
+		Description     string           `json:"description"`
+		ContractUrl     string           `json:"contractUrl"`
+		Start           int64            `json:"start"`
+		End             int64            `json:"end"`
+		Status          int64            `json:"status"`
+		Type            int64            `json:"type"`
+		Deposit         int64            `json:"deposit"`
+		Deadline        int64            `json:"deadline"`
+		CreatedAt       int64            `json:"createdAt"`
+		UpdatedAt       int64            `json:"updatedAt"`
+		CreatedBy       int64            `json:"createdBy"`
+		UpdatedBy       int64            `json:"updatedBy"`
 		ContractRenters []ContractRenter `json:"contractRenters"`
 		ContractDetails []ContractDetail `json:"contractDetails"`
 	}
 
 	ContractRenter {
-		ID int64  `json:"id"`
-		ContractID       int64  `json:"contractID"`
-		RenterID         int64  `json:"renterID"`
-		Type             int64  `json:"type"`
-		Status           int64  `json:"status"`
+		ID         int64 `json:"id"`
+		ContractID int64 `json:"contractID"`
+		RenterID   int64 `json:"renterID"`
+		Type       int64 `json:"type"`
+		Status     int64 `json:"status"`
 	}
 
 	ContractDetail {
-		ID int64  `json:"id"`
-		ContractID       int64  `json:"contractID"`
-		ServiceID        int64  `json:"serviceID"`
-		Price            int64  `json:"price"`
-		Index            int64  `json:"index"`
-		Type           int64  `json:"type"`
+		ID         int64 `json:"id"`
+		ContractID int64 `json:"contractID"`
+		ServiceID  int64 `json:"serviceID"`
+		Price      int64 `json:"price"`
+		Index      int64 `json:"index"`
+		Type       int64 `json:"type"`
 	}
 )
-
 
 // payment model api
 type (
 	Payment {
-		ID         int64  `json:"id"`
-		ContractID int64  `json:"contractID"`
-		Month      int64  `json:"month"`
-		Total      int64  `json:"total"`
-		Status     int64  `json:"status"`
-		CreatedAt  int64  `json:"createdAt"`
-		UpdatedAt  int64  `json:"updatedAt"`
-		CreatedBy  int64  `json:"createdBy"`
-		UpdatedBy  int64  `json:"updatedBy"`
+		ID         int64 `json:"id"`
+		ContractID int64 `json:"contractID"`
+		Month      int64 `json:"month"`
+		Total      int64 `json:"total"`
+		Status     int64 `json:"status"`
+		CreatedAt  int64 `json:"createdAt"`
+		UpdatedAt  int64 `json:"updatedAt"`
+		CreatedBy  int64 `json:"createdBy"`
+		UpdatedBy  int64 `json:"updatedBy"`
 	}
 
 	PaymentUsed {
+		ID        int64 `json:"id"`
+		PaymentID int64 `json:"paymentID"`
+		ServiceID int64 `json:"serviceID"`
+		Index     int64 `json:"index"`
+		Status    int64 `json:"status"`
+		CreatedAt int64 `json:"createdAt"`
+		UpdatedAt int64 `json:"updatedAt"`
+		CreatedBy int64 `json:"createdBy"`
+		UpdatedBy int64 `json:"updatedBy"`
+	}
+
+	PaymentDetail {
 		ID        int64  `json:"id"`
 		PaymentID int64  `json:"paymentID"`
-		ServiceID int64  `json:"serviceID"`
-		Index     int64  `json:"index"`
-		Status    int64  `json:"status"`
+		Amount    int64  `json:"amount"`
+		Type      int64  `json:"type"`
+		Utl       string `json:"utl"`
 		CreatedAt int64  `json:"createdAt"`
 		UpdatedAt int64  `json:"updatedAt"`
 		CreatedBy int64  `json:"createdBy"`
 		UpdatedBy int64  `json:"updatedBy"`
 	}
-
-	PaymentDetail {
-		ID         int64  `json:"id"`
-		PaymentID  int64  `json:"paymentID"`
-		Amount     int64  `json:"amount"`
-		Type       int64  `json:"type"`
-		Utl        string `json:"utl"`
-		CreatedAt  int64  `json:"createdAt"`
-		UpdatedAt  int64  `json:"updatedAt"`
-		CreatedBy  int64  `json:"createdBy"`
-		UpdatedBy  int64  `json:"updatedBy"`
-	}
 )
-
-
-

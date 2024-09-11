@@ -79,4 +79,7 @@ runs:
 job:
 	go run ./cmd/job.go -f etc/job.yaml
 
-# docker:
+compose-build:
+	docker compose up --build -d
+compose-up:
+	docker compose up -d
