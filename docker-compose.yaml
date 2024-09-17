@@ -17,17 +17,17 @@ services:
       - room-network
     restart: always
     
-  backend:
-    container_name: room-backend
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8888:8888"
-    depends_on:
-      - database
-    networks:
-      - room-network
+  # backend:
+  #   container_name: room-backend
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8888:8888"
+  #   depends_on:
+  #     - database
+  #   networks:
+  #     - room-network
 
 networks:
   room-network:

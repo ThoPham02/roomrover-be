@@ -49,6 +49,14 @@ func (l *FilterHouseLogic) FilterHouse(req *types.FilterHouseReq) (resp *types.F
 
 	total, houses, err = l.svcCtx.HouseModel.FilterHouse(l.ctx, userID, req.Search, req.Limit, req.Offset)
 	if err != nil {
+		if err == model.ErrNotFound {
+			return &types.FilterHouseRes{
+				Result: types.Result{
+					Code:    common.SUCCESS_CODE,
+					Message: common.SUCCESS_MESS,
+				},
+			}, nil
+		}
 		l.Logger.Error(err)
 		return &types.FilterHouseRes{
 			Result: types.Result{

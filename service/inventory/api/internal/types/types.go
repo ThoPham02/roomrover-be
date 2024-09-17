@@ -141,7 +141,7 @@ type CreateServiceRes struct {
 }
 
 type FilterHouseReq struct {
-	Search string `form:"search"`
+	Search string `form:"search,optional"`
 	Limit  int64  `form:"limit"`
 	Offset int64  `form:"offset"`
 }

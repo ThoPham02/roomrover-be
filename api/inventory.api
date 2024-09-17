@@ -36,7 +36,7 @@ type (
 		House  House  `json:"house"`
 	}
 	FilterHouseReq {
-		Search string `form:"search"`
+		Search string `form:"search,optional"`
 		Limit  int64  `form:"limit"`
 		Offset int64  `form:"offset"`
 	}
