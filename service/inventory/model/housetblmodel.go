@@ -43,12 +43,12 @@ func (m *customHouseTblModel) FilterHouse(ctx context.Context, userID int64, sea
 		selectQuery += " limit ? offset ?"
 		vals = append(vals, limit, offset)
 	}
-	err = m.conn.QueryRowCtx(ctx, &total, selectQuery, vals...)
+	err = m.conn.QueryRowsCtx(ctx, &listHouses, selectQuery, vals...)
 	if err != nil {
 		return 0, nil, err
 	}
 	countQuery := fmt.Sprintf("select count(*) from %s where `name` like ?", m.table)
-	err = m.conn.QueryRowsCtx(ctx, &listHouses, countQuery, searchVal)
+	err = m.conn.QueryRowCtx(ctx, &total, countQuery, searchVal)
 	if err != nil {
 		return 0, nil, err
 	}

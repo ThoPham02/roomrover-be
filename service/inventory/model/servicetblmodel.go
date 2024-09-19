@@ -35,7 +35,7 @@ func (m *customServiceTblModel) withSession(session sqlx.Session) ServiceTblMode
 }
 
 func (m *customServiceTblModel) FindByHouseID(ctx context.Context, houseID int64) ([]*ServiceTbl, error) {
-	query := fmt.Sprintf("select %s from %s where `house_id` = ?", roomTblRows, m.table)
+	query := fmt.Sprintf("select %s from %s where `house_id` = ?", serviceTblRows, m.table)
 	var resp []*ServiceTbl
 	err := m.conn.QueryRowsCtx(ctx, &resp, query, houseID)
 	switch err {
