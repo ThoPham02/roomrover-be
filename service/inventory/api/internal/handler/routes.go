@@ -15,34 +15,52 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Middleware{serverCtx.UserTokenMiddleware},
 			[]rest.Route{
 				{
-					Method:  http.MethodPost,
-					Path:    "/upload",
-					Handler: UploadFileHouseHandler(serverCtx),
-				},
-				{
+					// Create house
 					Method:  http.MethodPost,
 					Path:    "/house",
 					Handler: CreateHouseHandler(serverCtx),
 				},
 				{
+					// Get House
 					Method:  http.MethodGet,
 					Path:    "/house/:id",
 					Handler: GetHouseHandler(serverCtx),
 				},
 				{
+					// Update House
+					Method:  http.MethodPut,
+					Path:    "/house/:id",
+					Handler: UpdateHouseHandler(serverCtx),
+				},
+				{
+					// Update House Status
+					Method:  http.MethodPut,
+					Path:    "/house/:id/status",
+					Handler: UpdateHouseStatusHandler(serverCtx),
+				},
+				{
+					// Filter house
+					Method:  http.MethodGet,
+					Path:    "/house/filter",
+					Handler: FilterHouseHandler(serverCtx),
+				},
+				{
+					// Create room
 					Method:  http.MethodPost,
 					Path:    "/room",
 					Handler: CreateRoomHandler(serverCtx),
 				},
 				{
+					// Create Service
 					Method:  http.MethodPost,
 					Path:    "/service",
 					Handler: CreateServiceHandler(serverCtx),
 				},
 				{
-					Method:  http.MethodPut,
-					Path:    "/house/status",
-					Handler: UpdateHouseStatusHandler(serverCtx),
+					// Upload file house
+					Method:  http.MethodPost,
+					Path:    "/upload",
+					Handler: UploadFileHouseHandler(serverCtx),
 				},
 			}...,
 		),

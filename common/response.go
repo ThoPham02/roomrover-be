@@ -13,6 +13,9 @@ const (
 
 	UNKNOWN_ERR_CODE = 3
 	UNKNOWN_ERR_MESS = "Unknown error"
+
+	PERMISSION_DENIED_ERR_CODE = 4
+	PERMISSION_DENIED_ERR_MESS = "PERMISSION DENIED"
 )
 
 // Account service response code from 10000-19999

@@ -4,14 +4,14 @@ CREATE TABLE `bill` (
     `total` BIGINT NOT NULL,
     `paid` BIGINT NOT NULL,
     `status` BIGINT NOT NULL,
+    `deadline` BIGINT NOT NULL,
     `month` BIGINT NOT NULL,
-
     `created_at` BIGINT NOT NULL,
     `updated_at` BIGINT NOT NULL,
     `created_by` BIGINT NOT NULL,
     `updated_by` BIGINT NOT NULL,
     PRIMARY KEY (`id`)
-)
+);
 
 CREATE TABLE `bill_detail` (
     `id` BIGINT,
@@ -21,7 +21,16 @@ CREATE TABLE `bill_detail` (
     `type` BIGINT NOT NULL,
     `quantity` BIGINT NOT NULL,
     PRIMARY KEY (`id`)
-)
+);
+
+CREATE TABLE `bill_detail_used` (
+    `id` BIGINT,
+    `bill_detail_id` BIGINT NOT NULL,
+    `old_index` BIGINT NOT NULL,
+    `new_index` BIGINT NOT NULL,
+    `url` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`id`)
+);
 
 CREATE TABLE `payment` (
     `id` BIGINT,
@@ -34,4 +43,4 @@ CREATE TABLE `payment` (
     `created_by` BIGINT NOT NULL,
     `updated_by` BIGINT NOT NULL,
     PRIMARY KEY (`id`)
-)
+);

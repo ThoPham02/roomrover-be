@@ -12,9 +12,10 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./database:/docker-entrypoint-initdb.d
+      - ./data:/var/lib/mysql
     networks:
       - room-network
+    restart: always
     
   # backend:
   #   container_name: room-backend

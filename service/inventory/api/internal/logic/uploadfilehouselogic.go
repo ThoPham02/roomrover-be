@@ -58,7 +58,7 @@ func (l *UploadFileHouseLogic) UploadFileHouse(req *types.UploadFileHouseReq) (r
 	defer file.Close()
 
 	// upload file to cloud
-	url, err := l.svcCtx.CldClient.UploadImage(l.ctx, file, req.HouseID)
+	url, err := l.svcCtx.CldClient.UploadImage(l.ctx, file, userID)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.UploadFileHouseRes{

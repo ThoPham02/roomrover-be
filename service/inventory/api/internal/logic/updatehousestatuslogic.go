@@ -26,7 +26,7 @@ func NewUpdateHouseStatusLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 	}
 }
 
-func (l *UpdateHouseStatusLogic) UpdateHouseStatus(req *types.UpdateStatusReq) (resp *types.UpdateStatusRes, err error) {
+func (l *UpdateHouseStatusLogic) UpdateHouseStatus(req *types.UpdateHouseStatusReq) (resp *types.UpdateHouseStatusRes, err error) {
 	l.Logger.Info("UpdateHouseStatus", req)
 
 	var userID int64
@@ -35,7 +35,7 @@ func (l *UpdateHouseStatusLogic) UpdateHouseStatus(req *types.UpdateStatusReq) (
 	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
 		l.Logger.Error(err)
-		return &types.UpdateStatusRes{
+		return &types.UpdateHouseStatusRes{
 			Result: types.Result{
 				Code:    common.UNKNOWN_ERR_CODE,
 				Message: common.UNKNOWN_ERR_MESS,
@@ -46,7 +46,7 @@ func (l *UpdateHouseStatusLogic) UpdateHouseStatus(req *types.UpdateStatusReq) (
 	houseModel, err = l.svcCtx.HouseModel.FindOne(l.ctx, req.HouseID)
 	if err != nil {
 		if err == model.ErrNotFound {
-			return &types.UpdateStatusRes{
+			return &types.UpdateHouseStatusRes{
 				Result: types.Result{
 					Code:    common.HOUSE_NOT_FOUND_CODE,
 					Message: common.HOUSE_NOT_FOUND_MESS,
@@ -54,7 +54,7 @@ func (l *UpdateHouseStatusLogic) UpdateHouseStatus(req *types.UpdateStatusReq) (
 			}, nil
 		}
 		l.Logger.Error(err)
-		return &types.UpdateStatusRes{
+		return &types.UpdateHouseStatusRes{
 			Result: types.Result{
 				Code:    common.DB_ERR_CODE,
 				Message: common.DB_ERR_MESS,
@@ -69,7 +69,7 @@ func (l *UpdateHouseStatusLogic) UpdateHouseStatus(req *types.UpdateStatusReq) (
 	err = l.svcCtx.HouseModel.Update(l.ctx, houseModel)
 	if err != nil {
 		l.Logger.Error(err)
-		return &types.UpdateStatusRes{
+		return &types.UpdateHouseStatusRes{
 			Result: types.Result{
 				Code:    common.UNKNOWN_ERR_CODE,
 				Message: common.UNKNOWN_ERR_MESS,
@@ -78,7 +78,7 @@ func (l *UpdateHouseStatusLogic) UpdateHouseStatus(req *types.UpdateStatusReq) (
 	}
 
 	l.Logger.Info("UpdateHouseStatus Success", userID)
-	return &types.UpdateStatusRes{
+	return &types.UpdateHouseStatusRes{
 		Result: types.Result{
 			Code:    common.SUCCESS_CODE,
 			Message: common.SUCCESS_MESS,
