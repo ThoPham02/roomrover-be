@@ -32,6 +32,7 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 
 	var userID int64
 	var currentTime = common.GetCurrentTime()
+	var imageUrls []string
 
 	var albums []types.Album
 	var house types.House
@@ -51,7 +52,9 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 	}
 
 	if len(req.Albums) > 0 {
-		err = json.Unmarshal([]byte(req.Albums), &albums)
+		l.Logger.Info(req.Albums)
+
+		err = json.Unmarshal([]byte(req.Albums), &imageUrls)
 		if err != nil {
 			l.Logger.Error(err)
 			return &types.CreateHouseRes{
@@ -68,7 +71,7 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 		UserId:      userID,
 		Name:        req.Name,
 		Description: req.Description,
-		Util:        req.Util,
+		// Util:        req.Util,
 
 		Type:   req.Type,
 		Area:   req.Area,
@@ -86,12 +89,13 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 		UpdatedBy: userID,
 	}
 
-	for _, album := range albums {
+	for _, url := range imageUrls {
+		var typeAlbum = common.ALBUM_TYPE_OTHER
 		albumModel := &model.AlbumTbl{
 			Id:        l.svcCtx.ObjSync.GenServiceObjID(),
 			HouseId:   houseModel.Id,
-			Url:       album.Url,
-			Type:      album.Type,
+			Url:       url,
+			Type:      int64(typeAlbum),
 			CreatedAt: currentTime,
 			UpdatedAt: currentTime,
 			CreatedBy: userID,

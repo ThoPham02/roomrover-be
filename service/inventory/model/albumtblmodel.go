@@ -16,6 +16,7 @@ type (
 		albumTblModel
 		withSession(session sqlx.Session) AlbumTblModel
 		FindByHouseID(ctx context.Context, houseID int64) ([]*AlbumTbl, error)
+		DeleteByHouseID(ctx context.Context, houseID int64) error
 	}
 
 	customAlbumTblModel struct {
@@ -46,4 +47,10 @@ func (m *customAlbumTblModel) FindByHouseID(ctx context.Context, houseID int64) 
 	default:
 		return nil, err
 	}
+}
+
+func (m *customAlbumTblModel) DeleteByHouseID(ctx context.Context, houseID int64) error {
+	query := fmt.Sprintf("delete from %s where `house_id` = ?", m.table)
+	_, err := m.conn.ExecCtx(ctx, query, houseID)
+	return err
 }

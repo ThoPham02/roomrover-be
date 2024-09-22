@@ -29,6 +29,11 @@ const (
 	ROOM_STATUS_INACTIVE = 4
 )
 
+const (
+	ALBUM_TYPE_OTHER = 1
+	ALBUM_TYPE_MAIN  = 2
+)
+
 // Contract Service
 const (
 	CONTRACT_STATUS_PENDING  = 1

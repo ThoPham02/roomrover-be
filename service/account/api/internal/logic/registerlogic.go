@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"database/sql"
+	"time"
 
 	"roomrover/common"
 	"roomrover/service/account/api/internal/svc"
@@ -32,6 +33,11 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 	l.Logger.Info("Register request: ", req)
 
 	var currentTime = common.GetCurrentTime()
+	var token string
+	var user types.User
+	var iat = time.Now().Unix()
+	var accessSecret = l.svcCtx.Config.Auth.AccessSecret
+	var accessExpire = l.svcCtx.Config.Auth.AccessExpire
 
 	// Check role
 	if req.UserRole != common.USER_ROLE_RENTER && req.UserRole != common.USER_ROLE_LESSOR {
@@ -76,7 +82,7 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 		}, nil
 	}
 
-	_, err = l.svcCtx.UserModel.Insert(l.ctx, &model.Users{
+	userModel = &model.Users{
 		UserId:       l.svcCtx.ObjSync.GenServiceObjID(),
 		Phone:        req.Phone,
 		PasswordHash: hashpw,
@@ -84,7 +90,9 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 		Status:       common.USER_ACTIVE,
 		CreatedAt:    currentTime,
 		UpdatedAt:    currentTime,
-	})
+	}
+
+	_, err = l.svcCtx.UserModel.Insert(l.ctx, userModel)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.RegisterRes{
@@ -95,11 +103,39 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 		}, nil
 	}
 
+	user = types.User{
+		UserID:    userModel.UserId,
+		Phone:     userModel.Phone,
+		Role:      userModel.Role.Int64,
+		Status:    userModel.Status,
+		Address:   userModel.Address.String,
+		FullName:  userModel.FullName.String,
+		AvatarUrl: userModel.AvatarUrl.String,
+		Birthday:  userModel.Birthday.Int64,
+		Gender:    userModel.Gender.Int64,
+		CreatedAt: userModel.CreatedAt,
+		UpdatedAt: userModel.UpdatedAt,
+	}
+
+	// Generate token
+	token, err = utils.GetJwtToken(accessSecret, iat, accessExpire, userModel.UserId, user)
+	if err != nil {
+		l.Logger.Error(err)
+		return &types.RegisterRes{
+			Result: types.Result{
+				Code:    common.UNKNOWN_ERR_CODE,
+				Message: common.UNKNOWN_ERR_MESS,
+			},
+		}, nil
+	}
+
 	l.Logger.Info("Register success")
 	return &types.RegisterRes{
 		Result: types.Result{
 			Code:    common.SUCCESS_CODE,
 			Message: common.SUCCESS_MESS,
 		},
+		Token: token,
+		User:  user,
 	}, nil
 }

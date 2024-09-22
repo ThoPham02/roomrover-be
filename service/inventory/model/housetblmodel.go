@@ -37,8 +37,8 @@ func (m *customHouseTblModel) withSession(session sqlx.Session) HouseTblModel {
 func (m *customHouseTblModel) FilterHouse(ctx context.Context, userID int64, search string, limit, offset int64) (total int64, listHouses []*HouseTbl, err error) {
 	var searchVal string = "%" + search + "%"
 	var vals []interface{}
-	selectQuery := fmt.Sprintf("select %s from %s where `name` like ?", houseTblRows, m.table)
-	vals = append(vals, searchVal)
+	selectQuery := fmt.Sprintf("select %s from %s where `user_id` = ? and `name` like ?", houseTblRows, m.table)
+	vals = append(vals, userID, searchVal)
 	if limit > 0 {
 		selectQuery += " limit ? offset ?"
 		vals = append(vals, limit, offset)
@@ -47,8 +47,8 @@ func (m *customHouseTblModel) FilterHouse(ctx context.Context, userID int64, sea
 	if err != nil {
 		return 0, nil, err
 	}
-	countQuery := fmt.Sprintf("select count(*) from %s where `name` like ?", m.table)
-	err = m.conn.QueryRowCtx(ctx, &total, countQuery, searchVal)
+	countQuery := fmt.Sprintf("select count(*) from %s where `user_id` = ? and `name` like ?", m.table)
+	err = m.conn.QueryRowCtx(ctx, &total, countQuery, userID, searchVal)
 	if err != nil {
 		return 0, nil, err
 	}

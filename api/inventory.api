@@ -9,7 +9,7 @@ import "model.api"
 
 type (
 	UploadFileHouseReq {
-		HouseID int64 `form:"houseID"`
+		HouseID int64 `form:"houseID,optional"`
 	}
 	UploadFileHouseRes {
 		Result Result `json:"result"`
@@ -22,20 +22,18 @@ type (
 		Name        string `form:"name"`
 		Description string `form:"description"`
 		Type        int64  `form:"type"`
-		Util        int64  `form:"util"`
 		Area        int64  `form:"area"`
 		Price       int64  `form:"price"`
 		Address     string `form:"address"`
 		WardID      int64  `form:"wardID"`
 		DistrictID  int64  `form:"districtID"`
 		ProvinceID  int64  `form:"provinceID"`
-		Albums      string `form:"albums"`
+		Albums      string `form:"albums,optional"`
 	}
 	CreateHouseRes {
 		Result Result `json:"result"`
 		House  House  `json:"house"`
 	}
-
 	FilterHouseReq {
 		Search string `form:"search,optional"`
 		Limit  int64  `form:"limit"`
@@ -46,7 +44,6 @@ type (
 		Total      int64   `json:"total"`
 		ListHouses []House `json:"listHouses"`
 	}
-
 	UpdateHouseStatusReq {
 		HouseID int64 `path:"id"`
 		Status  int64 `form:"status"`
@@ -54,13 +51,12 @@ type (
 	UpdateHouseStatusRes {
 		Result Result `json:"result"`
 	}
-
 	UpdateHouseReq {
 		HouseID     int64  `path:"id"`
 		Name        string `form:"name"`
 		Description string `form:"description"`
 		Type        int64  `form:"type"`
-		Util        int64  `form:"util"`
+		Util        int64  `form:"util,optional"`
 		Area        int64  `form:"area"`
 		Price       int64  `form:"price"`
 		Address     string `form:"address"`
@@ -73,7 +69,6 @@ type (
 		Result Result `json:"result"`
 		House  House  `json:"house"`
 	}
-
 	GetHouseReq {
 		ID int64 `path:"id"`
 	}
@@ -121,46 +116,47 @@ service invent-api {
 	)
 	@handler UploadFileHouse
 	post /upload (UploadFileHouseReq) returns (UploadFileHouseRes)
-	
+
 	@doc (
 		summary: "Create house"
 	)
 	@handler CreateHouse
 	post /house (CreateHouseReq) returns (CreateHouseRes)
-	
+
 	@doc (
 		summary: "Filter house"
 	)
 	@handler FilterHouse
 	get /house/filter (FilterHouseReq) returns (FilterHouseRes)
-	
+
 	@doc (
 		summary: "Get House"
 	)
 	@handler GetHouse
 	get /house/:id (GetHouseReq) returns (GetHouseRes)
-	
+
 	@doc (
 		summary: "Create room"
 	)
 	@handler CreateRoom
 	post /room (CreateRoomReq) returns (CreateRoomRes)
-	
+
 	@doc (
 		summary: "Create Service"
 	)
 	@handler CreateService
 	post /service (CreateServiceReq) returns (CreateServiceRes)
-	
+
 	@doc (
 		summary: "Update House Status"
 	)
 	@handler UpdateHouseStatus
 	put /house/:id/status (UpdateHouseStatusReq) returns (UpdateHouseStatusRes)
-	
+
 	@doc (
 		summary: "Update House"
 	)
 	@handler UpdateHouse
 	put /house/:id (UpdateHouseReq) returns (UpdateHouseRes)
 }
+
