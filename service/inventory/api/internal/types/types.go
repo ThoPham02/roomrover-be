@@ -83,7 +83,7 @@ type CreateHouseRes struct {
 		UpdatedAt   int64     `json:"updatedAt"`
 		CreatedBy   int64     `json:"createdBy"`
 		UpdatedBy   int64     `json:"updatedBy"`
-		Albums      []Album   `json:"albums"`
+		Albums      []string  `json:"albums"`
 		Rooms       []Room    `json:"rooms"`
 		Services    []Service `json:"services"`
 	} `json:"house"`
@@ -139,6 +139,17 @@ type CreateServiceRes struct {
 	} `json:"service"`
 }
 
+type DeleteHouseReq struct {
+	HouseID int64 `path:"id"`
+}
+
+type DeleteHouseRes struct {
+	Result struct {
+		Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
+		Message string `json:"message"` // Result message: detail response code
+	} `json:"result"`
+}
+
 type FilterHouseReq struct {
 	Search string `form:"search,optional"`
 	Limit  int64  `form:"limit"`
@@ -180,7 +191,7 @@ type GetHouseRes struct {
 		UpdatedAt   int64     `json:"updatedAt"`
 		CreatedBy   int64     `json:"createdBy"`
 		UpdatedBy   int64     `json:"updatedBy"`
-		Albums      []Album   `json:"albums"`
+		Albums      []string  `json:"albums"`
 		Rooms       []Room    `json:"rooms"`
 		Services    []Service `json:"services"`
 	} `json:"house"`
@@ -203,7 +214,7 @@ type House struct {
 	UpdatedAt   int64     `json:"updatedAt"`
 	CreatedBy   int64     `json:"createdBy"`
 	UpdatedBy   int64     `json:"updatedBy"`
-	Albums      []Album   `json:"albums"`
+	Albums      []string  `json:"albums"`
 	Rooms       []Room    `json:"rooms"`
 	Services    []Service `json:"services"`
 }
@@ -309,7 +320,7 @@ type UpdateHouseRes struct {
 		UpdatedAt   int64     `json:"updatedAt"`
 		CreatedBy   int64     `json:"createdBy"`
 		UpdatedBy   int64     `json:"updatedBy"`
-		Albums      []Album   `json:"albums"`
+		Albums      []string  `json:"albums"`
 		Rooms       []Room    `json:"rooms"`
 		Services    []Service `json:"services"`
 	} `json:"house"`

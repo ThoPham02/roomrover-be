@@ -16,6 +16,7 @@ type (
 		serviceTblModel
 		withSession(session sqlx.Session) ServiceTblModel
 		FindByHouseID(ctx context.Context, houseID int64) ([]*ServiceTbl, error)
+		DeleteByHouseID(ctx context.Context, houseID int64) error
 	}
 
 	customServiceTblModel struct {
@@ -46,4 +47,10 @@ func (m *customServiceTblModel) FindByHouseID(ctx context.Context, houseID int64
 	default:
 		return nil, err
 	}
+}
+
+func (m *customServiceTblModel) DeleteByHouseID(ctx context.Context, houseID int64) error {
+	query := fmt.Sprintf("delete from %s where `house_id` =?", m.table)
+    _, err := m.conn.ExecCtx(ctx, query, houseID)
+    return err
 }

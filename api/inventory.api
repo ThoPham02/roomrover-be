@@ -105,6 +105,15 @@ type (
 	}
 )
 
+type (
+	DeleteHouseReq {
+		HouseID int64 `path:"id"`
+	}
+	DeleteHouseRes {
+		Result Result `json:"result"`
+	}
+)
+
 @server (
 	jwt:        Auth
 	middleware: UserTokenMiddleware
@@ -158,5 +167,11 @@ service invent-api {
 	)
 	@handler UpdateHouse
 	put /house/:id (UpdateHouseReq) returns (UpdateHouseRes)
+
+	@doc (
+		summary: "Delete House"
+	)
+	@handler DeleteHouse
+	delete /house/:id (DeleteHouseReq) returns (DeleteHouseRes)
 }
 

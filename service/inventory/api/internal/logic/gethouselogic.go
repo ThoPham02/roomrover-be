@@ -31,7 +31,7 @@ func (l *GetHouseLogic) GetHouse(req *types.GetHouseReq) (resp *types.GetHouseRe
 	var userID int64
 
 	var house types.House
-	var album []types.Album
+	var imageUrls []string
 	var room []types.Room
 	var service []types.Service
 
@@ -76,16 +76,10 @@ func (l *GetHouseLogic) GetHouse(req *types.GetHouseReq) (resp *types.GetHouseRe
 		}, nil
 	}
 	for _, albumModel := range albumModels {
-		album = append(album, types.Album{
-			AlbumID:   albumModel.Id,
-			HouseID:   albumModel.HouseId,
-			Url:       albumModel.Url,
-			Type:      albumModel.Type,
-			CreatedAt: albumModel.CreatedAt,
-			UpdatedAt: albumModel.UpdatedAt,
-			CreatedBy: albumModel.CreatedBy,
-			UpdatedBy: albumModel.UpdatedBy,
-		})
+		l.Logger.Info(albumModel)
+
+
+		imageUrls = append(imageUrls, albumModel.Url)
 	}
 
 	roomModels, err := l.svcCtx.RoomModel.FindByHouseID(l.ctx, req.ID)
@@ -152,7 +146,7 @@ func (l *GetHouseLogic) GetHouse(req *types.GetHouseReq) (resp *types.GetHouseRe
 		UpdatedAt:   houseModel.UpdatedAt,
 		CreatedBy:   houseModel.CreatedBy,
 		UpdatedBy:   houseModel.UpdatedBy,
-		Albums:      album,
+		Albums:      imageUrls,
 		Rooms:       room,
 		Services:    service,
 	}

@@ -31,9 +31,8 @@ func (l *FilterHouseLogic) FilterHouse(req *types.FilterHouseReq) (resp *types.F
 
 	var userID int64
 	var total int64
-
+	var imageUrls []string
 	var listHouses []types.House
-
 	var houses []*model.HouseTbl
 
 	userID, err = common.GetUserIDFromContext(l.ctx)
@@ -76,6 +75,12 @@ func (l *FilterHouseLogic) FilterHouse(req *types.FilterHouseReq) (resp *types.F
 	}
 
 	for _, house := range houses {
+		var albumModels []*model.AlbumTbl
+		albumModels, err = l.svcCtx.AlbumModel.FindByHouseID(l.ctx, house.Id)
+		for _, album := range albumModels {
+			imageUrls = append(imageUrls, album.Url)
+		}
+
 		listHouses = append(listHouses, types.House{
 			HouseID:     house.Id,
 			UserID:      userID,
@@ -93,6 +98,7 @@ func (l *FilterHouseLogic) FilterHouse(req *types.FilterHouseReq) (resp *types.F
 			UpdatedAt:   house.UpdatedAt,
 			CreatedBy:   house.CreatedBy,
 			UpdatedBy:   house.UpdatedBy,
+			Albums:      imageUrls,
 		})
 	}
 

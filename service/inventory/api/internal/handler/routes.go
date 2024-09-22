@@ -33,6 +33,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: UpdateHouseHandler(serverCtx),
 				},
 				{
+					// Delete House
+					Method:  http.MethodDelete,
+					Path:    "/house/:id",
+					Handler: DeleteHouseHandler(serverCtx),
+				},
+				{
 					// Update House Status
 					Method:  http.MethodPut,
 					Path:    "/house/:id/status",

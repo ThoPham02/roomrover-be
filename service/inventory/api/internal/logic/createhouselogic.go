@@ -34,7 +34,6 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 	var currentTime = common.GetCurrentTime()
 	var imageUrls []string
 
-	var albums []types.Album
 	var house types.House
 
 	var houseModel *model.HouseTbl
@@ -145,7 +144,7 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 		UpdatedAt:   houseModel.UpdatedAt,
 		CreatedBy:   houseModel.CreatedBy,
 		UpdatedBy:   houseModel.UpdatedBy,
-		Albums:      albums,
+		Albums:      imageUrls,
 	}
 
 	l.Logger.Info("CreateHouse success: ", userID)
