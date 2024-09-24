@@ -51,11 +51,61 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: FilterHouseHandler(serverCtx),
 				},
 				{
+					// Upload file house
+					Method:  http.MethodPost,
+					Path:    "/upload",
+					Handler: UploadFileHouseHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithPrefix("/invent"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.UserTokenMiddleware},
+			[]rest.Route{
+				{
 					// Create room
 					Method:  http.MethodPost,
 					Path:    "/room",
 					Handler: CreateRoomHandler(serverCtx),
 				},
+				{
+					// Update Room
+					Method:  http.MethodPut,
+					Path:    "/room/:id",
+					Handler: UpdateRoomHandler(serverCtx),
+				},
+				{
+					// Delete Room
+					Method:  http.MethodDelete,
+					Path:    "/room/:id",
+					Handler: DeleteRoomHandler(serverCtx),
+				},
+				{
+					// Get Room
+					Method:  http.MethodGet,
+					Path:    "/room/:id",
+					Handler: GetRoomHandler(serverCtx),
+				},
+				{
+					// Get Room By House
+					Method:  http.MethodGet,
+					Path:    "/room/house/:id",
+					Handler: GetRoomByHouseHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithPrefix("/invent"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.UserTokenMiddleware},
+			[]rest.Route{
 				{
 					// Create Service
 					Method:  http.MethodPost,
@@ -63,10 +113,28 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: CreateServiceHandler(serverCtx),
 				},
 				{
-					// Upload file house
-					Method:  http.MethodPost,
-					Path:    "/upload",
-					Handler: UploadFileHouseHandler(serverCtx),
+					// Update Service
+					Method:  http.MethodPut,
+					Path:    "/service/:id",
+					Handler: UpdateServiceHandler(serverCtx),
+				},
+				{
+					// Delete Service
+					Method:  http.MethodDelete,
+					Path:    "/service/:id",
+					Handler: DeleteServiceHandler(serverCtx),
+				},
+				{
+					// Get Service
+					Method:  http.MethodGet,
+					Path:    "/service/:id",
+					Handler: GetServiceHandler(serverCtx),
+				},
+				{
+					// Get Service By House
+					Method:  http.MethodGet,
+					Path:    "/service/house/:id",
+					Handler: GetServiceByHouseHandler(serverCtx),
 				},
 			}...,
 		),

@@ -38,6 +38,8 @@ CREATE TABLE `room_tbl` (
     `id` BIGINT,
     `house_id` BIGINT NOT NULL,
     `name` VARCHAR(255) NOT NULL COLLATE utf8mb4_unicode_ci,
+    `capacity` BIGINT NOT NULL DEFAULT 0,
+    `remain` BIGINT NOT NULL DEFAULT 0,
     `status` BIGINT NOT NULL,
     `created_at` BIGINT NOT NULL,
     `updated_at` BIGINT NOT NULL,

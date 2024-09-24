@@ -77,6 +77,16 @@ func (l *FilterHouseLogic) FilterHouse(req *types.FilterHouseReq) (resp *types.F
 	for _, house := range houses {
 		var albumModels []*model.AlbumTbl
 		albumModels, err = l.svcCtx.AlbumModel.FindByHouseID(l.ctx, house.Id)
+		if err != nil {
+			l.Logger.Error(err)
+			return &types.FilterHouseRes{
+				Result: types.Result{
+					Code:    common.DB_ERR_CODE,
+					Message: common.DB_ERR_MESS,
+				},
+			}, nil
+		}
+
 		for _, album := range albumModels {
 			imageUrls = append(imageUrls, album.Url)
 		}

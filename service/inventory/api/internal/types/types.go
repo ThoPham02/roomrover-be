@@ -90,11 +90,9 @@ type CreateHouseRes struct {
 }
 
 type CreateRoomReq struct {
-	HouseID     int64  `form:"houseID"`
-	Name        string `form:"name"`
-	Description string `form:"description"`
-	Price       int64  `form:"price"`
-	Area        int64  `form:"area"`
+	HouseID  int64  `form:"houseID"`
+	Name     string `form:"name"`
+	Capacity int64  `form:"capacity"`
 }
 
 type CreateRoomRes struct {
@@ -106,6 +104,8 @@ type CreateRoomRes struct {
 		RoomID    int64  `json:"roomID"`
 		HouseID   int64  `json:"houseID"`
 		Name      string `json:"name"`
+		Capacity  int64  `json:"capacity"`
+		Remain    int64  `json:"remain"`
 		Status    int64  `json:"status"`
 		CreatedAt int64  `json:"createdAt"`
 		UpdatedAt int64  `json:"updatedAt"`
@@ -144,6 +144,28 @@ type DeleteHouseReq struct {
 }
 
 type DeleteHouseRes struct {
+	Result struct {
+		Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
+		Message string `json:"message"` // Result message: detail response code
+	} `json:"result"`
+}
+
+type DeleteRoomReq struct {
+	RoomID int64 `path:"id"`
+}
+
+type DeleteRoomRes struct {
+	Result struct {
+		Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
+		Message string `json:"message"` // Result message: detail response code
+	} `json:"result"`
+}
+
+type DeleteServiceReq struct {
+	ServiceID int64 `path:"id"`
+}
+
+type DeleteServiceRes struct {
 	Result struct {
 		Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
 		Message string `json:"message"` // Result message: detail response code
@@ -195,6 +217,75 @@ type GetHouseRes struct {
 		Rooms       []Room    `json:"rooms"`
 		Services    []Service `json:"services"`
 	} `json:"house"`
+}
+
+type GetRoomByHouseReq struct {
+	HouseID int64 `path:"id"`
+}
+
+type GetRoomByHouseRes struct {
+	Result struct {
+		Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
+		Message string `json:"message"` // Result message: detail response code
+	} `json:"result"`
+	Rooms []Room `json:"rooms"`
+}
+
+type GetRoomReq struct {
+	RoomID int64 `path:"id"`
+}
+
+type GetRoomRes struct {
+	Result struct {
+		Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
+		Message string `json:"message"` // Result message: detail response code
+	} `json:"result"`
+	Room struct {
+		RoomID    int64  `json:"roomID"`
+		HouseID   int64  `json:"houseID"`
+		Name      string `json:"name"`
+		Capacity  int64  `json:"capacity"`
+		Remain    int64  `json:"remain"`
+		Status    int64  `json:"status"`
+		CreatedAt int64  `json:"createdAt"`
+		UpdatedAt int64  `json:"updatedAt"`
+		CreatedBy int64  `json:"createdBy"`
+		UpdatedBy int64  `json:"updatedBy"`
+	} `json:"room"`
+}
+
+type GetServiceByHouseReq struct {
+	HouseID int64 `path:"id"`
+}
+
+type GetServiceByHouseRes struct {
+	Result struct {
+		Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
+		Message string `json:"message"` // Result message: detail response code
+	} `json:"result"`
+	Services []Service `json:"services"`
+}
+
+type GetServiceReq struct {
+	ServiceID int64 `path:"id"`
+}
+
+type GetServiceRes struct {
+	Result struct {
+		Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
+		Message string `json:"message"` // Result message: detail response code
+	} `json:"result"`
+	Service struct {
+		ServiceID int64  `json:"serviceID"`
+		HouseID   int64  `json:"houseID"`
+		Name      string `json:"name"`
+		Price     int64  `json:"price"`
+		Type      int64  `json:"type"`
+		CreatedAt int64  `json:"createdAt"`
+		UpdatedAt int64  `json:"updatedAt"`
+		CreatedBy int64  `json:"createdBy"`
+		UpdatedBy int64  `json:"updatedBy"`
+	} `json:"service"`
 }
 
 type House struct {
@@ -264,6 +355,8 @@ type Room struct {
 	RoomID    int64  `json:"roomID"`
 	HouseID   int64  `json:"houseID"`
 	Name      string `json:"name"`
+	Capacity  int64  `json:"capacity"`
+	Remain    int64  `json:"remain"`
 	Status    int64  `json:"status"`
 	CreatedAt int64  `json:"createdAt"`
 	UpdatedAt int64  `json:"updatedAt"`
@@ -336,6 +429,56 @@ type UpdateHouseStatusRes struct {
 		Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
 		Message string `json:"message"` // Result message: detail response code
 	} `json:"result"`
+}
+
+type UpdateRoomReq struct {
+	RoomID   int64  `path:"id"`
+	Name     string `form:"name"`
+	Capacity int64  `form:"capacity"`
+}
+
+type UpdateRoomRes struct {
+	Result struct {
+		Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
+		Message string `json:"message"` // Result message: detail response code
+	} `json:"result"`
+	Room struct {
+		RoomID    int64  `json:"roomID"`
+		HouseID   int64  `json:"houseID"`
+		Name      string `json:"name"`
+		Capacity  int64  `json:"capacity"`
+		Remain    int64  `json:"remain"`
+		Status    int64  `json:"status"`
+		CreatedAt int64  `json:"createdAt"`
+		UpdatedAt int64  `json:"updatedAt"`
+		CreatedBy int64  `json:"createdBy"`
+		UpdatedBy int64  `json:"updatedBy"`
+	} `json:"room"`
+}
+
+type UpdateServiceReq struct {
+	ServiceID int64  `path:"id"`
+	Name      string `form:"name"`
+	Price     int64  `form:"price"`
+	Type      int64  `form:"type"`
+}
+
+type UpdateServiceRes struct {
+	Result struct {
+		Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
+		Message string `json:"message"` // Result message: detail response code
+	} `json:"result"`
+	Service struct {
+		ServiceID int64  `json:"serviceID"`
+		HouseID   int64  `json:"houseID"`
+		Name      string `json:"name"`
+		Price     int64  `json:"price"`
+		Type      int64  `json:"type"`
+		CreatedAt int64  `json:"createdAt"`
+		UpdatedAt int64  `json:"updatedAt"`
+		CreatedBy int64  `json:"createdBy"`
+		UpdatedBy int64  `json:"updatedBy"`
+	} `json:"service"`
 }
 
 type UploadFileHouseReq struct {

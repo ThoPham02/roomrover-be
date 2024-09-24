@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
-	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/core/stringx"
 )
@@ -38,6 +37,8 @@ type (
 		Id        int64  `db:"id"`
 		HouseId   int64  `db:"house_id"`
 		Name      string `db:"name"`
+		Capacity  int64  `db:"capacity"`
+		Remain    int64  `db:"remain"`
 		Status    int64  `db:"status"`
 		CreatedAt int64  `db:"created_at"`
 		UpdatedAt int64  `db:"updated_at"`
@@ -66,7 +67,7 @@ func (m *defaultRoomTblModel) FindOne(ctx context.Context, id int64) (*RoomTbl, 
 	switch err {
 	case nil:
 		return &resp, nil
-	case sqlc.ErrNotFound:
+	case sqlx.ErrNotFound:
 		return nil, ErrNotFound
 	default:
 		return nil, err
@@ -74,14 +75,14 @@ func (m *defaultRoomTblModel) FindOne(ctx context.Context, id int64) (*RoomTbl, 
 }
 
 func (m *defaultRoomTblModel) Insert(ctx context.Context, data *RoomTbl) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?)", m.table, roomTblRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.HouseId, data.Name, data.Status, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, roomTblRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.HouseId, data.Name, data.Capacity, data.Remain, data.Status, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy)
 	return ret, err
 }
 
 func (m *defaultRoomTblModel) Update(ctx context.Context, data *RoomTbl) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, roomTblRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.HouseId, data.Name, data.Status, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.HouseId, data.Name, data.Capacity, data.Remain, data.Status, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy, data.Id)
 	return err
 }
 

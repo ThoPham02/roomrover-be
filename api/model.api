@@ -69,6 +69,8 @@ type (
 		RoomID    int64  `json:"roomID"`
 		HouseID   int64  `json:"houseID"`
 		Name      string `json:"name"`
+		Capacity  int64  `json:"capacity"`
+		Remain    int64  `json:"remain"`
 		Status    int64  `json:"status"`
 		CreatedAt int64  `json:"createdAt"`
 		UpdatedAt int64  `json:"updatedAt"`
