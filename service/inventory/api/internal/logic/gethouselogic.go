@@ -82,7 +82,7 @@ func (l *GetHouseLogic) GetHouse(req *types.GetHouseReq) (resp *types.GetHouseRe
 		imageUrls = append(imageUrls, albumModel.Url)
 	}
 
-	roomModels, err := l.svcCtx.RoomModel.FindByHouseID(l.ctx, req.ID)
+	roomModels, _, err := l.svcCtx.RoomModel.FindByHouseID(l.ctx, req.ID, 0, 0)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.GetHouseRes{

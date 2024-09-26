@@ -168,9 +168,12 @@ type (
 	}
 	GetRoomByHouseReq {
 		HouseID int64 `path:"id"`
+		Limit   int64 `form:"limit"`
+		Offset  int64 `form:"offset"`
 	}
 	GetRoomByHouseRes {
 		Result Result `json:"result"`
+		Total  int    `json:"total"`
 		Rooms  []Room `json:"rooms"`
 	}
 )

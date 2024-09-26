@@ -32,6 +32,7 @@ func (l *GetRoomByHouseLogic) GetRoomByHouse(req *types.GetRoomByHouseReq) (resp
 	var userID int64
 	var roomModels []*model.RoomTbl
 	var rooms []types.Room
+	var total int
 
 	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
@@ -44,7 +45,7 @@ func (l *GetRoomByHouseLogic) GetRoomByHouse(req *types.GetRoomByHouseReq) (resp
 		}, nil
 	}
 
-	roomModels, err = l.svcCtx.RoomModel.FindByHouseID(l.ctx, req.HouseID)
+	roomModels, total, err = l.svcCtx.RoomModel.FindByHouseID(l.ctx, req.HouseID, req.Limit, req.Offset)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.GetRoomByHouseRes{
@@ -75,6 +76,7 @@ func (l *GetRoomByHouseLogic) GetRoomByHouse(req *types.GetRoomByHouseReq) (resp
 			Code:    common.SUCCESS_CODE,
 			Message: common.SUCCESS_MESS,
 		},
+		Total: total,
 		Rooms: rooms,
 	}, nil
 }

@@ -221,6 +221,8 @@ type GetHouseRes struct {
 
 type GetRoomByHouseReq struct {
 	HouseID int64 `path:"id"`
+	Limit   int64 `form:"limit"`
+	Offset  int64 `form:"offset"`
 }
 
 type GetRoomByHouseRes struct {
@@ -228,6 +230,7 @@ type GetRoomByHouseRes struct {
 		Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
 		Message string `json:"message"` // Result message: detail response code
 	} `json:"result"`
+	Total int    `json:"total"`
 	Rooms []Room `json:"rooms"`
 }
 

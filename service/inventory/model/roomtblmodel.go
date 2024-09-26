@@ -15,7 +15,7 @@ type (
 	RoomTblModel interface {
 		roomTblModel
 		withSession(session sqlx.Session) RoomTblModel
-		FindByHouseID(ctx context.Context, houseID int64) ([]*RoomTbl, error)
+		FindByHouseID(ctx context.Context, houseID, limit, offset int64) ([]*RoomTbl, int, error)
 		DeleteByHouseID(ctx context.Context, houseID int64) error
 	}
 
@@ -35,17 +35,23 @@ func (m *customRoomTblModel) withSession(session sqlx.Session) RoomTblModel {
 	return NewRoomTblModel(sqlx.NewSqlConnFromSession(session))
 }
 
-func (m *customRoomTblModel) FindByHouseID(ctx context.Context, houseID int64) ([]*RoomTbl, error) {
-	query := fmt.Sprintf("select %s from %s where `house_id` = ?", roomTblRows, m.table)
+func (m *customRoomTblModel) FindByHouseID(ctx context.Context, houseID, limit, offset int64) ([]*RoomTbl, int, error) {
+	query := fmt.Sprintf("select %s from %s where `house_id` = ? limit ? offset ?", roomTblRows, m.table)
+	count := fmt.Sprintf("select count(*) from %s where `house_id` = ?", m.table)
 	var resp []*RoomTbl
-	err := m.conn.QueryRowsCtx(ctx, &resp, query, houseID)
+	var total int
+	err := m.conn.QueryRowCtx(ctx, &total, count, houseID)
+	if err != nil {
+		return nil, 0, err
+	}
+	err = m.conn.QueryRowsCtx(ctx, &resp, query, houseID, limit, offset)
 	switch err {
 	case nil:
-		return resp, nil
+		return resp, total, nil
 	case sqlx.ErrNotFound:
-		return nil, nil
+		return nil, 0, nil
 	default:
-		return nil, err
+		return nil, 0, err
 	}
 }
 
