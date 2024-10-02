@@ -15,6 +15,36 @@ type (
 		Result Result `json:"result"`
 		Url    string `json:"url"`
 	}
+
+	MomoPaymentReq {
+		BillID string `form:"bill_id"`
+		Amount int64  `form:"amount"`
+	}
+	MomoPaymentRes {
+		Result Result `json:"result"`
+		Amount int64  `json:"amount"`
+		OrderId string `json:"orderId"`
+		
+	}
+
+	MomoWebhookReq {
+		OrderType    string `json:"orderType"`
+		Amount       int64  `json:"amount"`
+		PartnerCode  string `json:"partnerCode"`
+		OrderId      string `json:"orderId"`
+		ExtraData    string `json:"extraData"`
+		Signature    string `json:"signature"`
+		TransId      int64  `json:"transId"`
+		ResponseTime int64  `json:"responseTime"`
+		ResultCode   int64  `json:"resultCode"`
+		Message      string `json:"message"`
+		PayType      string `json:"payType"`
+		RequestId    string `json:"requestId"`
+		OrderInfo    string `json:"orderInfo"`
+	}
+	MomoWebhookRes {
+		Result Result `json:"result"`
+	}
 )
 
 @server (
@@ -28,4 +58,16 @@ service payment-api {
 	)
 	@handler UploadFilePayment
 	post /upload (UploadFilePaymentReq) returns (UploadFilePaymentRes)
+	
+	@doc (
+		summary: "Momo payment"
+	)
+	@handler MomoPayment
+	post /momo (MomoPaymentReq) returns (MomoPaymentRes)
+	
+	@doc (
+		summary: "Momo webhook"
+	)
+	@handler MomoWebhook
+	post /momo/webhook (MomoWebhookReq) returns (MomoWebhookRes)
 }

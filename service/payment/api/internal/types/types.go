@@ -10,6 +10,36 @@ type UploadFilePaymentRes struct {
 	Url    string `json:"url"`
 }
 
+type MomoPaymentReq struct {
+	BillID string `form:"bill_id"`
+	Amount int64  `form:"amount"`
+}
+
+type MomoPaymentRes struct {
+	Result Result `json:"result"`
+	Amount int64  `json:"amount"`
+}
+
+type MomoWebhookReq struct {
+	OrderType    string `json:"orderType"`
+	Amount       int64  `json:"amount"`
+	PartnerCode  string `json:"partnerCode"`
+	OrderId      string `json:"orderId"`
+	ExtraData    string `json:"extraData"`
+	Signature    string `json:"signature"`
+	TransId      int64  `json:"transId"`
+	ResponseTime int64  `json:"responseTime"`
+	ResultCode   int64  `json:"resultCode"`
+	Message      string `json:"message"`
+	PayType      string `json:"payType"`
+	RequestId    string `json:"requestId"`
+	OrderInfo    string `json:"orderInfo"`
+}
+
+type MomoWebhookRes struct {
+	Result Result `json:"result"`
+}
+
 type Result struct {
 	Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
 	Message string `json:"message"` // Result message: detail response code
@@ -46,7 +76,7 @@ type House struct {
 	UpdatedAt   int64     `json:"updatedAt"`
 	CreatedBy   int64     `json:"createdBy"`
 	UpdatedBy   int64     `json:"updatedBy"`
-	Albums      []Album   `json:"albums"`
+	Albums      []string  `json:"albums"`
 	Rooms       []Room    `json:"rooms"`
 	Services    []Service `json:"services"`
 }
@@ -66,6 +96,8 @@ type Room struct {
 	RoomID    int64  `json:"roomID"`
 	HouseID   int64  `json:"houseID"`
 	Name      string `json:"name"`
+	Capacity  int64  `json:"capacity"`
+	Remain    int64  `json:"remain"`
 	Status    int64  `json:"status"`
 	CreatedAt int64  `json:"createdAt"`
 	UpdatedAt int64  `json:"updatedAt"`

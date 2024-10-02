@@ -19,6 +19,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/upload",
 					Handler: UploadFilePaymentHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/momo",
+					Handler: MomoPaymentHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/momo/webhook",
+					Handler: MomoWebhookHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
