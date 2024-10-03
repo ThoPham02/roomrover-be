@@ -1,46 +1,28 @@
-CREATE TABLE `bill` (
-    `id` BIGINT,
-    `contract_id` BIGINT NOT NULL,
-    `total` BIGINT NOT NULL,
-    `paid` BIGINT NOT NULL,
-    `status` BIGINT NOT NULL,
-    `deadline` BIGINT NOT NULL,
-    `month` BIGINT NOT NULL,
-    `created_at` BIGINT NOT NULL,
-    `updated_at` BIGINT NOT NULL,
-    `created_by` BIGINT NOT NULL,
-    `updated_by` BIGINT NOT NULL,
-    PRIMARY KEY (`id`)
+CREATE TABLE `bill_detail_tbl` (
+  `id` bigint,
+  `bill_id` bigint,
+  `name` varchar(255),
+  `price` bigint,
+  `type` int,
+  `quantity` int,
+  PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `bill_detail` (
-    `id` BIGINT,
-    `bill_id` BIGINT NOT NULL,
-    `contract_service_id` BIGINT NOT NULL,
-    `price` BIGINT NOT NULL,
-    `type` BIGINT NOT NULL,
-    `quantity` BIGINT NOT NULL,
-    PRIMARY KEY (`id`)
+CREATE TABLE `bill_tbl` (
+  `id` bigint,
+  `payment_id` bigint,
+  `payment_date` bigint,
+  `amount` bigint,
+  `discount` bigint,
+  `status` int,
+  PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `bill_detail_used` (
-    `id` BIGINT,
-    `bill_detail_id` BIGINT NOT NULL,
-    `old_index` BIGINT NOT NULL,
-    `new_index` BIGINT NOT NULL,
-    `url` VARCHAR(255) NOT NULL,
-    PRIMARY KEY (`id`)
-);
-
-CREATE TABLE `payment` (
-    `id` BIGINT,
-    `bill_id` BIGINT NOT NULL,
-    `amount` BIGINT NOT NULL,
-    `type` BIGINT NOT NULL,
-    `url` VARCHAR(255) NOT NULL,
-    `created_at` BIGINT NOT NULL,
-    `updated_at` BIGINT NOT NULL,
-    `created_by` BIGINT NOT NULL,
-    `updated_by` BIGINT NOT NULL,
-    PRIMARY KEY (`id`)
+CREATE TABLE `bill_pay_tbl` (
+  `id` bigint,
+  `bill_id` bigint,
+  `amount` bigint,
+  `pay_date` bigint,
+  `user_id` bigint,
+  PRIMARY KEY (`id`)
 );
