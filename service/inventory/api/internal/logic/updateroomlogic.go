@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"database/sql"
 
 	"roomrover/common"
 	"roomrover/service/inventory/api/internal/svc"
@@ -31,7 +32,6 @@ func (l *UpdateRoomLogic) UpdateRoom(req *types.UpdateRoomReq) (resp *types.Upda
 
 	var roomModel *model.RoomTbl
 	var userID int64
-	var currentTime = common.GetCurrentTime()
 	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
 		l.Logger.Error(err)
@@ -63,12 +63,10 @@ func (l *UpdateRoomLogic) UpdateRoom(req *types.UpdateRoomReq) (resp *types.Upda
 		}, nil
 	}
 
-	roomModel.Name = req.Name
-	roomModel.Capacity = req.Capacity
-	roomModel.UpdatedAt = currentTime
-	roomModel.UpdatedBy = userID
+	roomModel.Name = sql.NullString{String: req.Name, Valid: true}
+	roomModel.Capacity = sql.NullInt64{Int64: req.Capacity, Valid: true}
 
-	err = l.svcCtx.RoomModel.Update(l.ctx,roomModel)
+	err = l.svcCtx.RoomModel.Update(l.ctx, roomModel)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.UpdateRoomRes{

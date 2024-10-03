@@ -57,16 +57,13 @@ func (l *GetRoomByHouseLogic) GetRoomByHouse(req *types.GetRoomByHouseReq) (resp
 	}
 	for _, room := range roomModels {
 		rooms = append(rooms, types.Room{
-			RoomID:    room.Id,
-			HouseID:   room.HouseId,
-			Name:      room.Name,
-			Capacity:  room.Capacity,
-			Remain:    room.Remain,
-			Status:    room.Status,
-			CreatedAt: room.CreatedAt,
-			UpdatedAt: room.UpdatedAt,
-			CreatedBy: room.CreatedBy,
-			UpdatedBy: room.UpdatedBy,
+			RoomID:   room.Id,
+			HouseID:  room.HouseId.Int64,
+			Name:     room.Name.String,
+			Status:   room.Status,
+			Capacity: room.Capacity.Int64,
+			EIndex:   room.EIndex.Int64,
+			WIndex:   room.WIndex.Int64,
 		})
 	}
 

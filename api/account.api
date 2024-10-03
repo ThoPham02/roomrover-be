@@ -9,13 +9,13 @@ import "model.api"
 
 type (
 	LoginReq {
-		Phone    string `form:"phone"`    // user_name
+		Phone    string `form:"phone"` // user_name
 		Password string `form:"password"` //  password
 	}
 	LoginRes {
 		Result Result `json:"result"`
 		Token  string `json:"token"` // jwt token for api
-		User   User   `json:"user"`  // Account info
+		User   User   `json:"user"` // Account info
 	}
 )
 
@@ -28,12 +28,14 @@ type (
 	RegisterRes {
 		Result Result `json:"result"`
 		Token  string `json:"token"` // jwt token for api
-		User   User   `json:"user"`  // Account info
+		User   User   `json:"user"` // Account info
 	}
 )
 
 type (
-	GetUserReq struct{}
+	GetUserReq {
+		UserID int64 `form:"user_id,optional"`
+	}
 	GetUserRes {
 		Result Result `json:"result"`
 		User   User   `json:"user"`
@@ -84,7 +86,7 @@ service account-api {
 	)
 	@handler Login
 	post /login (LoginReq) returns (LoginRes)
-	
+
 	@doc (
 		summary: "Register New User"
 	)
@@ -102,22 +104,23 @@ service account-api {
 	)
 	@handler GetUser
 	get /info (GetUserReq) returns (GetUserRes)
-	
+
 	@doc (
 		summary: "Update User Info"
 	)
 	@handler UpdateUser
 	put /info (UpdateUserReq) returns (UpdateUserRes)
-	
+
 	@doc (
 		summary: "Change User Password"
 	)
 	@handler ChangePassword
 	put /change-password (ChangePasswordReq) returns (ChangePasswordRes)
-	
+
 	@doc (
 		summary: "Upload File"
 	)
 	@handler UploadFile
 	post /avatar (UploadFileReq) returns (UploadFileRes)
 }
+

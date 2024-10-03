@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"time"
 
@@ -89,16 +90,10 @@ func (l *UpdateHouseLogic) UpdateHouse(req *types.UpdateHouseReq) (resp *types.U
 	}
 
 	for _, url := range imageUrls {
-		var typeAlbum = common.ALBUM_TYPE_OTHER
 		albumModel := &model.AlbumTbl{
-			Id:        l.svcCtx.ObjSync.GenServiceObjID(),
-			HouseId:   houseModel.Id,
-			Url:       url,
-			Type:      int64(typeAlbum),
-			CreatedAt: currentTime,
-			UpdatedAt: currentTime,
-			CreatedBy: userID,
-			UpdatedBy: userID,
+			Id:      l.svcCtx.ObjSync.GenServiceObjID(),
+			HouseId: sql.NullInt64{Int64: houseModel.Id, Valid: true},
+			Url:     sql.NullString{String: url, Valid: true},
 		}
 
 		albumModels = append(albumModels, albumModel)
@@ -107,21 +102,22 @@ func (l *UpdateHouseLogic) UpdateHouse(req *types.UpdateHouseReq) (resp *types.U
 	houseModel = &model.HouseTbl{
 		Id:          houseModel.Id,
 		UserId:      houseModel.UserId,
-		Name:        req.Name,
-		Description: req.Description,
-		Util:        req.Util,
+		Name:        sql.NullString{String: req.Name, Valid: true},
+		Description: sql.NullString{String: req.Description, Valid: true},
 		Type:        req.Type,
 		Area:        req.Area,
 		Price:       req.Price,
 		Status:      houseModel.Status,
-		Address:     req.Address,
+		BedNum:      sql.NullInt64{},
+		LivingNum:   sql.NullInt64{},
+		Address:     sql.NullString{String: req.Address, Valid: true},
 		WardId:      req.WardID,
 		DistrictId:  req.DistrictID,
 		ProvinceId:  req.ProvinceID,
 		CreatedAt:   houseModel.CreatedAt,
-		UpdatedAt:   currentTime,
+		UpdatedAt:   sql.NullInt64{Int64: currentTime, Valid: true},
 		CreatedBy:   houseModel.CreatedBy,
-		UpdatedBy:   currentTime,
+		UpdatedBy:   sql.NullInt64{Int64: userID, Valid: true},
 	}
 
 	err = l.svcCtx.AlbumModel.DeleteByHouseID(l.ctx, houseModel.Id)

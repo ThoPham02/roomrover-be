@@ -110,6 +110,7 @@ CREATE TABLE `contract_renter_tbl` (
 CREATE TABLE `payment_tl` (
   `id` bigint,
   `contract_id` bigint,
+  `amount` bigint,
   `discount` bigint,
   `deposit` bigint,
   `deposit_date` bigint,
@@ -132,7 +133,6 @@ CREATE TABLE `bill_tbl` (
   `payment_id` bigint,
   `payment_date` bigint,
   `amount` bigint,
-  `discount` bigint,
   `status` int,
   PRIMARY KEY (`id`)
 );

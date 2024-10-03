@@ -56,16 +56,13 @@ func (l *GetRoomLogic) GetRoom(req *types.GetRoomReq) (resp *types.GetRoomRes, e
 	}
 
 	room = types.Room{
-		RoomID:    roomModel.Id,
-		HouseID:   roomModel.HouseId,
-		Name:      roomModel.Name,
-		Capacity:  roomModel.Capacity,
-		Remain:    roomModel.Remain,
-		Status:    roomModel.Status,
-		CreatedAt: roomModel.CreatedAt,
-		UpdatedAt: roomModel.UpdatedAt,
-		CreatedBy: roomModel.CreatedBy,
-		UpdatedBy: roomModel.UpdatedBy,
+		RoomID:   roomModel.Id,
+		HouseID:  roomModel.HouseId.Int64,
+		Name:     roomModel.Name.String,
+		Status:   roomModel.Status,
+		Capacity: roomModel.Capacity.Int64,
+		EIndex:   roomModel.EIndex.Int64,
+		WIndex:   roomModel.WIndex.Int64,
 	}
 
 	l.Logger.Info("GetRoom success", userID)

@@ -34,15 +34,11 @@ type (
 	}
 
 	ServiceTbl struct {
-		Id        int64  `db:"id"`
-		HouseId   int64  `db:"house_id"`
-		Name      string `db:"name"`
-		Price     int64  `db:"price"`
-		Type      int64  `db:"type"`
-		CreatedAt int64  `db:"created_at"`
-		UpdatedAt int64  `db:"updated_at"`
-		CreatedBy int64  `db:"created_by"`
-		UpdatedBy int64  `db:"updated_by"`
+		Id      int64          `db:"id"`
+		HouseId sql.NullInt64  `db:"house_id"`
+		Name    sql.NullString `db:"name"`
+		Price   sql.NullInt64  `db:"price"`
+		Unit    sql.NullInt64  `db:"unit"`
 	}
 )
 
@@ -74,14 +70,14 @@ func (m *defaultServiceTblModel) FindOne(ctx context.Context, id int64) (*Servic
 }
 
 func (m *defaultServiceTblModel) Insert(ctx context.Context, data *ServiceTbl) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, serviceTblRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.HouseId, data.Name, data.Price, data.Type, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.table, serviceTblRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.HouseId, data.Name, data.Price, data.Unit)
 	return ret, err
 }
 
 func (m *defaultServiceTblModel) Update(ctx context.Context, data *ServiceTbl) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, serviceTblRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.HouseId, data.Name, data.Price, data.Type, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.HouseId, data.Name, data.Price, data.Unit, data.Id)
 	return err
 }
 

@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"database/sql"
 
 	"roomrover/common"
 	"roomrover/service/inventory/api/internal/svc"
@@ -31,7 +32,6 @@ func (l *UpdateServiceLogic) UpdateService(req *types.UpdateServiceReq) (resp *t
 
 	var serviceModel *model.ServiceTbl
 	var userID int64
-	var currentTime = common.GetCurrentTime()
 
 	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
@@ -64,11 +64,9 @@ func (l *UpdateServiceLogic) UpdateService(req *types.UpdateServiceReq) (resp *t
 			},
 		}, nil
 	}
-	serviceModel.Name = req.Name
-	serviceModel.Price = req.Price
-	serviceModel.Type = req.Type
-	serviceModel.UpdatedAt = currentTime
-	serviceModel.UpdatedBy = userID
+	serviceModel.Name = sql.NullString{String: req.Name, Valid: true}
+	serviceModel.Price = sql.NullInt64{Int64: req.Price, Valid: true}
+	serviceModel.Unit = sql.NullInt64{Int64: req.Unit, Valid: true}
 	err = l.svcCtx.ServiceModel.Update(l.ctx, serviceModel)
 	if err != nil {
 		l.Logger.Error(err)

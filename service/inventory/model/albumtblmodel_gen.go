@@ -34,14 +34,9 @@ type (
 	}
 
 	AlbumTbl struct {
-		Id        int64  `db:"id"`
-		HouseId   int64  `db:"house_id"`
-		Url       string `db:"url"`
-		Type      int64  `db:"type"`
-		CreatedAt int64  `db:"created_at"`
-		UpdatedAt int64  `db:"updated_at"`
-		CreatedBy int64  `db:"created_by"`
-		UpdatedBy int64  `db:"updated_by"`
+		Id      int64          `db:"id"`
+		HouseId sql.NullInt64  `db:"house_id"`
+		Url     sql.NullString `db:"url"`
 	}
 )
 
@@ -73,14 +68,14 @@ func (m *defaultAlbumTblModel) FindOne(ctx context.Context, id int64) (*AlbumTbl
 }
 
 func (m *defaultAlbumTblModel) Insert(ctx context.Context, data *AlbumTbl) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?)", m.table, albumTblRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.HouseId, data.Url, data.Type, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, albumTblRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.HouseId, data.Url)
 	return ret, err
 }
 
 func (m *defaultAlbumTblModel) Update(ctx context.Context, data *AlbumTbl) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, albumTblRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.HouseId, data.Url, data.Type, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.HouseId, data.Url, data.Id)
 	return err
 }
 

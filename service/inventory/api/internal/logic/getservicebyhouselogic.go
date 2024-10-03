@@ -58,14 +58,10 @@ func (l *GetServiceByHouseLogic) GetServiceByHouse(req *types.GetServiceByHouseR
 	for _, service := range serviceModels {
 		services = append(services, types.Service{
 			ServiceID: service.Id,
-			HouseID:   service.HouseId,
-			Name:      service.Name,
-			Price:     service.Price,
-			Type:      service.Type,
-			CreatedAt: service.CreatedAt,
-			UpdatedAt: service.UpdatedAt,
-			CreatedBy: service.CreatedBy,
-			UpdatedBy: service.UpdatedBy,
+			HouseID:   service.HouseId.Int64,
+			Name:      service.Name.String,
+			Price:     service.Price.Int64,
+			Unit:      service.Unit.Int64,
 		})
 	}
 	l.Logger.Info("GetServiceByHouse success", userID)

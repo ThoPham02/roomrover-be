@@ -24,6 +24,8 @@ type (
 		Type        int64  `form:"type"`
 		Area        int64  `form:"area"`
 		Price       int64  `form:"price"`
+		BedNum      int    `form:"bedNum,optional"`
+		LivingNum   int    `form:"livingNum,optional"`
 		Address     string `form:"address"`
 		WardID      int64  `form:"wardID"`
 		DistrictID  int64  `form:"districtID"`
@@ -59,6 +61,8 @@ type (
 		Util        int64  `form:"util,optional"`
 		Area        int64  `form:"area"`
 		Price       int64  `form:"price"`
+		BedNum      int    `form:"bedNum,optional"`
+		LivingNum   int    `form:"livingNum,optional"`
 		Address     string `form:"address"`
 		WardID      int64  `form:"wardID"`
 		DistrictID  int64  `form:"districtID"`
@@ -220,7 +224,7 @@ type (
 		HouseID int64  `form:"houseID"`
 		Name    string `form:"name"`
 		Price   int64  `form:"price"`
-		Type    int64  `form:"type"`
+		Unit    int64  `form:"unit"`
 	}
 	CreateServiceRes {
 		Result  Result  `json:"result"`
@@ -230,7 +234,7 @@ type (
 		ServiceID int64  `path:"id"`
 		Name      string `form:"name"`
 		Price     int64  `form:"price"`
-		Type      int64  `form:"type"`
+		Unit      int64  `form:"unit"`
 	}
 	UpdateServiceRes {
 		Result  Result  `json:"result"`

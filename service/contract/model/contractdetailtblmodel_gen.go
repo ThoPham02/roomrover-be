@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
-	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/core/stringx"
 )
@@ -35,12 +34,11 @@ type (
 	}
 
 	ContractDetailTbl struct {
-		Id         int64 `db:"id"`
-		ContractId int64 `db:"contract_id"`
-		ServiceId  int64 `db:"service_id"`
-		Price      int64 `db:"price"`
-		Type       int64 `db:"type"`
-		Index      int64 `db:"index"`
+		Id         int64          `db:"id"`
+		ContractId sql.NullInt64  `db:"contract_id"`
+		Name       sql.NullString `db:"name"`
+		Type       sql.NullInt64  `db:"type"`
+		Price      sql.NullInt64  `db:"price"`
 	}
 )
 
@@ -64,7 +62,7 @@ func (m *defaultContractDetailTblModel) FindOne(ctx context.Context, id int64) (
 	switch err {
 	case nil:
 		return &resp, nil
-	case sqlc.ErrNotFound:
+	case sqlx.ErrNotFound:
 		return nil, ErrNotFound
 	default:
 		return nil, err
@@ -72,14 +70,14 @@ func (m *defaultContractDetailTblModel) FindOne(ctx context.Context, id int64) (
 }
 
 func (m *defaultContractDetailTblModel) Insert(ctx context.Context, data *ContractDetailTbl) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?)", m.table, contractDetailTblRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.ContractId, data.ServiceId, data.Price, data.Type, data.Index)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.table, contractDetailTblRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.ContractId, data.Name, data.Type, data.Price)
 	return ret, err
 }
 
 func (m *defaultContractDetailTblModel) Update(ctx context.Context, data *ContractDetailTbl) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, contractDetailTblRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.ContractId, data.ServiceId, data.Price, data.Type, data.Index, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.ContractId, data.Name, data.Type, data.Price, data.Id)
 	return err
 }
 

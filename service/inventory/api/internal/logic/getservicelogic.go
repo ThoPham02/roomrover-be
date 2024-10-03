@@ -57,14 +57,10 @@ func (l *GetServiceLogic) GetService(req *types.GetServiceReq) (resp *types.GetS
 
 	service = types.Service{
 		ServiceID: serviceModel.Id,
-		HouseID:   serviceModel.HouseId,
-		Name:      serviceModel.Name,
-		Price:     serviceModel.Price,
-		Type:      serviceModel.Type,
-		CreatedAt: serviceModel.CreatedAt,
-		UpdatedAt: serviceModel.UpdatedAt,
-		CreatedBy: serviceModel.CreatedBy,
-		UpdatedBy: serviceModel.UpdatedBy,
+		HouseID:   serviceModel.HouseId.Int64,
+		Name:      serviceModel.Name.String,
+		Price:     serviceModel.Price.Int64,
+		Unit:      serviceModel.Unit.Int64,
 	}
 
 	l.Logger.Info("GetService success", userID)

@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"database/sql"
 
 	"roomrover/common"
 	"roomrover/service/inventory/api/internal/svc"
@@ -30,8 +31,6 @@ func (l *CreateRoomLogic) CreateRoom(req *types.CreateRoomReq) (resp *types.Crea
 	l.Logger.Info("CreateRoom", req)
 
 	var userID int64
-	var currentTime = common.GetCurrentTime()
-
 	var houseModel *model.HouseTbl
 	var roomModel *model.RoomTbl
 
@@ -79,16 +78,13 @@ func (l *CreateRoomLogic) CreateRoom(req *types.CreateRoomReq) (resp *types.Crea
 	}
 
 	roomModel = &model.RoomTbl{
-		Id:        l.svcCtx.ObjSync.GenServiceObjID(),
-		HouseId:   req.HouseID,
-		Name:      req.Name,
-		Capacity:  req.Capacity,
-		Remain:    req.Capacity,
-		Status:    common.ROOM_STATUS_DRAFT,
-		CreatedAt: currentTime,
-		UpdatedAt: currentTime,
-		CreatedBy: userID,
-		UpdatedBy: userID,
+		Id:       l.svcCtx.ObjSync.GenServiceObjID(),
+		HouseId:  sql.NullInt64{Int64: req.HouseID, Valid: true},
+		Name:     sql.NullString{String: req.Name, Valid: true},
+		Status:   common.ROOM_STATUS_DRAFT,
+		Capacity: sql.NullInt64{Int64: req.Capacity, Valid: true},
+		EIndex:   sql.NullInt64{},
+		WIndex:   sql.NullInt64{},
 	}
 	_, err = l.svcCtx.RoomModel.Insert(l.ctx, roomModel)
 	if err != nil {
@@ -102,16 +98,13 @@ func (l *CreateRoomLogic) CreateRoom(req *types.CreateRoomReq) (resp *types.Crea
 	}
 
 	room = types.Room{
-		RoomID:    roomModel.Id,
-		HouseID:   roomModel.HouseId,
-		Name:      roomModel.Name,
-		Capacity:  roomModel.Capacity,
-		Remain:    roomModel.Remain,
-		Status:    roomModel.Status,
-		CreatedAt: roomModel.CreatedAt,
-		UpdatedAt: roomModel.UpdatedAt,
-		CreatedBy: roomModel.CreatedBy,
-		UpdatedBy: roomModel.UpdatedBy,
+		RoomID:   roomModel.Id,
+		HouseID:  roomModel.HouseId.Int64,
+		Name:     roomModel.Name.String,
+		Status:   roomModel.Status,
+		Capacity: roomModel.Capacity.Int64,
+		EIndex:   roomModel.EIndex.Int64,
+		WIndex:   roomModel.WIndex.Int64,
 	}
 
 	l.Logger.Info("CreateRoom success: ", userID)

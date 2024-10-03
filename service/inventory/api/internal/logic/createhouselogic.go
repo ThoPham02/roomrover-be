@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 
 	"roomrover/common"
@@ -68,37 +69,30 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 	houseModel = &model.HouseTbl{
 		Id:          l.svcCtx.ObjSync.GenServiceObjID(),
 		UserId:      userID,
-		Name:        req.Name,
-		Description: req.Description,
-		// Util:        req.Util,
+		Name:        sql.NullString{String: req.Name, Valid: true},
+		Description: sql.NullString{String: req.Description, Valid: true},
 
 		Type:   req.Type,
 		Area:   req.Area,
 		Price:  req.Price,
 		Status: common.HOUSE_STATUS_DRAFT,
 
-		Address:    req.Address,
+		Address:    sql.NullString{String: req.Address, Valid: true},
 		WardId:     req.WardID,
 		DistrictId: req.DistrictID,
 		ProvinceId: req.ProvinceID,
 
-		CreatedAt: currentTime,
-		UpdatedAt: currentTime,
-		CreatedBy: userID,
-		UpdatedBy: userID,
+		CreatedAt: sql.NullInt64{Int64: currentTime, Valid: true},
+		UpdatedAt: sql.NullInt64{Int64: currentTime, Valid: true},
+		CreatedBy: sql.NullInt64{Int64: userID, Valid: true},
+		UpdatedBy: sql.NullInt64{Int64: userID, Valid: true},
 	}
 
 	for _, url := range imageUrls {
-		var typeAlbum = common.ALBUM_TYPE_OTHER
 		albumModel := &model.AlbumTbl{
-			Id:        l.svcCtx.ObjSync.GenServiceObjID(),
-			HouseId:   houseModel.Id,
-			Url:       url,
-			Type:      int64(typeAlbum),
-			CreatedAt: currentTime,
-			UpdatedAt: currentTime,
-			CreatedBy: userID,
-			UpdatedBy: userID,
+			Id:      l.svcCtx.ObjSync.GenServiceObjID(),
+			HouseId: sql.NullInt64{Int64: houseModel.Id, Valid: true},
+			Url:     sql.NullString{String: url, Valid: true},
 		}
 
 		albumModels = append(albumModels, albumModel)
@@ -130,21 +124,25 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 	house = types.House{
 		HouseID:     houseModel.Id,
 		UserID:      houseModel.UserId,
-		Name:        houseModel.Name,
-		Description: houseModel.Description,
+		Name:        houseModel.Name.String,
+		Description: houseModel.Description.String,
 		Type:        houseModel.Type,
+		Status:      houseModel.Status,
 		Area:        houseModel.Area,
 		Price:       houseModel.Price,
-		Status:      houseModel.Status,
-		Address:     houseModel.Address,
+		BedNum:      houseModel.BedNum.Int64,
+		LivingNum:   houseModel.LivingNum.Int64,
+		Albums:      imageUrls,
+		Rooms:       []types.Room{},
+		Services:    []types.Service{},
+		Address:     houseModel.Address.String,
 		WardID:      houseModel.WardId,
 		DistrictID:  houseModel.DistrictId,
 		ProvinceID:  houseModel.ProvinceId,
-		CreatedAt:   houseModel.CreatedAt,
-		UpdatedAt:   houseModel.UpdatedAt,
-		CreatedBy:   houseModel.CreatedBy,
-		UpdatedBy:   houseModel.UpdatedBy,
-		Albums:      imageUrls,
+		CreatedAt:   houseModel.CreatedAt.Int64,
+		UpdatedAt:   houseModel.UpdatedAt.Int64,
+		CreatedBy:   houseModel.CreatedBy.Int64,
+		UpdatedBy:   houseModel.UpdatedBy.Int64,
 	}
 
 	l.Logger.Info("CreateHouse success: ", userID)

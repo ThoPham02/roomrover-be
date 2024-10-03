@@ -78,8 +78,7 @@ func (l *GetHouseLogic) GetHouse(req *types.GetHouseReq) (resp *types.GetHouseRe
 	for _, albumModel := range albumModels {
 		l.Logger.Info(albumModel)
 
-
-		imageUrls = append(imageUrls, albumModel.Url)
+		imageUrls = append(imageUrls, albumModel.Url.String)
 	}
 
 	roomModels, _, err := l.svcCtx.RoomModel.FindByHouseID(l.ctx, req.ID, 0, 0)
@@ -94,14 +93,13 @@ func (l *GetHouseLogic) GetHouse(req *types.GetHouseReq) (resp *types.GetHouseRe
 	}
 	for _, roomModel := range roomModels {
 		room = append(room, types.Room{
-			RoomID:    roomModel.Id,
-			HouseID:   roomModel.HouseId,
-			Name:      roomModel.Name,
-			Status:    roomModel.Status,
-			CreatedAt: roomModel.CreatedAt,
-			UpdatedAt: roomModel.UpdatedAt,
-			CreatedBy: roomModel.CreatedBy,
-			UpdatedBy: roomModel.UpdatedBy,
+			RoomID:   roomModel.Id,
+			HouseID:  roomModel.HouseId.Int64,
+			Name:     roomModel.Name.String,
+			Status:   roomModel.Status,
+			Capacity: roomModel.Capacity.Int64,
+			EIndex:   roomModel.EIndex.Int64,
+			WIndex:   roomModel.WIndex.Int64,
 		})
 	}
 
@@ -118,37 +116,35 @@ func (l *GetHouseLogic) GetHouse(req *types.GetHouseReq) (resp *types.GetHouseRe
 	for _, serviceModel := range serviceModels {
 		service = append(service, types.Service{
 			ServiceID: serviceModel.Id,
-			HouseID:   serviceModel.HouseId,
-			Name:      serviceModel.Name,
-			Price:     serviceModel.Price,
-			Type:      serviceModel.Type,
-			CreatedAt: serviceModel.CreatedAt,
-			UpdatedAt: serviceModel.UpdatedAt,
-			CreatedBy: serviceModel.CreatedBy,
-			UpdatedBy: serviceModel.UpdatedBy,
+			HouseID:   serviceModel.HouseId.Int64,
+			Name:      serviceModel.Name.String,
+			Price:     serviceModel.Price.Int64,
+			Unit:      serviceModel.Unit.Int64,
 		})
 	}
 
 	house = types.House{
 		HouseID:     houseModel.Id,
 		UserID:      houseModel.UserId,
-		Name:        houseModel.Name,
-		Description: houseModel.Description,
+		Name:        houseModel.Name.String,
+		Description: houseModel.Description.String,
 		Type:        houseModel.Type,
+		Status:      houseModel.Status,
 		Area:        houseModel.Area,
 		Price:       houseModel.Price,
-		Status:      houseModel.Status,
-		Address:     houseModel.Address,
-		WardID:      houseModel.WardId,
-		DistrictID:  houseModel.DistrictId,
-		ProvinceID:  houseModel.ProvinceId,
-		CreatedAt:   houseModel.CreatedAt,
-		UpdatedAt:   houseModel.UpdatedAt,
-		CreatedBy:   houseModel.CreatedBy,
-		UpdatedBy:   houseModel.UpdatedBy,
+		BedNum:      houseModel.BedNum.Int64,
+		LivingNum:   houseModel.LivingNum.Int64,
 		Albums:      imageUrls,
 		Rooms:       room,
 		Services:    service,
+		Address:     houseModel.Address.String,
+		WardID:      houseModel.WardId,
+		DistrictID:  houseModel.DistrictId,
+		ProvinceID:  houseModel.ProvinceId,
+		CreatedAt:   houseModel.CreatedAt.Int64,
+		UpdatedAt:   houseModel.UpdatedAt.Int64,
+		CreatedBy:   houseModel.CreatedBy.Int64,
+		UpdatedBy:   houseModel.UpdatedBy.Int64,
 	}
 
 	l.Logger.Info("GetHouse Success", userID)

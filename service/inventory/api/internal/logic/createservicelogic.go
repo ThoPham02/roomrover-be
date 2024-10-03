@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"database/sql"
 
 	"roomrover/common"
 	"roomrover/service/inventory/api/internal/svc"
@@ -30,9 +31,7 @@ func (l *CreateServiceLogic) CreateService(req *types.CreateServiceReq) (resp *t
 	l.Logger.Info("CreateService", req)
 
 	var userID int64
-	var currentTime = common.GetCurrentTime()
 	var service types.Service
-
 	var serviceModel *model.ServiceTbl
 
 	userID, err = common.GetUserIDFromContext(l.ctx)
@@ -47,15 +46,11 @@ func (l *CreateServiceLogic) CreateService(req *types.CreateServiceReq) (resp *t
 	}
 
 	serviceModel = &model.ServiceTbl{
-		Id:        l.svcCtx.ObjSync.GenServiceObjID(),
-		HouseId:   req.HouseID,
-		Name:      req.Name,
-		Price:     req.Price,
-		Type:      req.Type,
-		CreatedAt: currentTime,
-		UpdatedAt: currentTime,
-		CreatedBy: userID,
-		UpdatedBy: userID,
+		Id:      l.svcCtx.ObjSync.GenServiceObjID(),
+		HouseId: sql.NullInt64{Valid: true, Int64: req.HouseID},
+		Name:    sql.NullString{Valid: true, String: req.Name},
+		Price:   sql.NullInt64{Valid: true, Int64: req.Price},
+		Unit:    sql.NullInt64{Valid: true, Int64: req.Unit},
 	}
 
 	_, err = l.svcCtx.ServiceModel.Insert(l.ctx, serviceModel)
@@ -71,14 +66,10 @@ func (l *CreateServiceLogic) CreateService(req *types.CreateServiceReq) (resp *t
 
 	service = types.Service{
 		ServiceID: serviceModel.Id,
-		HouseID:   serviceModel.HouseId,
-		Name:      serviceModel.Name,
-		Price:     serviceModel.Price,
-		Type:      serviceModel.Type,
-		CreatedAt: serviceModel.CreatedAt,
-		UpdatedAt: serviceModel.UpdatedAt,
-		CreatedBy: serviceModel.CreatedBy,
-		UpdatedBy: serviceModel.UpdatedBy,
+		HouseID:   serviceModel.HouseId.Int64,
+		Name:      serviceModel.Name.String,
+		Price:     serviceModel.Price.Int64,
+		Unit:      serviceModel.Unit.Int64,
 	}
 
 	l.Logger.Info("CreateService", userID)

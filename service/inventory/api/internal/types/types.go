@@ -2,50 +2,84 @@
 package types
 
 type Album struct {
-	AlbumID   int64  `json:"albumID"`
-	HouseID   int64  `json:"houseID"`
-	Url       string `json:"url"`
-	Type      int64  `json:"type"`
-	CreatedAt int64  `json:"createdAt"`
-	UpdatedAt int64  `json:"updatedAt"`
-	CreatedBy int64  `json:"createdBy"`
-	UpdatedBy int64  `json:"updatedBy"`
+	AlbumID int64  `json:"albumID"`
+	HouseID int64  `json:"houseID"`
+	Url     string `json:"url"`
+}
+
+type Bill struct {
+	BillID      int64        `json:"billID"`
+	PaymentID   int64        `json:"paymentID"`
+	PaymentDate int64        `json:"paymentDate"`
+	Amount      int64        `json:"amount"`
+	Status      int64        `json:"status"`
+	BillDetails []BillDetail `json:"billDetails"`
+}
+
+type BillDetail struct {
+	BillDetailID int64  `json:"billDetailID"`
+	BillID       int64  `json:"billID"`
+	Name         int64  `json:"name"`
+	Price        int64  `json:"price"`
+	Type         string `json:"type"`
+	Quantity     int64  `json:"quantity"`
+}
+
+type BillPay struct {
+	BillPayID int64 `json:"billPayID"`
+	BillID    int64 `json:"billID"`
+	Amount    int64 `json:"amount"`
+	PayDate   int64 `json:"payDate"`
+	UserID    int64 `json:"userID"`
 }
 
 type Contract struct {
 	ContractID      int64            `json:"contractID"`
-	RoomID          int64            `json:"roomID"`
-	Description     string           `json:"description"`
-	ContractUrl     string           `json:"contractUrl"`
-	Start           int64            `json:"start"`
-	End             int64            `json:"end"`
+	Code            string           `json:"code"`
 	Status          int64            `json:"status"`
-	Type            int64            `json:"type"`
-	Deposit         int64            `json:"deposit"`
-	Deadline        int64            `json:"deadline"`
-	CreatedAt       int64            `json:"createdAt"`
-	UpdatedAt       int64            `json:"updatedAt"`
-	CreatedBy       int64            `json:"createdBy"`
-	UpdatedBy       int64            `json:"updatedBy"`
+	RenterID        int64            `json:"renterID"`
+	RenterNumber    string           `json:"renterNumber"`
+	RenterDate      int64            `json:"renterDate"`
+	RenterAddress   string           `json:"renterAddress"`
+	RenterName      string           `json:"renterName"`
+	LessorID        int64            `json:"lessorID"`
+	LessorNumber    string           `json:"lessorNumber"`
+	LessorDate      int64            `json:"lessorDate"`
+	LessorAddress   string           `json:"lessorAddress"`
+	LessorName      string           `json:"lessorName"`
+	RoomID          int64            `json:"roomID"`
+	CheckIn         int64            `json:"checkIn"`
+	Duration        int64            `json:"duration"`
+	Purpose         string           `json:"purpose"`
 	ContractRenters []ContractRenter `json:"contractRenters"`
 	ContractDetails []ContractDetail `json:"contractDetails"`
+	Payment         struct {
+		PaymentID   int64 `json:"paymentID"`
+		ContractID  int64 `json:"contractID"`
+		Amount      int64 `json:"amount"`
+		Discount    int64 `json:"discount"`
+		Deposit     int64 `json:"deposit"`
+		DepositDate int64 `json:"depositDate"`
+		NextBill    int64 `json:"nextBill"`
+	} `json:"payment"`
+	CreatedAt int64 `json:"createdAt"`
+	UpdatedAt int64 `json:"updatedAt"`
+	CreatedBy int64 `json:"createdBy"`
+	UpdatedBy int64 `json:"updatedBy"`
 }
 
 type ContractDetail struct {
-	ID         int64 `json:"id"`
-	ContractID int64 `json:"contractID"`
-	ServiceID  int64 `json:"serviceID"`
-	Price      int64 `json:"price"`
-	Index      int64 `json:"index"`
-	Type       int64 `json:"type"`
+	ID         int64  `json:"id"`
+	ContractID int64  `json:"contractID"`
+	Name       string `json:"name"`
+	Price      int64  `json:"price"`
+	Type       int64  `json:"type"`
 }
 
 type ContractRenter struct {
 	ID         int64 `json:"id"`
 	ContractID int64 `json:"contractID"`
 	RenterID   int64 `json:"renterID"`
-	Type       int64 `json:"type"`
-	Status     int64 `json:"status"`
 }
 
 type CreateHouseReq struct {
@@ -54,6 +88,8 @@ type CreateHouseReq struct {
 	Type        int64  `form:"type"`
 	Area        int64  `form:"area"`
 	Price       int64  `form:"price"`
+	BedNum      int    `form:"bedNum,optional"`
+	LivingNum   int    `form:"livingNum,optional"`
 	Address     string `form:"address"`
 	WardID      int64  `form:"wardID"`
 	DistrictID  int64  `form:"districtID"`
@@ -72,9 +108,14 @@ type CreateHouseRes struct {
 		Name        string    `json:"name"`
 		Description string    `json:"description"`
 		Type        int64     `json:"type"`
+		Status      int64     `json:"status"`
 		Area        int64     `json:"area"`
 		Price       int64     `json:"price"`
-		Status      int64     `json:"status"`
+		BedNum      int64     `json:"bedNum"`
+		LivingNum   int64     `json:"livingNum"`
+		Albums      []string  `json:"albums"`
+		Rooms       []Room    `json:"rooms"`
+		Services    []Service `json:"services"`
 		Address     string    `json:"address"`
 		WardID      int64     `json:"wardID"`
 		DistrictID  int64     `json:"districtID"`
@@ -83,9 +124,6 @@ type CreateHouseRes struct {
 		UpdatedAt   int64     `json:"updatedAt"`
 		CreatedBy   int64     `json:"createdBy"`
 		UpdatedBy   int64     `json:"updatedBy"`
-		Albums      []string  `json:"albums"`
-		Rooms       []Room    `json:"rooms"`
-		Services    []Service `json:"services"`
 	} `json:"house"`
 }
 
@@ -101,16 +139,13 @@ type CreateRoomRes struct {
 		Message string `json:"message"` // Result message: detail response code
 	} `json:"result"`
 	Room struct {
-		RoomID    int64  `json:"roomID"`
-		HouseID   int64  `json:"houseID"`
-		Name      string `json:"name"`
-		Capacity  int64  `json:"capacity"`
-		Remain    int64  `json:"remain"`
-		Status    int64  `json:"status"`
-		CreatedAt int64  `json:"createdAt"`
-		UpdatedAt int64  `json:"updatedAt"`
-		CreatedBy int64  `json:"createdBy"`
-		UpdatedBy int64  `json:"updatedBy"`
+		RoomID   int64  `json:"roomID"`
+		HouseID  int64  `json:"houseID"`
+		Name     string `json:"name"`
+		Status   int64  `json:"status"`
+		Capacity int64  `json:"capacity"`
+		EIndex   int64  `json:"eIndex"`
+		WIndex   int64  `json:"wIndex"`
 	} `json:"room"`
 }
 
@@ -118,7 +153,7 @@ type CreateServiceReq struct {
 	HouseID int64  `form:"houseID"`
 	Name    string `form:"name"`
 	Price   int64  `form:"price"`
-	Type    int64  `form:"type"`
+	Unit    int64  `form:"unit"`
 }
 
 type CreateServiceRes struct {
@@ -131,11 +166,7 @@ type CreateServiceRes struct {
 		HouseID   int64  `json:"houseID"`
 		Name      string `json:"name"`
 		Price     int64  `json:"price"`
-		Type      int64  `json:"type"`
-		CreatedAt int64  `json:"createdAt"`
-		UpdatedAt int64  `json:"updatedAt"`
-		CreatedBy int64  `json:"createdBy"`
-		UpdatedBy int64  `json:"updatedBy"`
+		Unit      int64  `json:"unit"`
 	} `json:"service"`
 }
 
@@ -202,9 +233,14 @@ type GetHouseRes struct {
 		Name        string    `json:"name"`
 		Description string    `json:"description"`
 		Type        int64     `json:"type"`
+		Status      int64     `json:"status"`
 		Area        int64     `json:"area"`
 		Price       int64     `json:"price"`
-		Status      int64     `json:"status"`
+		BedNum      int64     `json:"bedNum"`
+		LivingNum   int64     `json:"livingNum"`
+		Albums      []string  `json:"albums"`
+		Rooms       []Room    `json:"rooms"`
+		Services    []Service `json:"services"`
 		Address     string    `json:"address"`
 		WardID      int64     `json:"wardID"`
 		DistrictID  int64     `json:"districtID"`
@@ -213,9 +249,6 @@ type GetHouseRes struct {
 		UpdatedAt   int64     `json:"updatedAt"`
 		CreatedBy   int64     `json:"createdBy"`
 		UpdatedBy   int64     `json:"updatedBy"`
-		Albums      []string  `json:"albums"`
-		Rooms       []Room    `json:"rooms"`
-		Services    []Service `json:"services"`
 	} `json:"house"`
 }
 
@@ -244,16 +277,13 @@ type GetRoomRes struct {
 		Message string `json:"message"` // Result message: detail response code
 	} `json:"result"`
 	Room struct {
-		RoomID    int64  `json:"roomID"`
-		HouseID   int64  `json:"houseID"`
-		Name      string `json:"name"`
-		Capacity  int64  `json:"capacity"`
-		Remain    int64  `json:"remain"`
-		Status    int64  `json:"status"`
-		CreatedAt int64  `json:"createdAt"`
-		UpdatedAt int64  `json:"updatedAt"`
-		CreatedBy int64  `json:"createdBy"`
-		UpdatedBy int64  `json:"updatedBy"`
+		RoomID   int64  `json:"roomID"`
+		HouseID  int64  `json:"houseID"`
+		Name     string `json:"name"`
+		Status   int64  `json:"status"`
+		Capacity int64  `json:"capacity"`
+		EIndex   int64  `json:"eIndex"`
+		WIndex   int64  `json:"wIndex"`
 	} `json:"room"`
 }
 
@@ -283,11 +313,7 @@ type GetServiceRes struct {
 		HouseID   int64  `json:"houseID"`
 		Name      string `json:"name"`
 		Price     int64  `json:"price"`
-		Type      int64  `json:"type"`
-		CreatedAt int64  `json:"createdAt"`
-		UpdatedAt int64  `json:"updatedAt"`
-		CreatedBy int64  `json:"createdBy"`
-		UpdatedBy int64  `json:"updatedBy"`
+		Unit      int64  `json:"unit"`
 	} `json:"service"`
 }
 
@@ -297,9 +323,14 @@ type House struct {
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	Type        int64     `json:"type"`
+	Status      int64     `json:"status"`
 	Area        int64     `json:"area"`
 	Price       int64     `json:"price"`
-	Status      int64     `json:"status"`
+	BedNum      int64     `json:"bedNum"`
+	LivingNum   int64     `json:"livingNum"`
+	Albums      []string  `json:"albums"`
+	Rooms       []Room    `json:"rooms"`
+	Services    []Service `json:"services"`
 	Address     string    `json:"address"`
 	WardID      int64     `json:"wardID"`
 	DistrictID  int64     `json:"districtID"`
@@ -308,45 +339,16 @@ type House struct {
 	UpdatedAt   int64     `json:"updatedAt"`
 	CreatedBy   int64     `json:"createdBy"`
 	UpdatedBy   int64     `json:"updatedBy"`
-	Albums      []string  `json:"albums"`
-	Rooms       []Room    `json:"rooms"`
-	Services    []Service `json:"services"`
 }
 
 type Payment struct {
-	ID         int64 `json:"id"`
-	ContractID int64 `json:"contractID"`
-	Month      int64 `json:"month"`
-	Total      int64 `json:"total"`
-	Status     int64 `json:"status"`
-	CreatedAt  int64 `json:"createdAt"`
-	UpdatedAt  int64 `json:"updatedAt"`
-	CreatedBy  int64 `json:"createdBy"`
-	UpdatedBy  int64 `json:"updatedBy"`
-}
-
-type PaymentDetail struct {
-	ID        int64  `json:"id"`
-	PaymentID int64  `json:"paymentID"`
-	Amount    int64  `json:"amount"`
-	Type      int64  `json:"type"`
-	Utl       string `json:"utl"`
-	CreatedAt int64  `json:"createdAt"`
-	UpdatedAt int64  `json:"updatedAt"`
-	CreatedBy int64  `json:"createdBy"`
-	UpdatedBy int64  `json:"updatedBy"`
-}
-
-type PaymentUsed struct {
-	ID        int64 `json:"id"`
-	PaymentID int64 `json:"paymentID"`
-	ServiceID int64 `json:"serviceID"`
-	Index     int64 `json:"index"`
-	Status    int64 `json:"status"`
-	CreatedAt int64 `json:"createdAt"`
-	UpdatedAt int64 `json:"updatedAt"`
-	CreatedBy int64 `json:"createdBy"`
-	UpdatedBy int64 `json:"updatedBy"`
+	PaymentID   int64 `json:"paymentID"`
+	ContractID  int64 `json:"contractID"`
+	Amount      int64 `json:"amount"`
+	Discount    int64 `json:"discount"`
+	Deposit     int64 `json:"deposit"`
+	DepositDate int64 `json:"depositDate"`
+	NextBill    int64 `json:"nextBill"`
 }
 
 type Result struct {
@@ -355,16 +357,13 @@ type Result struct {
 }
 
 type Room struct {
-	RoomID    int64  `json:"roomID"`
-	HouseID   int64  `json:"houseID"`
-	Name      string `json:"name"`
-	Capacity  int64  `json:"capacity"`
-	Remain    int64  `json:"remain"`
-	Status    int64  `json:"status"`
-	CreatedAt int64  `json:"createdAt"`
-	UpdatedAt int64  `json:"updatedAt"`
-	CreatedBy int64  `json:"createdBy"`
-	UpdatedBy int64  `json:"updatedBy"`
+	RoomID   int64  `json:"roomID"`
+	HouseID  int64  `json:"houseID"`
+	Name     string `json:"name"`
+	Status   int64  `json:"status"`
+	Capacity int64  `json:"capacity"`
+	EIndex   int64  `json:"eIndex"`
+	WIndex   int64  `json:"wIndex"`
 }
 
 type Service struct {
@@ -372,11 +371,7 @@ type Service struct {
 	HouseID   int64  `json:"houseID"`
 	Name      string `json:"name"`
 	Price     int64  `json:"price"`
-	Type      int64  `json:"type"`
-	CreatedAt int64  `json:"createdAt"`
-	UpdatedAt int64  `json:"updatedAt"`
-	CreatedBy int64  `json:"createdBy"`
-	UpdatedBy int64  `json:"updatedBy"`
+	Unit      int64  `json:"unit"`
 }
 
 type UpdateHouseReq struct {
@@ -387,6 +382,8 @@ type UpdateHouseReq struct {
 	Util        int64  `form:"util,optional"`
 	Area        int64  `form:"area"`
 	Price       int64  `form:"price"`
+	BedNum      int    `form:"bedNum,optional"`
+	LivingNum   int    `form:"livingNum,optional"`
 	Address     string `form:"address"`
 	WardID      int64  `form:"wardID"`
 	DistrictID  int64  `form:"districtID"`
@@ -405,9 +402,14 @@ type UpdateHouseRes struct {
 		Name        string    `json:"name"`
 		Description string    `json:"description"`
 		Type        int64     `json:"type"`
+		Status      int64     `json:"status"`
 		Area        int64     `json:"area"`
 		Price       int64     `json:"price"`
-		Status      int64     `json:"status"`
+		BedNum      int64     `json:"bedNum"`
+		LivingNum   int64     `json:"livingNum"`
+		Albums      []string  `json:"albums"`
+		Rooms       []Room    `json:"rooms"`
+		Services    []Service `json:"services"`
 		Address     string    `json:"address"`
 		WardID      int64     `json:"wardID"`
 		DistrictID  int64     `json:"districtID"`
@@ -416,9 +418,6 @@ type UpdateHouseRes struct {
 		UpdatedAt   int64     `json:"updatedAt"`
 		CreatedBy   int64     `json:"createdBy"`
 		UpdatedBy   int64     `json:"updatedBy"`
-		Albums      []string  `json:"albums"`
-		Rooms       []Room    `json:"rooms"`
-		Services    []Service `json:"services"`
 	} `json:"house"`
 }
 
@@ -446,16 +445,13 @@ type UpdateRoomRes struct {
 		Message string `json:"message"` // Result message: detail response code
 	} `json:"result"`
 	Room struct {
-		RoomID    int64  `json:"roomID"`
-		HouseID   int64  `json:"houseID"`
-		Name      string `json:"name"`
-		Capacity  int64  `json:"capacity"`
-		Remain    int64  `json:"remain"`
-		Status    int64  `json:"status"`
-		CreatedAt int64  `json:"createdAt"`
-		UpdatedAt int64  `json:"updatedAt"`
-		CreatedBy int64  `json:"createdBy"`
-		UpdatedBy int64  `json:"updatedBy"`
+		RoomID   int64  `json:"roomID"`
+		HouseID  int64  `json:"houseID"`
+		Name     string `json:"name"`
+		Status   int64  `json:"status"`
+		Capacity int64  `json:"capacity"`
+		EIndex   int64  `json:"eIndex"`
+		WIndex   int64  `json:"wIndex"`
 	} `json:"room"`
 }
 
@@ -463,7 +459,7 @@ type UpdateServiceReq struct {
 	ServiceID int64  `path:"id"`
 	Name      string `form:"name"`
 	Price     int64  `form:"price"`
-	Type      int64  `form:"type"`
+	Unit      int64  `form:"unit"`
 }
 
 type UpdateServiceRes struct {
@@ -476,11 +472,7 @@ type UpdateServiceRes struct {
 		HouseID   int64  `json:"houseID"`
 		Name      string `json:"name"`
 		Price     int64  `json:"price"`
-		Type      int64  `json:"type"`
-		CreatedAt int64  `json:"createdAt"`
-		UpdatedAt int64  `json:"updatedAt"`
-		CreatedBy int64  `json:"createdBy"`
-		UpdatedBy int64  `json:"updatedBy"`
+		Unit      int64  `json:"unit"`
 	} `json:"service"`
 }
 
@@ -497,15 +489,18 @@ type UploadFileHouseRes struct {
 }
 
 type User struct {
-	UserID    int64  `json:"userID"`
-	Phone     string `json:"phone"`
-	Role      int64  `json:"role"`
-	Status    int64  `json:"status"`
-	Address   string `json:"address"`
-	FullName  string `json:"fullName"`
-	AvatarUrl string `json:"avatarUrl"`
-	Birthday  int64  `json:"birthday"`
-	Gender    int64  `json:"gender"`
-	CreatedAt int64  `json:"createdAt"`
-	UpdatedAt int64  `json:"updatedAt"`
+	UserID      int64  `json:"userID"`
+	Phone       string `json:"phone"`
+	Role        int64  `json:"role"`
+	Status      int64  `json:"status"`
+	Address     string `json:"address"`
+	FullName    string `json:"fullName"`
+	AvatarUrl   string `json:"avatarUrl"`
+	Birthday    int64  `json:"birthday"`
+	Gender      int64  `json:"gender"`
+	CccdNumber  string `json:"cccdNumber"`
+	CccdDate    int64  `json:"cccdDate"`
+	CccdAddress string `json:"cccdAddress"`
+	CreatedAt   int64  `json:"createdAt"`
+	UpdatedAt   int64  `json:"updatedAt"`
 }

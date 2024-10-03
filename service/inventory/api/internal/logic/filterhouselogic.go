@@ -88,27 +88,31 @@ func (l *FilterHouseLogic) FilterHouse(req *types.FilterHouseReq) (resp *types.F
 		}
 
 		for _, album := range albumModels {
-			imageUrls = append(imageUrls, album.Url)
+			imageUrls = append(imageUrls, album.Url.String)
 		}
 
 		listHouses = append(listHouses, types.House{
 			HouseID:     house.Id,
 			UserID:      userID,
-			Name:        house.Name,
-			Description: house.Description,
+			Name:        house.Name.String,
+			Description: house.Description.String,
 			Type:        house.Type,
+			Status:      house.Status,
 			Area:        house.Area,
 			Price:       house.Price,
-			Status:      house.Status,
-			Address:     house.Address,
+			BedNum:      house.BedNum.Int64,
+			LivingNum:   house.LivingNum.Int64,
+			Albums:      imageUrls,
+			Rooms:       []types.Room{},
+			Services:    []types.Service{},
+			Address:     house.Address.String,
 			WardID:      house.WardId,
 			DistrictID:  house.DistrictId,
 			ProvinceID:  house.ProvinceId,
-			CreatedAt:   house.CreatedAt,
-			UpdatedAt:   house.UpdatedAt,
-			CreatedBy:   house.CreatedBy,
-			UpdatedBy:   house.UpdatedBy,
-			Albums:      imageUrls,
+			CreatedAt:   house.CreatedAt.Int64,
+			UpdatedAt:   house.UpdatedAt.Int64,
+			CreatedBy:   house.CreatedBy.Int64,
+			UpdatedBy:   house.UpdatedBy.Int64,
 		})
 	}
 

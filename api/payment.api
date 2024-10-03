@@ -15,18 +15,15 @@ type (
 		Result Result `json:"result"`
 		Url    string `json:"url"`
 	}
-
 	MomoPaymentReq {
 		BillID string `form:"bill_id"`
 		Amount int64  `form:"amount"`
 	}
 	MomoPaymentRes {
-		Result Result `json:"result"`
-		Amount int64  `json:"amount"`
+		Result  Result `json:"result"`
+		Amount  int64  `json:"amount"`
 		OrderId string `json:"orderId"`
-		
 	}
-
 	MomoWebhookReq {
 		OrderType    string `json:"orderType"`
 		Amount       int64  `json:"amount"`
@@ -48,9 +45,9 @@ type (
 )
 
 @server (
-	jwt:    Auth
+	jwt:        Auth
 	middleware: UserTokenMiddleware
-	prefix: /payment
+	prefix:     /payment
 )
 service payment-api {
 	@doc (
@@ -58,16 +55,17 @@ service payment-api {
 	)
 	@handler UploadFilePayment
 	post /upload (UploadFilePaymentReq) returns (UploadFilePaymentRes)
-	
+
 	@doc (
 		summary: "Momo payment"
 	)
 	@handler MomoPayment
 	post /momo (MomoPaymentReq) returns (MomoPaymentRes)
-	
+
 	@doc (
 		summary: "Momo webhook"
 	)
 	@handler MomoWebhook
 	post /momo/webhook (MomoWebhookReq) returns (MomoWebhookRes)
 }
+

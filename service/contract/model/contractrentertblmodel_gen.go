@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
-	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/core/stringx"
 )
@@ -35,10 +34,9 @@ type (
 	}
 
 	ContractRenterTbl struct {
-		Id         int64 `db:"id"`
-		ContractId int64 `db:"contract_id"`
-		RenterId   int64 `db:"renter_id"`
-		Type       int64 `db:"type"`
+		Id         int64         `db:"id"`
+		ContractId sql.NullInt64 `db:"contract_id"`
+		UserId     sql.NullInt64 `db:"user_id"`
 	}
 )
 
@@ -62,7 +60,7 @@ func (m *defaultContractRenterTblModel) FindOne(ctx context.Context, id int64) (
 	switch err {
 	case nil:
 		return &resp, nil
-	case sqlc.ErrNotFound:
+	case sqlx.ErrNotFound:
 		return nil, ErrNotFound
 	default:
 		return nil, err
@@ -70,14 +68,14 @@ func (m *defaultContractRenterTblModel) FindOne(ctx context.Context, id int64) (
 }
 
 func (m *defaultContractRenterTblModel) Insert(ctx context.Context, data *ContractRenterTbl) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?)", m.table, contractRenterTblRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.ContractId, data.RenterId, data.Type)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, contractRenterTblRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.ContractId, data.UserId)
 	return ret, err
 }
 
 func (m *defaultContractRenterTblModel) Update(ctx context.Context, data *ContractRenterTbl) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, contractRenterTblRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.ContractId, data.RenterId, data.Type, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.ContractId, data.UserId, data.Id)
 	return err
 }
 
