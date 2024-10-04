@@ -42,7 +42,7 @@ func (m *customContractRenterTblModel) InsertMulti(ctx context.Context, data []*
 	var values []interface{}
 	query := "insert into %s (%s) values "
 	for _, row := range data {
-		values = append(values, row.Id, row.ContractId, row.RenterId, row.Type)
+		values = append(values, row.Id, row.ContractId, row.UserId)
 		query += "(?, ?, ?, ?),"
 	}
 	query = query[:len(query)-1]

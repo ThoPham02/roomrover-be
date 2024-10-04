@@ -43,8 +43,8 @@ func (m *customContractDetailTblModel) InsertMulti(ctx context.Context, data []*
 	var values []interface{}
 	query := fmt.Sprintf("insert into %s (%s) values ", m.table, contractDetailTblRowsExpectAutoSet)
 	for _, row := range data {
-		values = append(values, row.Id, row.ContractId, row.ServiceId, row.Price, row.Type, row.Index)
-		query += "(?, ?, ?, ?, ?, ?),"
+		values = append(values, row.Id, row.ContractId, row.Name, row.Type, row.Price)
+		query += "(?, ?, ?, ?, ?),"
 	}
 	query = query[:len(query)-1]
 	_, err := m.conn.ExecCtx(ctx, query, values...)

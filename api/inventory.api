@@ -99,37 +99,37 @@ service invent-api {
 	)
 	@handler UploadFileHouse
 	post /upload (UploadFileHouseReq) returns (UploadFileHouseRes)
-
+	
 	@doc (
 		summary: "Create house"
 	)
 	@handler CreateHouse
 	post /house (CreateHouseReq) returns (CreateHouseRes)
-
+	
 	@doc (
 		summary: "Filter house"
 	)
 	@handler FilterHouse
 	get /house/filter (FilterHouseReq) returns (FilterHouseRes)
-
+	
 	@doc (
 		summary: "Get House"
 	)
 	@handler GetHouse
 	get /house/:id (GetHouseReq) returns (GetHouseRes)
-
+	
 	@doc (
 		summary: "Update House Status"
 	)
 	@handler UpdateHouseStatus
 	put /house/:id/status (UpdateHouseStatusReq) returns (UpdateHouseStatusRes)
-
+	
 	@doc (
 		summary: "Update House"
 	)
 	@handler UpdateHouse
 	put /house/:id (UpdateHouseReq) returns (UpdateHouseRes)
-
+	
 	@doc (
 		summary: "Delete House"
 	)
@@ -193,25 +193,25 @@ service invent-api {
 	)
 	@handler CreateRoom
 	post /room (CreateRoomReq) returns (CreateRoomRes)
-
+	
 	@doc (
 		summary: "Update Room"
 	)
 	@handler UpdateRoom
 	put /room/:id (UpdateRoomReq) returns (UpdateRoomRes)
-
+	
 	@doc (
 		summary: "Delete Room"
 	)
 	@handler DeleteRoom
 	delete /room/:id (DeleteRoomReq) returns (DeleteRoomRes)
-
+	
 	@doc (
 		summary: "Get Room"
 	)
 	@handler GetRoom
 	get /room/:id (GetRoomReq) returns (GetRoomRes)
-
+	
 	@doc (
 		summary: "Get Room By House"
 	)
@@ -273,29 +273,28 @@ service invent-api {
 	)
 	@handler CreateService
 	post /service (CreateServiceReq) returns (CreateServiceRes)
-
+	
 	@doc (
 		summary: "Update Service"
 	)
 	@handler UpdateService
 	put /service/:id (UpdateServiceReq) returns (UpdateServiceRes)
-
+	
 	@doc (
 		summary: "Delete Service"
 	)
 	@handler DeleteService
 	delete /service/:id (DeleteServiceReq) returns (DeleteServiceRes)
-
+	
 	@doc (
 		summary: "Get Service"
 	)
 	@handler GetService
 	get /service/:id (GetServiceReq) returns (GetServiceRes)
-
+	
 	@doc (
 		summary: "Get Service By House"
 	)
 	@handler GetServiceByHouse
 	get /service/house/:id (GetServiceByHouseReq) returns (GetServiceByHouseRes)
 }
-

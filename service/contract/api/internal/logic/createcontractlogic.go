@@ -34,6 +34,7 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 	var currentTime int64
 
 	var contract types.Contract
+	var payment types.Payment
 	var contractRenters []types.ContractRenter
 	var contractDetails []types.ContractDetail
 
@@ -93,40 +94,43 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 	}
 
 	contractModel = &model.ContractTbl{
-		Id:          l.svcCtx.ObjSync.GenServiceObjID(),
-		RoomId:      req.RoomID,
-		Status:      common.CONTRACT_STATUS_PENDING,
-		ContractUrl: sql.NullString{Valid: true, String: req.ContractUrl},
-		Description: req.Description,
-		Start:       req.Start,
-		End:         req.End,
-		NextBill:    common.GetNextMonthDate(req.Start, 1),
-		Type:        req.Type,
-		Deposit:     req.Deposit,
-		Deadline:    req.Deadline,
-		DepositUrl:  sql.NullString{Valid: true, String: req.DepositUrl},
-		CreatedAt:   currentTime,
-		UpdatedAt:   currentTime,
-		CreatedBy:   userID,
-		UpdatedBy:   userID,
+		Id:            l.svcCtx.ObjSync.GenServiceObjID(),
+		Code:          sql.NullString{},
+		Status:        sql.NullInt64{Valid: true, Int64: common.CONTRACT_STATUS_PENDING},
+		RenterId:      sql.NullInt64{},
+		RenterNumber:  sql.NullString{},
+		RenterDate:    sql.NullInt64{},
+		RenterAddress: sql.NullString{},
+		RenterName:    sql.NullString{},
+		LessorId:      sql.NullInt64{},
+		LessorNumber:  sql.NullString{},
+		LessorDate:    sql.NullInt64{},
+		LessorAddress: sql.NullString{},
+		LessorName:    sql.NullString{},
+		RoomId:        sql.NullInt64{Valid: true, Int64: req.RoomID},
+		CheckIn:       sql.NullInt64{},
+		Duration:      sql.NullInt64{},
+		Purpose:       sql.NullString{},
+		CreatedAt:     sql.NullInt64{Valid: true, Int64: currentTime},
+		UpdatedAt:     sql.NullInt64{Valid: true, Int64: currentTime},
+		CreatedBy:     sql.NullInt64{Valid: true, Int64: userID},
+		UpdatedBy:     sql.NullInt64{Valid: true, Int64: userID},
 	}
 
 	for _, renter := range contractRenters {
 		contractRenterModels = append(contractRenterModels, &model.ContractRenterTbl{
 			Id:         l.svcCtx.ObjSync.GenServiceObjID(),
-			ContractId: contractModel.Id,
-			RenterId:   renter.RenterID,
-			Type:       renter.Type,
+			ContractId: sql.NullInt64{Valid: true, Int64: contractModel.Id},
+			UserId:     sql.NullInt64{Valid: true, Int64: renter.RenterID},
 		})
 	}
 	for _, detail := range contractDetails {
 		contractDetailModels = append(contractDetailModels, &model.ContractDetailTbl{
-			Id:        l.svcCtx.ObjSync.GenServiceObjID(),
-			ContractId: contractModel.Id,
-			ServiceId: detail.ServiceID,
-			Price:     detail.Price,
-			Type:      detail.Type,
-			Index:     detail.Index,
+			Id:         l.svcCtx.ObjSync.GenServiceObjID(),
+			ContractId: sql.NullInt64{Valid: true, Int64: contractModel.Id},
+			Name:       sql.NullString{Valid: true, String: detail.Name},
+			Type:       sql.NullInt64{Valid: true, Int64: detail.Type},
+			Price:      sql.NullInt64{Valid: true, Int64: detail.Price},
 		})
 	}
 
@@ -161,23 +165,35 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 		}, nil
 	}
 
+	payment = types.Payment{
+
+	}
+
 	contract = types.Contract{
 		ContractID:      contractModel.Id,
-		RoomID:          contractModel.RoomId,
-		Description:     contractModel.Description,
-		ContractUrl:     contractModel.ContractUrl.String,
-		Start:           contractModel.Start,
-		End:             contractModel.End,
-		Status:          contractModel.Status,
-		Type:            contractModel.Type,
-		Deposit:         contractModel.Deposit,
-		Deadline:        contractModel.Deadline,
-		CreatedAt:       contractModel.CreatedAt,
-		UpdatedAt:       contractModel.UpdatedAt,
-		CreatedBy:       contractModel.CreatedBy,
-		UpdatedBy:       contractModel.UpdatedBy,
+		Code:            contractModel.Code.String,
+		Status:          contractModel.Status.Int64,
+		RenterID:        contractModel.RenterId.Int64,
+		RenterNumber:    contractModel.RenterNumber.String,
+		RenterDate:      contractModel.RenterDate.Int64,
+		RenterAddress:   contractModel.RenterAddress.String,
+		RenterName:      contractModel.RenterName.String,
+		LessorID:        contractModel.LessorId.Int64,
+		LessorNumber:    contractModel.LessorNumber.String,
+		LessorDate:      contractModel.LessorDate.Int64,
+		LessorAddress:   contractModel.LessorAddress.String,
+		LessorName:      contractModel.LessorName.String,
+		RoomID:          contractModel.RoomId.Int64,
+		CheckIn:         contractModel.CheckIn.Int64,
+		Duration:        contractModel.Duration.Int64,
+		Purpose:         contractModel.Purpose.String,
 		ContractRenters: contractRenters,
 		ContractDetails: contractDetails,
+		Payment:         payment,
+		CreatedAt:       contractModel.CreatedAt.Int64,
+		UpdatedAt:       contractModel.UpdatedAt.Int64,
+		CreatedBy:       contractModel.CreatedBy.Int64,
+		UpdatedBy:       contractModel.UpdatedBy.Int64,
 	}
 
 	l.Logger.Info("CreateContract Success", userID)

@@ -39,4 +39,3 @@ service contract-api {
 	@handler CreateContract
 	post /contract (CreateContractReq) returns (CreateContractRes)
 }
-

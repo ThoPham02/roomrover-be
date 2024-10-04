@@ -15,22 +15,19 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Middleware{serverCtx.UserTokenMiddleware},
 			[]rest.Route{
 				{
-					// Momo payment
+					Method:  http.MethodPost,
+					Path:    "/upload",
+					Handler: UploadFilePaymentHandler(serverCtx),
+				},
+				{
 					Method:  http.MethodPost,
 					Path:    "/momo",
 					Handler: MomoPaymentHandler(serverCtx),
 				},
 				{
-					// Momo webhook
 					Method:  http.MethodPost,
 					Path:    "/momo/webhook",
 					Handler: MomoWebhookHandler(serverCtx),
-				},
-				{
-					// Upload file house
-					Method:  http.MethodPost,
-					Path:    "/upload",
-					Handler: UploadFilePaymentHandler(serverCtx),
 				},
 			}...,
 		),

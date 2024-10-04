@@ -55,17 +55,16 @@ service payment-api {
 	)
 	@handler UploadFilePayment
 	post /upload (UploadFilePaymentReq) returns (UploadFilePaymentRes)
-
+	
 	@doc (
 		summary: "Momo payment"
 	)
 	@handler MomoPayment
 	post /momo (MomoPaymentReq) returns (MomoPaymentRes)
-
+	
 	@doc (
 		summary: "Momo webhook"
 	)
 	@handler MomoWebhook
 	post /momo/webhook (MomoWebhookReq) returns (MomoWebhookRes)
 }
-

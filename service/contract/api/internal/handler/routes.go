@@ -15,7 +15,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Middleware{serverCtx.UserTokenMiddleware},
 			[]rest.Route{
 				{
-					// Create contract
 					Method:  http.MethodPost,
 					Path:    "/contract",
 					Handler: CreateContractHandler(serverCtx),
