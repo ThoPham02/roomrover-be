@@ -88,8 +88,9 @@ type FilterContractReq struct {
 }
 
 type FilterContractRes struct {
-	Result Result   `json:"result"`
-	Filter Contract `form:"filter"`
+	Result    Result     `json:"result"`
+	Contracts []Contract `form:"contracts"`
+	Total     int64      `form:"total"`
 }
 
 type Result struct {

@@ -33,6 +33,10 @@ func (af *AccountFunction) GetUserByID(userID int64) (user *model.UserTbl, err e
 	return af.AccountService.Ctx.UserModel.FindOne(context.Background(), userID)
 }
 
+func (af *AccountFunction) GetUsersByIDs(userIDs []int64) (users []*model.UserTbl, err error) {
+	return af.AccountService.Ctx.UserModel.FindByIDs(context.Background(), userIDs)
+}
+
 func (af *AccountFunction) UpdateUser(user *model.UserTbl) error {
 	return af.AccountService.Ctx.UserModel.Update(context.Background(), user)
 }

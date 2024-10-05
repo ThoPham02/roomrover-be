@@ -87,8 +87,9 @@ type (
 		Offset     int64  `form:"offset"`
 	}
 	FilterContractRes {
-		Result Result   `json:"result"`
-		Filter Contract `form:"filter"`
+		Result    Result     `json:"result"`
+		Contracts []Contract `form:"contracts"`
+		Total     int64      `form:"total"`
 	}
 )
 

@@ -17,6 +17,7 @@ type (
 		userTblModel
 		withSession(session sqlx.Session) UserTblModel
 		FindOneByPhone(ctx context.Context, phone string) (*UserTbl, error)
+		FindByIDs(ctx context.Context, userIDs []int64) ([]*UserTbl, error)
 	}
 
 	customUserTblModel struct {
@@ -42,6 +43,29 @@ func (m *customUserTblModel) FindOneByPhone(ctx context.Context, phone string) (
 	switch err {
 	case nil:
 		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, nil
+	default:
+		return nil, err
+	}
+}
+
+func (m *customUserTblModel) FindByIDs(ctx context.Context, userIDs []int64) ([]*UserTbl, error) {
+	if len(userIDs) == 0 {
+		return nil, nil
+	}
+	query := fmt.Sprintf("select %s from %s where `id` in (", userTblRows, m.table)
+	var values []interface{}
+	for _, id := range userIDs {
+		query += "?,"
+		values = append(values, id)
+	}
+	query = query[:len(query)-1] + ")"
+	var resp []*UserTbl
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, values...)
+	switch err {
+	case nil:
+		return resp, nil
 	case sqlc.ErrNotFound:
 		return nil, nil
 	default:
