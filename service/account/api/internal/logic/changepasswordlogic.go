@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"database/sql"
 
 	"roomrover/common"
 	"roomrover/service/account/api/internal/svc"
@@ -86,7 +87,7 @@ func (l *ChangePasswordLogic) ChangePassword(req *types.ChangePasswordReq) (resp
 	}
 
 	userModel.PasswordHash = hashpw
-	userModel.UpdatedAt = common.GetCurrentTime()
+	userModel.UpdatedAt = sql.NullInt64{Valid: true, Int64: common.GetCurrentTime()}
 
 	err = l.svcCtx.UserModel.Update(l.ctx, userModel)
 	if err != nil {

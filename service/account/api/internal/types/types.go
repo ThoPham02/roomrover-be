@@ -140,11 +140,13 @@ type Contract struct {
 	Code            string           `json:"code"`
 	Status          int64            `json:"status"`
 	RenterID        int64            `json:"renterID"`
+	RenterPhone     string           `json:"renterPhone"`
 	RenterNumber    string           `json:"renterNumber"`
 	RenterDate      int64            `json:"renterDate"`
 	RenterAddress   string           `json:"renterAddress"`
 	RenterName      string           `json:"renterName"`
 	LessorID        int64            `json:"lessorID"`
+	LessorPhone     string           `json:"lessorPhone"`
 	LessorNumber    string           `json:"lessorNumber"`
 	LessorDate      int64            `json:"lessorDate"`
 	LessorAddress   string           `json:"lessorAddress"`
@@ -163,9 +165,11 @@ type Contract struct {
 }
 
 type ContractRenter struct {
-	ID         int64 `json:"id"`
-	ContractID int64 `json:"contractID"`
-	RenterID   int64 `json:"renterID"`
+	ID         int64  `json:"id"`
+	ContractID int64  `json:"contractID"`
+	RenterID   int64  `json:"renterID"`
+	Name       string `json:"name"`
+	Phone      string `json:"phone"`
 }
 
 type ContractDetail struct {

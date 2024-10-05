@@ -57,7 +57,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error
 	}
 
 	user = types.User{
-		UserID:    userModel.UserId,
+		UserID:    userModel.Id,
 		Phone:     userModel.Phone,
 		Role:      userModel.Role.Int64,
 		Status:    userModel.Status,
@@ -66,8 +66,8 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error
 		AvatarUrl: userModel.AvatarUrl.String,
 		Birthday:  userModel.Birthday.Int64,
 		Gender:    userModel.Gender.Int64,
-		CreatedAt: userModel.CreatedAt,
-		UpdatedAt: userModel.UpdatedAt,
+		CreatedAt: userModel.CreatedAt.Int64,
+		UpdatedAt: userModel.UpdatedAt.Int64,
 	}
 
 	// Check if the password is correct
@@ -81,7 +81,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error
 	}
 
 	// Generate token
-	token, err := utils.GetJwtToken(accessSecret, iat, accessExpire, userModel.UserId, user)
+	token, err := utils.GetJwtToken(accessSecret, iat, accessExpire, userModel.Id, user)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.LoginRes{

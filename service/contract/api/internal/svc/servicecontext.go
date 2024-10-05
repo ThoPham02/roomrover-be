@@ -21,6 +21,7 @@ type ServiceContext struct {
 	ContractModel       model.ContractTblModel
 	ContractRenterModel model.ContractRenterTblModel
 	ContractDetailModel model.ContractDetailTblModel
+	PaymentModel        model.PaymentTblModel
 
 	AccountFunction accountFunc.AccountFunction
 	InventFunction  inventFunc.InventoryFunction
@@ -35,6 +36,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		ContractModel:       model.NewContractTblModel(sqlx.NewMysql(c.DataSource)),
 		ContractRenterModel: model.NewContractRenterTblModel(sqlx.NewMysql(c.DataSource)),
 		ContractDetailModel: model.NewContractDetailTblModel(sqlx.NewMysql(c.DataSource)),
+		PaymentModel:        model.NewPaymentTblModel(sqlx.NewMysql(c.DataSource)),
 	}
 }
 

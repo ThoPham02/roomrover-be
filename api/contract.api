@@ -1,7 +1,7 @@
 info (
 	title:   "contract models"
 	author:  "thopb"
-	email:   "thoahlgbg2002@gamil.com"
+	email:   "thoahlgbg2002@gmail.com"
 	version: "1.0"
 )
 
@@ -9,33 +9,101 @@ import "model.api"
 
 type (
 	CreateContractReq {
-		RoomID         int64  `form:"roomID"`
-		Description    string `form:"description"`
-		ContractUrl    string `form:"contractUrl"`
-		Start          int64  `form:"start"`
-		End            int64  `form:"end"`
+		RenterID       int64  `form:"renterID"`
+		RenterNumber   string `form:"renterNumber"`
+		RenterDate     int64  `form:"renterDate"`
+		RenterName     string `form:"renterName"`
+		RenterAddress  string `form:"renterAddress"`
+		LessorID       int64  `form:"lessorID"`
+		LessorNumber   string `form:"lessorNumber"`
+		LessorDate     int64  `form:"lessorDate"`
+		LessorName     string `form:"lessorName"`
+		LessorAddress  string `form:"lessorAddress"`
 		ContractRenter string `form:"contractRenter"`
-		ContractDetail string `form:"contractDetail"`
-		Type           int64  `form:"type"`
+		RoomID         int64  `form:"roomID"`
+		EIndex         int64  `form:"eIndex"`
+		WIndex         int64  `form:"wIndex"`
+		CheckIn        int64  `form:"checkIn"`
+		Duration       int64  `form:"duration"`
+		Purpose        string `form:"purpose"`
+		Amount         int64  `form:"amount"`
+		Discount       int64  `form:"discount"`
 		Deposit        int64  `form:"deposit"`
-		Deadline       int64  `form:"deadline"`
-		DepositUrl     string `form:"depositUrl"`
+		DepositDate    int64  `form:"depositDate"`
 	}
 	CreateContractRes {
 		Result   Result   `json:"result"`
 		Contract Contract `json:"contract"`
+	}
+	UpdateContractReq {
+		ID            int64  `path:"id"`
+		RenterID      int64  `form:"renterID"`
+		RenterNumber  string `form:"renterNumber"`
+		RenterDate    string `form:"renterDate"`
+		RenterName    string `form:"renterName"`
+		RenterAddress string `form:"renterAddress"`
+		LessorID      int64  `form:"lessorID"`
+		LessorNumber  string `form:"lessorNumber"`
+		LessorDate    string `form:"lessorDate"`
+		LessorName    string `form:"lessorName"`
+		LessorAddress string `form:"lessorAddress"`
+		RoomID        int64  `form:"roomID"`
+		EIndex        int64  `form:"eIndex"`
+		WIndex        int64  `form:"wIndex"`
+		CheckIn       int64  `form:"checkIn"`
+		Duration      int64  `form:"duration"`
+		Purpose       string `form:"purpose"`
+		Amount        int64  `form:"amount"`
+		Discount      int64  `form:"discount"`
+		Deposit       int64  `form:"deposit"`
+		DepositDate   string `form:"depositDate"`
+	}
+	UpdateContractRes {
+		Result   Result   `json:"result"`
+		Contract Contract `json:"contract"`
+	}
+	GetContractReq {
+		ID int64 `path:"id"`
+	}
+	GetContractRes {
+		Result   Result   `json:"result"`
+		Contract Contract `json:"contract"`
+	}
+	DeleteContractReq {
+		ID int64 `path:"id"`
+	}
+	DeleteContractRes {
+		Result Result `json:"result"`
 	}
 )
 
 @server (
 	jwt:        Auth
 	middleware: UserTokenMiddleware
-	prefix:     /invent
+	prefix:     /contract
 )
 service contract-api {
 	@doc (
 		summary: "Create contract"
 	)
 	@handler CreateContract
-	post /contract (CreateContractReq) returns (CreateContractRes)
+	post / (CreateContractReq) returns (CreateContractRes)
+	
+	@doc (
+		summary: "Update contract"
+	)
+	@handler UpdateContract
+	put /:id (UpdateContractReq) returns (UpdateContractRes)
+	
+	@doc (
+		summary: "Get contract"
+	)
+	@handler GetContract
+	get /:id (GetContractReq) returns (GetContractRes)
+	
+	@doc (
+		summary: "Delete contract"
+	)
+	@handler DeleteContract
+	delete /:id (DeleteContractReq) returns (DeleteContractRes)
 }

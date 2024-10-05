@@ -67,7 +67,7 @@ func (l *UpdateUserLogic) UpdateUser(req *types.UpdateUserReq) (resp *types.Upda
 	userModel.FullName = sql.NullString{String: req.FullName, Valid: true}
 	userModel.Birthday = sql.NullInt64{Int64: req.Dob, Valid: true}
 	userModel.AvatarUrl = sql.NullString{String: req.AvatarUrl, Valid: true}
-	userModel.UpdatedAt = common.GetCurrentTime()
+	userModel.UpdatedAt = sql.NullInt64{Valid: true, Int64: common.GetCurrentTime()}
 
 	err = l.svcCtx.UserModel.Update(l.ctx, userModel)
 	if err != nil {
@@ -87,8 +87,8 @@ func (l *UpdateUserLogic) UpdateUser(req *types.UpdateUserReq) (resp *types.Upda
 		Birthday:  userModel.Birthday.Int64,
 		AvatarUrl: userModel.AvatarUrl.String,
 		Address:   userModel.Address.String,
-		CreatedAt: userModel.CreatedAt,
-		UpdatedAt: userModel.UpdatedAt,
+		CreatedAt: userModel.CreatedAt.Int64,
+		UpdatedAt: userModel.UpdatedAt.Int64,
 	}
 
 	l.Logger.Info("UpdateUser success")

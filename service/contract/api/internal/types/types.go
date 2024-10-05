@@ -2,22 +2,78 @@
 package types
 
 type CreateContractReq struct {
-	RoomID         int64  `form:"roomID"`
-	Description    string `form:"description"`
-	ContractUrl    string `form:"contractUrl"`
-	Start          int64  `form:"start"`
-	End            int64  `form:"end"`
+	RenterID       int64  `form:"renterID"`
+	RenterNumber   string `form:"renterNumber"`
+	RenterDate     int64  `form:"renterDate"`
+	RenterName     string `form:"renterName"`
+	RenterAddress  string `form:"renterAddress"`
+	LessorID       int64  `form:"lessorID"`
+	LessorNumber   string `form:"lessorNumber"`
+	LessorDate     int64  `form:"lessorDate"`
+	LessorName     string `form:"lessorName"`
+	LessorAddress  string `form:"lessorAddress"`
 	ContractRenter string `form:"contractRenter"`
-	ContractDetail string `form:"contractDetail"`
-	Type           int64  `form:"type"`
+	RoomID         int64  `form:"roomID"`
+	EIndex         int64  `form:"eIndex"`
+	WIndex         int64  `form:"wIndex"`
+	CheckIn        int64  `form:"checkIn"`
+	Duration       int64  `form:"duration"`
+	Purpose        string `form:"purpose"`
+	Amount         int64  `form:"amount"`
+	Discount       int64  `form:"discount"`
 	Deposit        int64  `form:"deposit"`
-	Deadline       int64  `form:"deadline"`
-	DepositUrl     string `form:"depositUrl"`
+	DepositDate    int64  `form:"depositDate"`
 }
 
 type CreateContractRes struct {
 	Result   Result   `json:"result"`
 	Contract Contract `json:"contract"`
+}
+
+type UpdateContractReq struct {
+	ID            int64  `path:"id"`
+	RenterID      int64  `form:"renterID"`
+	RenterNumber  string `form:"renterNumber"`
+	RenterDate    string `form:"renterDate"`
+	RenterName    string `form:"renterName"`
+	RenterAddress string `form:"renterAddress"`
+	LessorID      int64  `form:"lessorID"`
+	LessorNumber  string `form:"lessorNumber"`
+	LessorDate    string `form:"lessorDate"`
+	LessorName    string `form:"lessorName"`
+	LessorAddress string `form:"lessorAddress"`
+	RoomID        int64  `form:"roomID"`
+	EIndex        int64  `form:"eIndex"`
+	WIndex        int64  `form:"wIndex"`
+	CheckIn       int64  `form:"checkIn"`
+	Duration      int64  `form:"duration"`
+	Purpose       string `form:"purpose"`
+	Amount        int64  `form:"amount"`
+	Discount      int64  `form:"discount"`
+	Deposit       int64  `form:"deposit"`
+	DepositDate   string `form:"depositDate"`
+}
+
+type UpdateContractRes struct {
+	Result   Result   `json:"result"`
+	Contract Contract `json:"contract"`
+}
+
+type GetContractReq struct {
+	ID int64 `path:"id"`
+}
+
+type GetContractRes struct {
+	Result   Result   `json:"result"`
+	Contract Contract `json:"contract"`
+}
+
+type DeleteContractReq struct {
+	ID int64 `path:"id"`
+}
+
+type DeleteContractRes struct {
+	Result Result `json:"result"`
 }
 
 type Result struct {
@@ -95,11 +151,13 @@ type Contract struct {
 	Code            string           `json:"code"`
 	Status          int64            `json:"status"`
 	RenterID        int64            `json:"renterID"`
+	RenterPhone     string           `json:"renterPhone"`
 	RenterNumber    string           `json:"renterNumber"`
 	RenterDate      int64            `json:"renterDate"`
 	RenterAddress   string           `json:"renterAddress"`
 	RenterName      string           `json:"renterName"`
 	LessorID        int64            `json:"lessorID"`
+	LessorPhone     string           `json:"lessorPhone"`
 	LessorNumber    string           `json:"lessorNumber"`
 	LessorDate      int64            `json:"lessorDate"`
 	LessorAddress   string           `json:"lessorAddress"`
@@ -118,9 +176,11 @@ type Contract struct {
 }
 
 type ContractRenter struct {
-	ID         int64 `json:"id"`
-	ContractID int64 `json:"contractID"`
-	RenterID   int64 `json:"renterID"`
+	ID         int64  `json:"id"`
+	ContractID int64  `json:"contractID"`
+	RenterID   int64  `json:"renterID"`
+	Name       string `json:"name"`
+	Phone      string `json:"phone"`
 }
 
 type ContractDetail struct {

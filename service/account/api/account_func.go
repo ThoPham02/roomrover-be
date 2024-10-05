@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"roomrover/service/account/function"
+	"roomrover/service/account/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -26,4 +27,12 @@ func NewAccountFunction(svc *AccountService) *AccountFunction {
 
 func (contractFunc *AccountFunction) Start() error {
 	return nil
+}
+
+func (af *AccountFunction) GetUserByID(userID int64) (user *model.UserTbl, err error) {
+	return af.AccountService.Ctx.UserModel.FindOne(context.Background(), userID)
+}
+
+func (af *AccountFunction) UpdateUser(user *model.UserTbl) error {
+	return af.AccountService.Ctx.UserModel.Update(context.Background(), user)
 }

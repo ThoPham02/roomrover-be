@@ -10,14 +10,14 @@ import (
 
 type ServiceContext struct {
 	Config    config.Config
-	UserModel model.UsersModel
+	UserModel model.UserTblModel
 	ObjSync   *sync.ObjSync
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:    c,
-		UserModel: model.NewUsersModel(sqlx.NewMysql(c.DataSource)),
+		UserModel: model.NewUserTblModel(sqlx.NewMysql(c.DataSource)),
 		ObjSync:   sync.NewObjSync(1),
 	}
 }

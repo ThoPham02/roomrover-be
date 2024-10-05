@@ -39,9 +39,10 @@ CREATE TABLE `contract_renter_tbl` (
   PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `payment_tl` (
+CREATE TABLE `payment_tbl` (
   `id` bigint,
   `contract_id` bigint,
+  `amount` bigint,
   `discount` bigint,
   `deposit` bigint,
   `deposit_date` bigint,

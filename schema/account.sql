@@ -7,7 +7,7 @@ CREATE TABLE `user_tbl` (
   `address` varchar(255),
   `full_name` varchar(255),
   `avatar_url` varchar(255),
-  `birthday` varchar(255),
+  `birthday` bigint,
   `gender` int,
   `CCCD_number` varchar(255),
   `CCCD_date` bigint,

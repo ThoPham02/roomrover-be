@@ -69,8 +69,8 @@ func (l *GetUserLogic) GetUser(req *types.GetUserReq) (resp *types.GetUserRes, e
 		Birthday:  userModel.Birthday.Int64,
 		AvatarUrl: userModel.AvatarUrl.String,
 		Address:   userModel.Address.String,
-		CreatedAt: userModel.CreatedAt,
-		UpdatedAt: userModel.UpdatedAt,
+		CreatedAt: userModel.CreatedAt.Int64,
+		UpdatedAt: userModel.UpdatedAt.Int64,
 	}
 
 	l.Logger.Info("GetUser success")
