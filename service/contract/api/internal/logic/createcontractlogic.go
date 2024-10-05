@@ -35,7 +35,6 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 	var userID int64
 	var currentTime = common.GetCurrentTime()
 	var orderCode string
-	var nextBill int64
 
 	var contract types.Contract
 	var contractRenters []types.ContractRenter
@@ -67,6 +66,26 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 				Message: common.INVALID_REQUEST_MESS,
 			},
 		}, nil
+	}
+	for _, renter := range contractRenters {
+		userCheck, err := l.svcCtx.AccountFunction.GetUserByID(renter.RenterID)
+		if err != nil {
+			l.Logger.Error(err)
+			return &types.CreateContractRes{
+				Result: types.Result{
+					Code:    common.DB_ERR_CODE,
+					Message: common.DB_ERR_MESS,
+				},
+			}, nil
+		}
+		if userCheck == nil {
+			return &types.CreateContractRes{
+				Result: types.Result{
+					Code:    common.INVALID_REQUEST_CODE,
+					Message: common.INVALID_REQUEST_MESS,
+				},
+			}, nil
+		}
 	}
 
 	renterModel, err = l.svcCtx.AccountFunction.GetUserByID(req.RenterID)
@@ -154,7 +173,7 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 	contractModel = &model.ContractTbl{
 		Id:            l.svcCtx.ObjSync.GenServiceObjID(),
 		Code:          sql.NullString{Valid: true, String: orderCode},
-		Status:        sql.NullInt64{Valid: true, Int64: common.CONTRACT_STATUS_PENDING},
+		Status:        sql.NullInt64{Valid: true, Int64: common.CONTRACT_STATUS_DRAF},
 		RenterId:      sql.NullInt64{Valid: true, Int64: renterModel.Id},
 		RenterNumber:  sql.NullString{Valid: true, String: renterModel.CCCDNumber.String},
 		RenterDate:    sql.NullInt64{Valid: true, Int64: renterModel.CCCDDate.Int64},
@@ -182,7 +201,21 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 		Discount:    sql.NullInt64{Valid: true, Int64: req.Discount},
 		Deposit:     sql.NullInt64{Valid: true, Int64: req.Deposit},
 		DepositDate: sql.NullInt64{Valid: true, Int64: req.DepositDate},
-		NextBill:    sql.NullInt64{Valid: true, Int64: nextBill},
+		NextBill:    sql.NullInt64{Valid: true, Int64: common.GetNextMonthDate(req.CheckIn, 1)},
+	}
+
+	roomModel.EIndex = sql.NullInt64{Int64: req.EIndex, Valid: true}
+	roomModel.WIndex = sql.NullInt64{Int64: req.WIndex, Valid: true}
+	roomModel.Status = common.ROOM_STATUS_RENTED
+	err = l.svcCtx.InventFunction.UpdateRoom(roomModel)
+	if err != nil {
+		l.Logger.Error(err)
+		return &types.CreateContractRes{
+			Result: types.Result{
+				Code:    common.DB_ERR_CODE,
+				Message: common.DB_ERR_MESS,
+			},
+		}, nil
 	}
 
 	for _, service := range serviceModels {
@@ -281,7 +314,7 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 			Discount:    paymentModel.Discount.Int64,
 			Deposit:     paymentModel.Deposit.Int64,
 			DepositDate: paymentModel.DepositDate.Int64,
-			NextBill:    nextBill,
+			NextBill:    paymentModel.NextBill.Int64,
 		},
 		CreatedAt: contractModel.CreatedAt.Int64,
 		UpdatedAt: contractModel.UpdatedAt.Int64,

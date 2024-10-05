@@ -40,4 +40,19 @@ const (
 
 	ROOM_HAS_CONTRACT_CODE = 20002
 	ROOM_HAS_CONTRACT_MESS = "Room has contract"
-)	
+)
+
+// Contract service response code from 30000-39999
+const (
+	CONTRACT_NOT_FOUND_CODE = 30000
+	CONTRACT_NOT_FOUND_MESS = "Contract not found"
+
+	CONTRACT_ALREADY_EXISTS_CODE = 30001
+	CONTRACT_ALREADY_EXISTS_MESS = "Contract already exists"
+
+	CONTRACT_HAS_BEEN_APPROVED_CODE = 30002
+	CONTRACT_HAS_BEEN_APPROVED_MESS = "Contract has been approved"
+
+	CONTRACT_HAS_BEEN_REJECTED_CODE = 30003
+	CONTRACT_HAS_BEEN_REJECTED_MESS = "Contract has been rejected"
+)

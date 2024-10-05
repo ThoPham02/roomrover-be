@@ -81,7 +81,7 @@ func (l *CreateRoomLogic) CreateRoom(req *types.CreateRoomReq) (resp *types.Crea
 		Id:       l.svcCtx.ObjSync.GenServiceObjID(),
 		HouseId:  sql.NullInt64{Int64: req.HouseID, Valid: true},
 		Name:     sql.NullString{String: req.Name, Valid: true},
-		Status:   common.ROOM_STATUS_DRAFT,
+		Status:   common.ROOM_STATUS_INACTIVE,
 		Capacity: sql.NullInt64{Int64: req.Capacity, Valid: true},
 		EIndex:   sql.NullInt64{},
 		WIndex:   sql.NullInt64{},

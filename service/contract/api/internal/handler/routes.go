@@ -34,6 +34,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/:id",
 					Handler: DeleteContractHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/filter",
+					Handler: FilterContractHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),

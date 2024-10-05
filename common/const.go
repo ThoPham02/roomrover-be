@@ -24,9 +24,9 @@ const (
 )
 
 const (
-	ROOM_STATUS_DRAFT    = 1
+	ROOM_STATUS_INACTIVE = 1
 	ROOM_STATUS_ACTIVE   = 2
-	ROOM_STATUS_INACTIVE = 4
+	ROOM_STATUS_RENTED   = 4
 )
 
 const (
@@ -36,7 +36,7 @@ const (
 
 // Contract Service
 const (
-	CONTRACT_STATUS_PENDING  = 1
+	CONTRACT_STATUS_DRAF     = 1
 	CONTRACT_STATUS_ACTIVE   = 2
 	CONTRACT_STATUS_INACTIVE = 4
 )

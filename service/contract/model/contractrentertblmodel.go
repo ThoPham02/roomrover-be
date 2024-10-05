@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
@@ -16,6 +17,8 @@ type (
 		withSession(session sqlx.Session) ContractRenterTblModel
 		InsertMulti(ctx context.Context, data []*ContractRenterTbl) error
 		CountRenterByContractID(ctx context.Context, contractID int64) (int64, error)
+		GetRenterByContractID(ctx context.Context, contractID int64) ([]*ContractRenterTbl, error)
+		DeleteByContractID(ctx context.Context, contractID int64) error
 	}
 
 	customContractRenterTblModel struct {
@@ -51,7 +54,7 @@ func (m *customContractRenterTblModel) InsertMulti(ctx context.Context, data []*
 }
 
 func (m *customContractRenterTblModel) CountRenterByContractID(ctx context.Context, contractID int64) (int64, error) {
-	query := "select count(*) from %s where `contract_id` = ?"
+	query := fmt.Sprintf("select count(*) from %s where `contract_id` = ?", m.table)
 	var resp int64
 	err := m.conn.QueryRowCtx(ctx, &resp, query, contractID)
 	switch err {
@@ -62,4 +65,24 @@ func (m *customContractRenterTblModel) CountRenterByContractID(ctx context.Conte
 	default:
 		return 0, err
 	}
+}
+
+func (m *customContractRenterTblModel) GetRenterByContractID(ctx context.Context, contractID int64) ([]*ContractRenterTbl, error) {
+	query := fmt.Sprintf("select %s from %s where `contract_id` = ?", contractRenterTblRows, m.table)
+	var resp []*ContractRenterTbl
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, contractID)
+	switch err {
+	case nil:
+		return resp, nil
+	case sqlx.ErrNotFound:
+		return nil, nil
+	default:
+		return nil, err
+	}
+}
+
+func (m *customContractRenterTblModel) DeleteByContractID(ctx context.Context, contractID int64) error {
+	query := fmt.Sprintf("delete from %s where `contract_id` =?", m.table)
+	_, err := m.conn.ExecCtx(ctx, query, contractID)
+	return err
 }

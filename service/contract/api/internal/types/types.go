@@ -31,27 +31,29 @@ type CreateContractRes struct {
 }
 
 type UpdateContractReq struct {
-	ID            int64  `path:"id"`
-	RenterID      int64  `form:"renterID"`
-	RenterNumber  string `form:"renterNumber"`
-	RenterDate    string `form:"renterDate"`
-	RenterName    string `form:"renterName"`
-	RenterAddress string `form:"renterAddress"`
-	LessorID      int64  `form:"lessorID"`
-	LessorNumber  string `form:"lessorNumber"`
-	LessorDate    string `form:"lessorDate"`
-	LessorName    string `form:"lessorName"`
-	LessorAddress string `form:"lessorAddress"`
-	RoomID        int64  `form:"roomID"`
-	EIndex        int64  `form:"eIndex"`
-	WIndex        int64  `form:"wIndex"`
-	CheckIn       int64  `form:"checkIn"`
-	Duration      int64  `form:"duration"`
-	Purpose       string `form:"purpose"`
-	Amount        int64  `form:"amount"`
-	Discount      int64  `form:"discount"`
-	Deposit       int64  `form:"deposit"`
-	DepositDate   string `form:"depositDate"`
+	ID             int64  `path:"id"`
+	Status         int64  `form:"status"`
+	RenterID       int64  `form:"renterID"`
+	RenterNumber   string `form:"renterNumber"`
+	RenterDate     string `form:"renterDate"`
+	RenterName     string `form:"renterName"`
+	RenterAddress  string `form:"renterAddress"`
+	LessorID       int64  `form:"lessorID"`
+	LessorNumber   string `form:"lessorNumber"`
+	LessorDate     string `form:"lessorDate"`
+	LessorName     string `form:"lessorName"`
+	LessorAddress  string `form:"lessorAddress"`
+	ContractRenter string `form:"contractRenter"`
+	RoomID         int64  `form:"roomID"`
+	EIndex         int64  `form:"eIndex"`
+	WIndex         int64  `form:"wIndex"`
+	CheckIn        int64  `form:"checkIn"`
+	Duration       int64  `form:"duration"`
+	Purpose        string `form:"purpose"`
+	Amount         int64  `form:"amount"`
+	Discount       int64  `form:"discount"`
+	Deposit        int64  `form:"deposit"`
+	DepositDate    int64  `form:"depositDate"`
 }
 
 type UpdateContractRes struct {
@@ -74,6 +76,20 @@ type DeleteContractReq struct {
 
 type DeleteContractRes struct {
 	Result Result `json:"result"`
+}
+
+type FilterContractReq struct {
+	Search     string `form:"search"`
+	CreateFrom int64  `form:"createFrom"`
+	CreateTo   int64  `form:"createTo"`
+	Status     int64  `form:"status"`
+	Limit      int64  `form:"limit"`
+	Offset     int64  `form:"offset"`
+}
+
+type FilterContractRes struct {
+	Result Result   `json:"result"`
+	Filter Contract `form:"filter"`
 }
 
 type Result struct {
