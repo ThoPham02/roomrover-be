@@ -79,10 +79,10 @@ type (
 	}
 
 	FilterContractReq {
-		Search     string `form:"search"`
-		CreateFrom int64  `form:"createFrom"`
-		CreateTo   int64  `form:"createTo"`
-		Status     int64  `form:"status"`
+		Search     string `form:"search,optional"`
+		CreateFrom int64  `form:"createFrom,optional"`
+		CreateTo   int64  `form:"createTo,optional"`
+		Status     int64  `form:"status,optional"`
 		Limit      int64  `form:"limit"`
 		Offset     int64  `form:"offset"`
 	}
