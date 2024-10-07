@@ -18,6 +18,8 @@ type (
 		withSession(session sqlx.Session) UserTblModel
 		FindOneByPhone(ctx context.Context, phone string) (*UserTbl, error)
 		FindByIDs(ctx context.Context, userIDs []int64) ([]*UserTbl, error)
+		FilterUser(ctx context.Context, phone string, limit, offset int64) ([]*UserTbl, error)
+		CountUser(ctx context.Context, phone string) (int, error)
 	}
 
 	customUserTblModel struct {
@@ -71,4 +73,42 @@ func (m *customUserTblModel) FindByIDs(ctx context.Context, userIDs []int64) ([]
 	default:
 		return nil, err
 	}
+}
+
+func (m *customUserTblModel) FilterUser(ctx context.Context, phone string, limit, offset int64) ([]*UserTbl, error) {
+	query := fmt.Sprintf("select %s from %s where `phone` like ?", userTblRows, m.table)
+	var resp []*UserTbl
+	var vals []interface{}
+	vals = append(vals, "%"+phone+"%")
+	if limit > 0 {
+        query += " limit ? offset ?"
+        vals = append(vals, limit, offset)
+    }
+
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, vals...)
+	switch err {
+	case nil:
+		return resp, nil
+	case sqlc.ErrNotFound:
+		return nil, nil
+	default:
+		return nil, err
+	}
+}
+
+func (m *customUserTblModel) CountUser(ctx context.Context, phone string) (int, error) {
+	query := fmt.Sprintf("select count(*) from %s where `phone` like ?", m.table)
+    var resp int
+    var vals []interface{}
+    vals = append(vals, "%"+phone+"%")
+
+    err := m.conn.QueryRowCtx(ctx, &resp, query, vals...)
+    switch err {
+    case nil:
+        return resp, nil
+    case sqlc.ErrNotFound:
+        return 0, nil
+    default:
+        return 0, err
+    }
 }
