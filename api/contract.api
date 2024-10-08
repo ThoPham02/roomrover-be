@@ -9,25 +9,15 @@ import "model.api"
 
 type (
 	CreateContractReq {
-		RenterID       int64  `form:"renterID"`
-		RenterNumber   string `form:"renterNumber"`
-		RenterDate     int64  `form:"renterDate"`
-		RenterName     string `form:"renterName"`
-		RenterAddress  string `form:"renterAddress"`
-		LessorID       int64  `form:"lessorID"`
-		LessorNumber   string `form:"lessorNumber"`
-		LessorDate     int64  `form:"lessorDate"`
-		LessorName     string `form:"lessorName"`
-		LessorAddress  string `form:"lessorAddress"`
-		ContractRenter string `form:"contractRenter"`
-		RoomID         int64  `form:"roomID"`
-		EIndex         int64  `form:"eIndex"`
-		WIndex         int64  `form:"wIndex"`
+		Renter         string `form:"renter"`
+		Lessor         string `form:"lessor"`
+		ContractRenter string `form:"contractRenter,optional"`
+		Room           string `form:"room"`
 		CheckIn        int64  `form:"checkIn"`
 		Duration       int64  `form:"duration"`
 		Purpose        string `form:"purpose"`
-		Amount         int64  `form:"amount"`
-		Discount       int64  `form:"discount"`
+		Price          int64  `form:"price"`
+		Discount       int64  `form:"discount,optional"`
 		Deposit        int64  `form:"deposit"`
 		DepositDate    int64  `form:"depositDate"`
 	}

@@ -30,13 +30,11 @@ func (l *FilterRoomLogic) FilterRoom(req *types.FilterRoomReq) (resp *types.Filt
 
 	var userID int64
 	var total int
-	var houseIDs []int64
 	var mapHouse = map[int64]*model.HouseTbl{}
 
 	var rooms []types.Room
 
 	var roomModels []*model.RoomTbl
-	var houseModels []*model.HouseTbl
 
 	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
@@ -81,21 +79,19 @@ func (l *FilterRoomLogic) FilterRoom(req *types.FilterRoomReq) (resp *types.Filt
 	}
 
 	for _, roomModel := range roomModels {
-		houseIDs = append(houseIDs, roomModel.HouseId.Int64)
-	}
+		var houseModel *model.HouseTbl
+		houseModel, err = l.svcCtx.HouseModel.FindOne(l.ctx, roomModel.HouseId.Int64)
+		if err != nil {
+			l.Logger.Error(err)
+			return &types.FilterRoomRes{
+				Result: types.Result{
+					Code:    common.DB_ERR_CODE,
+					Message: common.DB_ERR_MESS,
+				},
+			}, nil
+		}
 
-	houseModels, err = l.svcCtx.HouseModel.FindMultiByID(l.ctx, houseIDs)
-	if err != nil {
-		l.Logger.Error(err)
-		return &types.FilterRoomRes{
-			Result: types.Result{
-				Code:    common.DB_ERR_CODE,
-				Message: common.DB_ERR_MESS,
-			},
-		}, nil
-	}
-	for _, houseModel := range houseModels {
-		mapHouse[houseModel.Id] = houseModel
+		mapHouse[roomModel.HouseId.Int64] = houseModel
 	}
 
 	for _, roomModel := range roomModels {

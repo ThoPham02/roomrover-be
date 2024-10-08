@@ -144,6 +144,7 @@ type GetRoomByHouseRes struct {
 type FilterRoomReq struct {
 	Search string `form:"search,optional"`
 	Type   int64  `form:"type,optional"`
+	Status int64  `form:"status,optional"`
 	Limit  int64  `form:"limit"`
 	Offset int64  `form:"offset"`
 }

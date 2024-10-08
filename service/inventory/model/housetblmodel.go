@@ -57,6 +57,10 @@ func (m *customHouseTblModel) FilterHouse(ctx context.Context, userID int64, sea
 	return total, listHouses, nil
 }
 func (m *customHouseTblModel) FindMultiByID(ctx context.Context, ids []int64) ([]*HouseTbl, error) {
+	if len(ids) == 0 {
+		return nil, nil
+	}
+	
 	var listHouse []*HouseTbl
 	var vals []interface{}
 	query := fmt.Sprintf("select %s from %s where `id` in (", houseTblRows, m.table)

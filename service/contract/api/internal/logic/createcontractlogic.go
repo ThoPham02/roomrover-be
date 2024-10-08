@@ -43,11 +43,14 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 	var contract types.Contract
 	var contractRenters []types.ContractRenter
 	var contractDetails []types.ContractDetail
+	var renter types.User
+	var lessor types.User
+	var room types.Room
 
 	var renterModel *accountModel.UserTbl
 	var lessorModel *accountModel.UserTbl
 	var roomModel *inventoryModel.RoomTbl
-	// var houseModel *inventoryModel.HouseTbl
+
 	var serviceModels []*inventoryModel.ServiceTbl
 	var contractModel *model.ContractTbl
 	var paymentModel *model.PaymentTbl
@@ -62,7 +65,7 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 		}, nil
 	}
 
-	err = json.Unmarshal([]byte(req.ContractRenter), &contractRenters)
+	err = json.Unmarshal([]byte(req.Renter), &renter)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.CreateContractRes{
@@ -72,18 +75,30 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 			},
 		}, nil
 	}
-	for _, renter := range contractRenters {
-		userCheck, err := l.svcCtx.AccountFunction.GetUserByID(renter.RenterID)
+	err = json.Unmarshal([]byte(req.Lessor), &lessor)
+	if err != nil {
+		l.Logger.Error(err)
+		return &types.CreateContractRes{
+			Result: types.Result{
+				Code:    common.INVALID_REQUEST_CODE,
+				Message: common.INVALID_REQUEST_MESS,
+			},
+		}, nil
+	}
+	err = json.Unmarshal([]byte(req.Room), &room)
+	if err != nil {
+		l.Logger.Error(err)
+		return &types.CreateContractRes{
+			Result: types.Result{
+				Code:    common.INVALID_REQUEST_CODE,
+				Message: common.INVALID_REQUEST_MESS,
+			},
+		}, nil
+	}
+	if len(req.ContractRenter) > 0 {
+		err = json.Unmarshal([]byte(req.ContractRenter), &contractRenters)
 		if err != nil {
 			l.Logger.Error(err)
-			return &types.CreateContractRes{
-				Result: types.Result{
-					Code:    common.DB_ERR_CODE,
-					Message: common.DB_ERR_MESS,
-				},
-			}, nil
-		}
-		if userCheck == nil {
 			return &types.CreateContractRes{
 				Result: types.Result{
 					Code:    common.INVALID_REQUEST_CODE,
@@ -91,9 +106,29 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 				},
 			}, nil
 		}
+		for _, renter := range contractRenters {
+			userCheck, err := l.svcCtx.AccountFunction.GetUserByID(renter.RenterID)
+			if err != nil {
+				l.Logger.Error(err)
+				return &types.CreateContractRes{
+					Result: types.Result{
+						Code:    common.DB_ERR_CODE,
+						Message: common.DB_ERR_MESS,
+					},
+				}, nil
+			}
+			if userCheck == nil {
+				return &types.CreateContractRes{
+					Result: types.Result{
+						Code:    common.INVALID_REQUEST_CODE,
+						Message: common.INVALID_REQUEST_MESS,
+					},
+				}, nil
+			}
+		}
 	}
 
-	renterModel, err = l.svcCtx.AccountFunction.GetUserByID(req.RenterID)
+	renterModel, err = l.svcCtx.AccountFunction.GetUserByID(renter.UserID)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.CreateContractRes{
@@ -103,7 +138,7 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 			},
 		}, nil
 	}
-	lessorModel, err = l.svcCtx.AccountFunction.GetUserByID(req.LessorID)
+	lessorModel, err = l.svcCtx.AccountFunction.GetUserByID(lessor.UserID)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.CreateContractRes{
@@ -113,7 +148,7 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 			},
 		}, nil
 	}
-	roomModel, err = l.svcCtx.InventFunction.GetRoomByID(req.RoomID)
+	roomModel, err = l.svcCtx.InventFunction.GetRoomByID(room.RoomID)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.CreateContractRes{
@@ -132,7 +167,7 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 		}, nil
 	}
 
-	serviceModels, err = l.svcCtx.InventFunction.GetSericesByRoom(req.RoomID)
+	serviceModels, err = l.svcCtx.InventFunction.GetSericesByRoom(room.RoomID)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.CreateContractRes{
@@ -143,10 +178,10 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 		}, nil
 	}
 
-	renterModel.CCCDNumber = sql.NullString{String: req.RenterNumber, Valid: true}
-	renterModel.CCCDDate = sql.NullInt64{Int64: req.RenterDate, Valid: true}
-	renterModel.CCCDAddress = sql.NullString{String: req.RenterAddress, Valid: true}
-	renterModel.FullName = sql.NullString{String: req.RenterName, Valid: true}
+	renterModel.CCCDNumber = sql.NullString{String: renter.CccdNumber, Valid: true}
+	renterModel.CCCDDate = sql.NullInt64{Int64: renter.CccdDate, Valid: true}
+	renterModel.CCCDAddress = sql.NullString{String: renter.CccdAddress, Valid: true}
+	renterModel.FullName = sql.NullString{String: renter.FullName, Valid: true}
 	renterModel.UpdatedAt = sql.NullInt64{Int64: currentTime, Valid: true}
 	err = l.svcCtx.AccountFunction.UpdateUser(renterModel)
 	if err != nil {
@@ -159,10 +194,10 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 		}, nil
 	}
 
-	lessorModel.CCCDNumber = sql.NullString{String: req.LessorNumber, Valid: true}
-	lessorModel.CCCDDate = sql.NullInt64{Int64: req.LessorDate, Valid: true}
-	lessorModel.CCCDAddress = sql.NullString{String: req.LessorAddress, Valid: true}
-	lessorModel.FullName = sql.NullString{String: req.LessorName, Valid: true}
+	lessorModel.CCCDNumber = sql.NullString{String: lessor.CccdNumber, Valid: true}
+	lessorModel.CCCDDate = sql.NullInt64{Int64: lessor.CccdDate, Valid: true}
+	lessorModel.CCCDAddress = sql.NullString{String: lessor.CccdAddress, Valid: true}
+	lessorModel.FullName = sql.NullString{String: lessor.FullName, Valid: true}
 	lessorModel.UpdatedAt = sql.NullInt64{Int64: currentTime, Valid: true}
 	err = l.svcCtx.AccountFunction.UpdateUser(lessorModel)
 	if err != nil {
@@ -215,15 +250,15 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 	paymentModel = &model.PaymentTbl{
 		Id:          l.svcCtx.ObjSync.GenServiceObjID(),
 		ContractId:  sql.NullInt64{Valid: true, Int64: contractModel.Id},
-		Amount:      sql.NullInt64{Valid: true, Int64: req.Amount},
+		Amount:      sql.NullInt64{Valid: true, Int64: req.Price},
 		Discount:    sql.NullInt64{Valid: true, Int64: req.Discount},
 		Deposit:     sql.NullInt64{Valid: true, Int64: req.Deposit},
 		DepositDate: sql.NullInt64{Valid: true, Int64: req.DepositDate},
 		NextBill:    sql.NullInt64{Valid: true, Int64: common.GetNextMonthDate(req.CheckIn, 1)},
 	}
 
-	roomModel.EIndex = sql.NullInt64{Int64: req.EIndex, Valid: true}
-	roomModel.WIndex = sql.NullInt64{Int64: req.WIndex, Valid: true}
+	roomModel.EIndex = sql.NullInt64{Int64: room.EIndex, Valid: true}
+	roomModel.WIndex = sql.NullInt64{Int64: room.WIndex, Valid: true}
 	roomModel.Status = common.ROOM_STATUS_RENTED
 	err = l.svcCtx.InventFunction.UpdateRoom(roomModel)
 	if err != nil {
