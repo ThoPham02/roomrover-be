@@ -57,17 +57,20 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error
 	}
 
 	user = types.User{
-		UserID:    userModel.Id,
-		Phone:     userModel.Phone,
-		Role:      userModel.Role.Int64,
-		Status:    userModel.Status,
-		Address:   userModel.Address.String,
-		FullName:  userModel.FullName.String,
-		AvatarUrl: userModel.AvatarUrl.String,
-		Birthday:  userModel.Birthday.Int64,
-		Gender:    userModel.Gender.Int64,
-		CreatedAt: userModel.CreatedAt.Int64,
-		UpdatedAt: userModel.UpdatedAt.Int64,
+		UserID:      userModel.Id,
+		Phone:       userModel.Phone,
+		Role:        userModel.Role.Int64,
+		Status:      userModel.Status,
+		Address:     userModel.Address.String,
+		FullName:    userModel.FullName.String,
+		AvatarUrl:   userModel.AvatarUrl.String,
+		Birthday:    userModel.Birthday.Int64,
+		Gender:      userModel.Gender.Int64,
+		CccdNumber:  userModel.CCCDNumber.String,
+		CccdDate:    userModel.CCCDDate.Int64,
+		CccdAddress: userModel.CCCDAddress.String,
+		CreatedAt:   userModel.CreatedAt.Int64,
+		UpdatedAt:   userModel.UpdatedAt.Int64,
 	}
 
 	// Check if the password is correct

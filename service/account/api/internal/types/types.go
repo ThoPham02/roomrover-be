@@ -65,6 +65,17 @@ type UploadFileRes struct {
 	AvatarUrl string `json:"avatar_url"`
 }
 
+type FilterUserReq struct {
+	SearchPhone string `form:"searchPhone,optional"`
+	Limit       int64  `form:"limit,optional"`
+	Offset      int64  `form:"offset,optional"`
+}
+
+type FilterUserRes struct {
+	Result Result `json:"result"`
+	Users  []User `json:"users"`
+}
+
 type Result struct {
 	Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
 	Message string `json:"message"` // Result message: detail response code

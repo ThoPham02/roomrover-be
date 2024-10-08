@@ -77,6 +77,18 @@ type (
 	}
 )
 
+type (
+	FilterUserReq {
+		SearchPhone string `form:"searchPhone,optional"`
+		Limit       int64  `form:"limit,optional"`
+		Offset      int64  `form:"offset,optional"`
+	}
+	FilterUserRes {
+		Result Result `json:"result"`
+		Users  []User `json:"users"`
+	}
+)
+
 @server (
 	prefix: /users
 )
@@ -92,6 +104,12 @@ service account-api {
 	)
 	@handler Register
 	post /register (RegisterReq) returns (RegisterRes)
+	
+	@doc (
+		summary: "Filter User"
+	)
+	@handler FilterUser
+	get /filter (FilterUserReq) returns (FilterUserRes)
 }
 
 @server (
