@@ -16,6 +16,7 @@ type (
 		houseTblModel
 		withSession(session sqlx.Session) HouseTblModel
 		FilterHouse(ctx context.Context, userID int64, search string, limit, offset int64) (total int64, listHouses []*HouseTbl, err error)
+		FindMultiByID(ctx context.Context, ids []int64) ([]*HouseTbl, error)
 	}
 
 	customHouseTblModel struct {
@@ -54,4 +55,20 @@ func (m *customHouseTblModel) FilterHouse(ctx context.Context, userID int64, sea
 	}
 
 	return total, listHouses, nil
+}
+func (m *customHouseTblModel) FindMultiByID(ctx context.Context, ids []int64) ([]*HouseTbl, error) {
+	var listHouse []*HouseTbl
+	var vals []interface{}
+	query := fmt.Sprintf("select %s from %s where `id` in (", houseTblRows, m.table)
+	for id := range ids {
+		query += "?,"
+		vals = append(vals, id)
+	}
+	query = query[:len(query)-1] + ")"
+
+	err := m.conn.QueryRowsCtx(ctx, &listHouse, query, vals...)
+	if err != nil {
+		return nil, err
+	}
+	return listHouse, nil
 }

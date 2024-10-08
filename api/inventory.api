@@ -180,6 +180,18 @@ type (
 		Total  int    `json:"total"`
 		Rooms  []Room `json:"rooms"`
 	}
+	FilterRoomReq {
+		Search string `form:"search,optional"`
+		Type   int64  `form:"type,optional"`
+		Status int64  `form:"status,optional"`
+		Limit  int64  `form:"limit"`
+		Offset int64  `form:"offset"`
+	}
+	FilterRoomRes {
+		Result Result `json:"result"`
+		Total  int    `json:"total"`
+		Rooms  []Room `json:"rooms"`
+	}
 )
 
 @server (
@@ -217,6 +229,12 @@ service invent-api {
 	)
 	@handler GetRoomByHouse
 	get /room/house/:id (GetRoomByHouseReq) returns (GetRoomByHouseRes)
+	
+	@doc (
+		summary: "Filter Room"
+	)
+	@handler FilterRoom
+	get /room/filter (FilterRoomReq) returns (FilterRoomRes)
 }
 
 type (

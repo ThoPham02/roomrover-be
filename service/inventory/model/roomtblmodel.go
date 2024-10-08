@@ -17,6 +17,8 @@ type (
 		withSession(session sqlx.Session) RoomTblModel
 		FindByHouseID(ctx context.Context, houseID, limit, offset int64) ([]*RoomTbl, int, error)
 		DeleteByHouseID(ctx context.Context, houseID int64) error
+		CountRoom(ctx context.Context, search string, houseType int64) (int, error)
+		FilterRoom(ctx context.Context, search string, houseType, limit, offset int64) ([]*RoomTbl, error)
 	}
 
 	customRoomTblModel struct {
@@ -59,4 +61,45 @@ func (m *customRoomTblModel) DeleteByHouseID(ctx context.Context, houseID int64)
 	query := fmt.Sprintf("delete from %s where `house_id` = ?", m.table)
 	_, err := m.conn.ExecCtx(ctx, query, houseID)
 	return err
+}
+
+func (m *customRoomTblModel) FilterRoom(ctx context.Context, search string, houseType, limit, offset int64) ([]*RoomTbl, error) {
+	query := fmt.Sprintf("select %s from %s where `name` like ? ", roomTblRows, m.table)
+	var vals []interface{}
+	vals = append(vals, "%"+search+"%")
+
+	if houseType != 0 {
+		query += " and `house_id` in (select `id` from `house_tbl` where `type` = ?)"
+		vals = append(vals, houseType)
+	}
+	if limit > 0 {
+		query += " limit ? offset ?"
+		vals = append(vals, limit, offset) 
+	}
+
+	var resp []*RoomTbl
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, vals...)
+	switch err {
+	case nil:
+		return resp, nil
+	case sqlx.ErrNotFound:
+		return nil, nil
+	default:
+		return nil, err
+	}
+}
+
+func (m *customRoomTblModel) CountRoom(ctx context.Context, search string, houseType int64) (int, error) {
+	query := fmt.Sprintf("select count(*) from %s where `name` like ? ", m.table)
+	var vals []interface{}
+	vals = append(vals, "%"+search+"%")
+
+	if houseType != 0 {
+		query += " and `house_id` in (select `id` from `house_tbl` where `type` = ?)"
+		vals = append(vals, houseType)
+	}
+
+	var total int
+	err := m.conn.QueryRowCtx(ctx, &total, query, vals...)
+	return total, err
 }

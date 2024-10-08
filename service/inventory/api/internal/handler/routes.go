@@ -84,6 +84,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/room/house/:id",
 					Handler: GetRoomByHouseHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/room/filter",
+					Handler: FilterRoomHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),

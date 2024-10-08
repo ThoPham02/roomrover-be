@@ -141,6 +141,19 @@ type GetRoomByHouseRes struct {
 	Rooms  []Room `json:"rooms"`
 }
 
+type FilterRoomReq struct {
+	Search string `form:"search,optional"`
+	Type   int64  `form:"type,optional"`
+	Limit  int64  `form:"limit"`
+	Offset int64  `form:"offset"`
+}
+
+type FilterRoomRes struct {
+	Result Result `json:"result"`
+	Total  int    `json:"total"`
+	Rooms  []Room `json:"rooms"`
+}
+
 type CreateServiceReq struct {
 	HouseID int64  `form:"houseID"`
 	Name    string `form:"name"`
@@ -244,13 +257,17 @@ type Album struct {
 }
 
 type Room struct {
-	RoomID   int64  `json:"roomID"`
-	HouseID  int64  `json:"houseID"`
-	Name     string `json:"name"`
-	Status   int64  `json:"status"`
-	Capacity int64  `json:"capacity"`
-	EIndex   int64  `json:"eIndex"`
-	WIndex   int64  `json:"wIndex"`
+	RoomID    int64  `json:"roomID"`
+	HouseID   int64  `json:"houseID"`
+	HouseName string `json:"houseName"`
+	Area      int64  `json:"area"`
+	Price     int64  `json:"price"`
+	Type      int64  `json:"type"`
+	Name      string `json:"name"`
+	Status    int64  `json:"status"`
+	Capacity  int64  `json:"capacity"`
+	EIndex    int64  `json:"eIndex"`
+	WIndex    int64  `json:"wIndex"`
 }
 
 type Service struct {
