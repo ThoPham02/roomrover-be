@@ -34,11 +34,16 @@ type GetUserRes struct {
 }
 
 type UpdateUserReq struct {
-	FullName  string `form:"full_name,optional"`
-	Dob       int64  `form:"dob,optional"`
-	Address   string `form:"address,optional"`
-	AvatarUrl string `form:"avatar_url,optional"`
-	Gender    int64  `form:"gender"`
+	UserID      int64  `path:"id"`
+	Password    string `form:"password,optional"`
+	FullName    string `form:"fullName,optional"`
+	Birthday    int64  `form:"birthday,optional"`
+	Address     string `form:"address,optional"`
+	AvatarUrl   string `form:"avatarUrl,optional"`
+	Gender      int64  `form:"gender,optional"`
+	CccdNumber  string `form:"cccdNumber,optional"`
+	CccdDate    int64  `form:"cccdDate,optional"`
+	CccdAddress string `form:"cccdAddress,optional"`
 }
 
 type UpdateUserRes struct {

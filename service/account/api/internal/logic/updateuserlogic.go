@@ -8,6 +8,7 @@ import (
 	"roomrover/service/account/api/internal/svc"
 	"roomrover/service/account/api/internal/types"
 	"roomrover/service/account/model"
+	"roomrover/service/account/utils"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -64,8 +65,27 @@ func (l *UpdateUserLogic) UpdateUser(req *types.UpdateUserReq) (resp *types.Upda
 		}, nil
 	}
 
+	if req.Password != "" {
+		if len(req.Password) < 6 {
+			return &types.UpdateUserRes{
+				Result: types.Result{
+					Code:    common.INVALID_REQUEST_CODE,
+					Message: common.INVALID_REQUEST_MESS,
+				},
+			}, nil
+		}
+		hashedPassword, _ := utils.HashPassword(req.Password)
+		userModel.PasswordHash = hashedPassword
+	}
+
+	userModel.AvatarUrl = sql.NullString{String: req.AvatarUrl, Valid: true}
 	userModel.FullName = sql.NullString{String: req.FullName, Valid: true}
-	userModel.Birthday = sql.NullInt64{Int64: req.Dob, Valid: true}
+	userModel.Address = sql.NullString{String: req.Address, Valid: true}
+	userModel.Birthday = sql.NullInt64{Int64: req.Birthday, Valid: true}
+	userModel.Gender = sql.NullInt64{Int64: req.Gender, Valid: true}
+	userModel.CCCDNumber = sql.NullString{String: req.CccdNumber, Valid: true}
+	userModel.CCCDDate = sql.NullInt64{Int64: req.CccdDate, Valid: true}
+	userModel.CCCDAddress = sql.NullString{String: req.CccdAddress, Valid: true}
 	userModel.AvatarUrl = sql.NullString{String: req.AvatarUrl, Valid: true}
 	userModel.UpdatedAt = sql.NullInt64{Valid: true, Int64: common.GetCurrentTime()}
 
