@@ -4,6 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"fmt"
+	"strconv"
+	"time"
 
 	"roomrover/common"
 	accountModel "roomrover/service/account/model"
@@ -34,7 +37,8 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 
 	var userID int64
 	var currentTime = common.GetCurrentTime()
-	var orderCode string
+	var contractCode string
+	var codeTime = time.Now().Format("20060102")
 
 	var contract types.Contract
 	var contractRenters []types.ContractRenter
@@ -43,6 +47,7 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 	var renterModel *accountModel.UserTbl
 	var lessorModel *accountModel.UserTbl
 	var roomModel *inventoryModel.RoomTbl
+	// var houseModel *inventoryModel.HouseTbl
 	var serviceModels []*inventoryModel.ServiceTbl
 	var contractModel *model.ContractTbl
 	var paymentModel *model.PaymentTbl
@@ -170,9 +175,22 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 		}, nil
 	}
 
+	keyContractCode := "CONTRACT|" + strconv.FormatInt(userID, 10) + "|" + codeTime + "|"
+	count, err := l.svcCtx.ContractRedis.IncreaseContractCode(l.ctx, keyContractCode, 24*time.Hour)
+	if err != nil {
+		l.Logger.Error(err)
+		return &types.CreateContractRes{
+			Result: types.Result{
+				Code:    common.DB_ERR_CODE,
+				Message: common.DB_ERR_MESS,
+			},
+		}, nil
+	}
+	contractCode = codeTime + fmt.Sprintf("%03d", int64(count))
+
 	contractModel = &model.ContractTbl{
 		Id:            l.svcCtx.ObjSync.GenServiceObjID(),
-		Code:          sql.NullString{Valid: true, String: orderCode},
+		Code:          sql.NullString{Valid: true, String: contractCode},
 		Status:        sql.NullInt64{Valid: true, Int64: common.CONTRACT_STATUS_DRAF},
 		RenterId:      sql.NullInt64{Valid: true, Int64: renterModel.Id},
 		RenterNumber:  sql.NullString{Valid: true, String: renterModel.CCCDNumber.String},
@@ -286,22 +304,29 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 	}
 
 	contract = types.Contract{
-		ContractID:      contractModel.Id,
-		Code:            contractModel.Code.String,
-		Status:          contractModel.Status.Int64,
-		RenterID:        contractModel.RenterId.Int64,
-		RenterPhone:     renterModel.Phone,
-		RenterNumber:    contractModel.RenterNumber.String,
-		RenterDate:      contractModel.RenterDate.Int64,
-		RenterAddress:   contractModel.RenterAddress.String,
-		RenterName:      contractModel.RenterName.String,
-		LessorID:        contractModel.LessorId.Int64,
-		LessorPhone:     lessorModel.Phone,
-		LessorNumber:    contractModel.LessorNumber.String,
-		LessorDate:      contractModel.LessorDate.Int64,
-		LessorAddress:   contractModel.LessorAddress.String,
-		LessorName:      contractModel.LessorName.String,
-		RoomID:          contractModel.RoomId.Int64,
+		ContractID:    contractModel.Id,
+		Code:          contractModel.Code.String,
+		Status:        contractModel.Status.Int64,
+		RenterID:      contractModel.RenterId.Int64,
+		RenterPhone:   renterModel.Phone,
+		RenterNumber:  contractModel.RenterNumber.String,
+		RenterDate:    contractModel.RenterDate.Int64,
+		RenterAddress: contractModel.RenterAddress.String,
+		RenterName:    contractModel.RenterName.String,
+		LessorID:      contractModel.LessorId.Int64,
+		LessorPhone:   lessorModel.Phone,
+		LessorNumber:  contractModel.LessorNumber.String,
+		LessorDate:    contractModel.LessorDate.Int64,
+		LessorAddress: contractModel.LessorAddress.String,
+		LessorName:    contractModel.LessorName.String,
+		Room: types.Room{
+			RoomID:   roomModel.Id,
+			Name:     roomModel.Name.String,
+			Status:   roomModel.Status,
+			Capacity: roomModel.Capacity.Int64,
+			EIndex:   roomModel.EIndex.Int64,
+			WIndex:   roomModel.WIndex.Int64,
+		},
 		CheckIn:         contractModel.CheckIn.Int64,
 		Duration:        contractModel.Duration.Int64,
 		Purpose:         contractModel.Purpose.String,

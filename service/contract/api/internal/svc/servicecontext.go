@@ -6,11 +6,12 @@ import (
 	"roomrover/service/contract/model"
 	"roomrover/sync"
 
-	"github.com/zeromicro/go-zero/core/stores/sqlx"
-	"github.com/zeromicro/go-zero/rest"
-
 	accountFunc "roomrover/service/account/function"
 	inventFunc "roomrover/service/inventory/function"
+
+	"github.com/go-redis/redis/v8"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
+	"github.com/zeromicro/go-zero/rest"
 )
 
 type ServiceContext struct {
@@ -22,12 +23,19 @@ type ServiceContext struct {
 	ContractRenterModel model.ContractRenterTblModel
 	ContractDetailModel model.ContractDetailTblModel
 	PaymentModel        model.PaymentTblModel
+	ContractRedis       model.ContractRedis
 
 	AccountFunction accountFunc.AccountFunction
 	InventFunction  inventFunc.InventoryFunction
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     c.RedisCache.Host + ":" + c.RedisCache.Port,
+		Password: c.RedisCache.Password,
+		DB:       c.RedisCache.DB,
+	})
+
 	return &ServiceContext{
 		Config:              c,
 		UserTokenMiddleware: middleware.NewUserTokenMiddleware().Handle,
@@ -37,6 +45,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		ContractRenterModel: model.NewContractRenterTblModel(sqlx.NewMysql(c.DataSource)),
 		ContractDetailModel: model.NewContractDetailTblModel(sqlx.NewMysql(c.DataSource)),
 		PaymentModel:        model.NewPaymentTblModel(sqlx.NewMysql(c.DataSource)),
+		ContractRedis:       model.NewContractRedisClient(rdb),
 	}
 }
 

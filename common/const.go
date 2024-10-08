@@ -18,20 +18,16 @@ const (
 
 // Inventory Service
 const (
-	HOUSE_STATUS_DRAFT    = 1
-	HOUSE_STATUS_ACTIVE   = 2
-	HOUSE_STATUS_INACTIVE = 4
+	HOUSE_STATUS_DRAFT    = 1 // nhap
+	HOUSE_STATUS_ACTIVE   = 2 // con phong
+	HOUSE_STATUS_INACTIVE = 4 // khong hoat dong
+	HOUSE_STATUS_SOLD_OUT = 8 // het phong
 )
 
 const (
-	ROOM_STATUS_INACTIVE = 1
-	ROOM_STATUS_ACTIVE   = 2
-	ROOM_STATUS_RENTED   = 4
-)
-
-const (
-	ALBUM_TYPE_OTHER = 1
-	ALBUM_TYPE_MAIN  = 2
+	ROOM_STATUS_INACTIVE = 1 // khong hoat dong
+	ROOM_STATUS_ACTIVE   = 2 // con cho thue
+	ROOM_STATUS_RENTED   = 4 // da cho thue
 )
 
 // Contract Service

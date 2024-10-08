@@ -9,4 +9,10 @@ type Config struct {
 		AccessExpire int64
 	}
 	DataSource string
+	RedisCache struct {
+		Host     string
+		Port     string
+		Password string
+		DB       int
+	}
 }
