@@ -6,4 +6,5 @@ type InventoryFunction interface {
 	GetRoomByID(roomID int64) (room *model.RoomTbl, err error)
 	UpdateRoom(room *model.RoomTbl) error
 	GetSericesByRoom(roomID int64) (services []*model.ServiceTbl, err error)
+	GetRoomsByIDs(roomIDs []int64) (rooms []*model.RoomTbl, err error)
 }

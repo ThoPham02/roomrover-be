@@ -7,6 +7,7 @@ import (
 	"roomrover/service/contract/api/internal/svc"
 	"roomrover/service/contract/api/internal/types"
 	"roomrover/service/contract/model"
+	inventoryModel "roomrover/service/inventory/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -31,11 +32,15 @@ func (l *FilterContractLogic) FilterContract(req *types.FilterContractReq) (resp
 	var userID int64
 	var count int64
 	var listUserID []int64
+	var listRoomID []int64
+
 	var mapUserPhone = map[int64]string{}
+	var mapRoom = map[int64]inventoryModel.RoomTbl{}
 
 	var listContract []types.Contract
 
 	var contractModels []*model.ContractTbl
+	var roomModels []*inventoryModel.RoomTbl
 
 	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
@@ -81,6 +86,7 @@ func (l *FilterContractLogic) FilterContract(req *types.FilterContractReq) (resp
 	for _, contractModel := range contractModels {
 		listUserID = append(listUserID, contractModel.RenterId.Int64)
 		listUserID = append(listUserID, contractModel.LessorId.Int64)
+		listRoomID = append(listRoomID, contractModel.RoomId.Int64)
 	}
 
 	userModels, err := l.svcCtx.AccountFunction.GetUsersByIDs(listUserID)
@@ -95,6 +101,20 @@ func (l *FilterContractLogic) FilterContract(req *types.FilterContractReq) (resp
 	}
 	for _, userModel := range userModels {
 		mapUserPhone[userModel.Id] = userModel.Phone
+	}
+
+	roomModels, err = l.svcCtx.InventFunction.GetRoomsByIDs(listRoomID)
+	if err != nil {
+		l.Logger.Error(err)
+		return &types.FilterContractRes{
+			Result: types.Result{
+				Code:    common.DB_ERR_CODE,
+				Message: common.DB_ERR_MESS,
+			},
+		}, nil
+	}
+	for _, roomModel := range roomModels {
+		mapRoom[roomModel.Id] = *roomModel
 	}
 
 	for _, contractModel := range contractModels {
@@ -125,28 +145,19 @@ func (l *FilterContractLogic) FilterContract(req *types.FilterContractReq) (resp
 			LessorDate:    contractModel.LessorDate.Int64,
 			LessorAddress: contractModel.LessorAddress.String,
 			LessorName:    contractModel.LessorName.String,
-			// Room: types.Room{
-			// 	RoomID:   0,
-			// 	Name:     "",
-			// 	Status:   0,
-			// 	Capacity: 0,
-			// 	EIndex:   0,
-			// 	WIndex:   0,
-			// },
-			CheckIn:  contractModel.CheckIn.Int64,
-			Duration: contractModel.Duration.Int64,
-			Purpose:  contractModel.Purpose.String,
-			Payment: types.Payment{
-				PaymentID:   paymentModel.Id,
-				ContractID:  paymentModel.ContractId.Int64,
-				Amount:      paymentModel.Amount.Int64,
-				Discount:    paymentModel.Discount.Int64,
-				Deposit:     paymentModel.Deposit.Int64,
-				DepositDate: paymentModel.DepositDate.Int64,
-				NextBill:    paymentModel.NextBill.Int64,
+			Room: types.Room{
+				RoomID:    contractModel.RoomId.Int64,
+				HouseID:   mapRoom[contractModel.RoomId.Int64].HouseId.Int64,
+				Name:      mapRoom[contractModel.RoomId.Int64].Name.String,
 			},
-			CreatedAt: contractModel.CreatedAt.Int64,
-			UpdatedAt: contractModel.UpdatedAt.Int64,
+			CheckIn:         contractModel.CheckIn.Int64,
+			Duration:        contractModel.Duration.Int64,
+			Purpose:         contractModel.Purpose.String,
+			ContractRenters: []types.ContractRenter{},
+			ContractDetails: []types.ContractDetail{},
+			Payment:         types.Payment{PaymentID: paymentModel.Id, ContractID: paymentModel.ContractId.Int64, Amount: paymentModel.Amount.Int64, Discount: paymentModel.Discount.Int64, Deposit: paymentModel.Deposit.Int64, DepositDate: paymentModel.DepositDate.Int64, NextBill: paymentModel.NextBill.Int64},
+			CreatedAt:       contractModel.CreatedAt.Int64,
+			UpdatedAt:       contractModel.UpdatedAt.Int64,
 		})
 	}
 

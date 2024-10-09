@@ -79,8 +79,8 @@ type FilterContractReq struct {
 
 type FilterContractRes struct {
 	Result    Result     `json:"result"`
-	Contracts []Contract `form:"contracts"`
-	Total     int64      `form:"total"`
+	Contracts []Contract `json:"contracts"`
+	Total     int64      `json:"total"`
 }
 
 type Result struct {
@@ -173,7 +173,7 @@ type Contract struct {
 	LessorDate      int64            `json:"lessorDate"`
 	LessorAddress   string           `json:"lessorAddress"`
 	LessorName      string           `json:"lessorName"`
-	RoomID          int64            `json:"roomID"`
+	Room            Room             `json:"room"`
 	CheckIn         int64            `json:"checkIn"`
 	Duration        int64            `json:"duration"`
 	Purpose         string           `json:"purpose"`

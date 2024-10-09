@@ -45,3 +45,7 @@ func (sc *InventoryFunction) GetSericesByRoom(roomID int64) (services []*model.S
 
 	return sc.InventService.Ctx.ServiceModel.FindByHouseID(context.Background(), roomModel.HouseId.Int64)
 }
+
+func (sc *InventoryFunction) GetRoomsByIDs(roomIDs []int64) (rooms []*model.RoomTbl, err error) {
+    return sc.InventService.Ctx.RoomModel.FindByIDs(context.Background(), roomIDs)
+}
