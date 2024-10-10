@@ -125,7 +125,6 @@ func (l *GetHouseLogic) GetHouse(req *types.GetHouseReq) (resp *types.GetHouseRe
 
 	house = types.House{
 		HouseID:     houseModel.Id,
-		UserID:      houseModel.UserId,
 		Name:        houseModel.Name.String,
 		Description: houseModel.Description.String,
 		Type:        houseModel.Type,

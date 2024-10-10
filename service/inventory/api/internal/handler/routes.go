@@ -129,4 +129,15 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 		rest.WithPrefix("/invent"),
 	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/house/search",
+				Handler: SearchHouseHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/invent"),
+	)
 }

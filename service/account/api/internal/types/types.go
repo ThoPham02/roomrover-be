@@ -105,7 +105,7 @@ type User struct {
 
 type House struct {
 	HouseID     int64     `json:"houseID"`
-	UserID      int64     `json:"userID"`
+	User        User      `json:"user"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	Type        int64     `json:"type"`

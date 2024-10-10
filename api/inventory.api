@@ -316,3 +316,35 @@ service invent-api {
 	@handler GetServiceByHouse
 	get /service/house/:id (GetServiceByHouseReq) returns (GetServiceByHouseRes)
 }
+
+type (
+	SearchHouseReq {
+		Search     string `form:"search,optional"`
+		DistrictID int64  `form:"districtID,optional"`
+		ProvinceID int64  `form:"provinceID,optional"`
+		WardID     int64  `form:"wardID,optional"`
+		Type       int64  `form:"type,optional"`
+		PriceFrom  int64  `form:"priceFrom,optional"`
+		PriceTo    int64  `form:"priceTo,optional"`
+		AreaFrom   int64  `form:"areaFrom,optional"`
+		AreaTo     int64  `form:"areaTo,optional"`
+		Limit      int64  `form:"limit"`
+		Offset     int64  `form:"offset"`
+	}
+	SearchHouseRes {
+		Result Result  `json:"result"`
+		Total  int     `json:"total"`
+		Houses []House `json:"houses"`
+	}
+)
+
+@server (
+	prefix:     /invent
+)
+service invent-api {
+	@doc (
+		summary: "Search House"
+	)
+	@handler SearchHouse
+	get /house/search (SearchHouseReq) returns (SearchHouseRes)
+}

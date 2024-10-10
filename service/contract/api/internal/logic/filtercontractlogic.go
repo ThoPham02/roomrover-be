@@ -33,14 +33,17 @@ func (l *FilterContractLogic) FilterContract(req *types.FilterContractReq) (resp
 	var count int64
 	var listUserID []int64
 	var listRoomID []int64
+	var houseIDs []int64
 
 	var mapUserPhone = map[int64]string{}
 	var mapRoom = map[int64]inventoryModel.RoomTbl{}
+	var mapHouse = map[int64]inventoryModel.HouseTbl{}
 
 	var listContract []types.Contract
 
 	var contractModels []*model.ContractTbl
 	var roomModels []*inventoryModel.RoomTbl
+	var houseModels []*inventoryModel.HouseTbl
 
 	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
@@ -115,6 +118,21 @@ func (l *FilterContractLogic) FilterContract(req *types.FilterContractReq) (resp
 	}
 	for _, roomModel := range roomModels {
 		mapRoom[roomModel.Id] = *roomModel
+		houseIDs = append(houseIDs, roomModel.HouseId.Int64)
+	}
+
+	houseModels, err = l.svcCtx.InventFunction.GetHousesByIDs(houseIDs)
+	if err != nil {
+		l.Logger.Error(err)
+		return &types.FilterContractRes{
+			Result: types.Result{
+				Code:    common.DB_ERR_CODE,
+				Message: common.DB_ERR_MESS,
+			},
+		}, nil
+	}
+	for _, houseModel := range houseModels {
+		mapHouse[houseModel.Id] = *houseModel
 	}
 
 	for _, contractModel := range contractModels {
@@ -148,7 +166,15 @@ func (l *FilterContractLogic) FilterContract(req *types.FilterContractReq) (resp
 			Room: types.Room{
 				RoomID:    contractModel.RoomId.Int64,
 				HouseID:   mapRoom[contractModel.RoomId.Int64].HouseId.Int64,
+				HouseName: mapHouse[mapRoom[contractModel.RoomId.Int64].HouseId.Int64].Name.String,
+				Area:      mapHouse[mapRoom[contractModel.RoomId.Int64].HouseId.Int64].Area,
+				Price:     mapHouse[mapRoom[contractModel.RoomId.Int64].HouseId.Int64].Price,
+				Type:      mapHouse[mapRoom[contractModel.RoomId.Int64].HouseId.Int64].Type,
 				Name:      mapRoom[contractModel.RoomId.Int64].Name.String,
+				Status:    mapRoom[contractModel.RoomId.Int64].Status,
+				Capacity:  mapRoom[contractModel.RoomId.Int64].Capacity.Int64,
+				EIndex:    mapRoom[contractModel.RoomId.Int64].EIndex.Int64,
+				WIndex:    mapRoom[contractModel.RoomId.Int64].WIndex.Int64,
 			},
 			CheckIn:         contractModel.CheckIn.Int64,
 			Duration:        contractModel.Duration.Int64,

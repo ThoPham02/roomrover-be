@@ -1,7 +1,8 @@
 package svc
 
 import (
-	"roomrover/service/contract/function"
+	accountFunction "roomrover/service/account/function"
+	contractFunction "roomrover/service/contract/function"
 	"roomrover/service/inventory/api/internal/config"
 	"roomrover/service/inventory/api/internal/middleware"
 	"roomrover/service/inventory/model"
@@ -23,7 +24,8 @@ type ServiceContext struct {
 	AlbumModel   model.AlbumTblModel
 	ServiceModel model.ServiceTblModel
 
-	ContractFunction function.ContractFunction
+	ContractFunction contractFunction.ContractFunction
+	AccountFunction  accountFunction.AccountFunction
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -40,6 +42,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 }
 
-func (sc *ServiceContext) SetContractFunction(cf function.ContractFunction) {
+func (sc *ServiceContext) SetContractFunction(cf contractFunction.ContractFunction) {
 	sc.ContractFunction = cf
 }

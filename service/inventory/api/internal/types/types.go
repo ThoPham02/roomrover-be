@@ -205,6 +205,26 @@ type GetServiceByHouseRes struct {
 	Services []Service `json:"services"`
 }
 
+type SearchHouseReq struct {
+	Search     string `form:"search,optional"`
+	DistrictID int64  `form:"districtID,optional"`
+	ProvinceID int64  `form:"provinceID,optional"`
+	WardID     int64  `form:"wardID,optional"`
+	Type       int64  `form:"type,optional"`
+	PriceFrom  int64  `form:"priceFrom,optional"`
+	PriceTo    int64  `form:"priceTo,optional"`
+	AreaFrom   int64  `form:"areaFrom,optional"`
+	AreaTo     int64  `form:"areaTo,optional"`
+	Limit      int64  `form:"limit"`
+	Offset     int64  `form:"offset"`
+}
+
+type SearchHouseRes struct {
+	Result Result  `json:"result"`
+	Total  int     `json:"total"`
+	Houses []House `json:"houses"`
+}
+
 type Result struct {
 	Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
 	Message string `json:"message"` // Result message: detail response code
@@ -229,7 +249,7 @@ type User struct {
 
 type House struct {
 	HouseID     int64     `json:"houseID"`
-	UserID      int64     `json:"userID"`
+	User        User      `json:"user"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	Type        int64     `json:"type"`

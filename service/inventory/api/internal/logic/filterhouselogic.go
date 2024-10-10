@@ -93,7 +93,6 @@ func (l *FilterHouseLogic) FilterHouse(req *types.FilterHouseReq) (resp *types.F
 
 		listHouses = append(listHouses, types.House{
 			HouseID:     house.Id,
-			UserID:      userID,
 			Name:        house.Name.String,
 			Description: house.Description.String,
 			Type:        house.Type,
