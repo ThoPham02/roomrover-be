@@ -9,7 +9,6 @@ type (
 	// and implement the added methods in customBillDetailTblModel.
 	BillDetailTblModel interface {
 		billDetailTblModel
-		withSession(session sqlx.Session) BillDetailTblModel
 	}
 
 	customBillDetailTblModel struct {
@@ -22,8 +21,4 @@ func NewBillDetailTblModel(conn sqlx.SqlConn) BillDetailTblModel {
 	return &customBillDetailTblModel{
 		defaultBillDetailTblModel: newBillDetailTblModel(conn),
 	}
-}
-
-func (m *customBillDetailTblModel) withSession(session sqlx.Session) BillDetailTblModel {
-	return NewBillDetailTblModel(sqlx.NewSqlConnFromSession(session))
 }

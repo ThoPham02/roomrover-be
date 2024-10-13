@@ -165,16 +165,13 @@ func (l *SearchHouseLogic) SearchHouse(req *types.SearchHouseReq) (resp *types.S
 			UpdatedBy:   houseModel.UpdatedBy.Int64,
 		})
 	}
-
-	resp = &types.SearchHouseRes{
+	l.Logger.Info("SearchHouse Success: ", resp)
+	return &types.SearchHouseRes{
 		Result: types.Result{
 			Code:    common.SUCCESS_CODE,
 			Message: common.SUCCESS_MESS,
 		},
 		Total:  int(total),
 		Houses: listHouses,
-	}
-
-	l.Logger.Info("SearchHouse Success: ", resp)
-	return resp, nil
+	}, nil
 }

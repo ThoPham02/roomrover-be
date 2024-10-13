@@ -29,23 +29,10 @@ func (contractFunc *ContractFunction) Start() error {
 	return nil
 }
 
-func (contractFunc *ContractFunction) GetContractByRoomID(roomID int64) (*model.ContractTbl, error) {
-	return contractFunc.ContractService.Ctx.ContractModel.GetContractByRoomID(context.Background(), roomID)
+func (contractFunc *ContractFunction) GetPaymentByTime(time int64) (payments []*model.PaymentTbl, err error) {
+	return contractFunc.ContractService.Ctx.PaymentModel.FindMultiByTime(context.TODO(), time)
 }
 
-func (contractFunc *ContractFunction) GetContractByTime(time int64) ([]*model.ContractTbl, error) {
-	return contractFunc.ContractService.Ctx.ContractModel.GetContractByTime(context.Background(), time)
+func (contractFunc *ContractFunction) GetContractByID(contractID int64) (contract *model.ContractTbl, err error) {
+    return contractFunc.ContractService.Ctx.ContractModel.FindOne(context.TODO(), contractID)
 }
-
-func (contractFunc *ContractFunction) GetContractDetailByContractID(contractID int64) ([]*model.ContractDetailTbl, error) {
-	return contractFunc.ContractService.Ctx.ContractDetailModel.GetContractDetailByContractID(context.Background(), contractID)
-}
-
-func (contractFunc *ContractFunction) CountRenterByContractID(contractID int64) (int64, error) {
-	return contractFunc.ContractService.Ctx.ContractRenterModel.CountRenterByContractID(context.Background(), contractID)
-}
-
-func (contractFunc *ContractFunction) UpdateContract(contract *model.ContractTbl) error {
-	return contractFunc.ContractService.Ctx.ContractModel.Update(context.Background(), contract)
-}
-

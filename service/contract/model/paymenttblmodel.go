@@ -17,6 +17,7 @@ type (
 		paymentTblModel
 		DeleteByContractID(ctx context.Context, contractID int64) error
 		FindByContractID(ctx context.Context, contractID int64) (*PaymentTbl, error)
+		FindMultiByTime(ctx context.Context, time int64) ([]*PaymentTbl, error)
 	}
 
 	customPaymentTblModel struct {
@@ -45,6 +46,22 @@ func (m *customPaymentTblModel) FindByContractID(ctx context.Context, contractID
 	case nil:
 		return &resp, nil
 	case sqlc.ErrNotFound:
+		return nil, nil
+	default:
+		return nil, err
+	}
+}
+
+func (m *customPaymentTblModel) FindMultiByTime(ctx context.Context, time int64) ([]*PaymentTbl, error) {
+	var startTime = time - 12*60*60*1000
+	var endTime = time + 12*60*60*1000
+	query := fmt.Sprintf("select %s from %s where `next_bill` between ? and ?", paymentTblRows, m.table)
+	var resp []*PaymentTbl
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, startTime, endTime)
+	switch err {
+	case nil:
+		return resp, nil
+	case sqlx.ErrNotFound:
 		return nil, nil
 	default:
 		return nil, err

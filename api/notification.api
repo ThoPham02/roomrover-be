@@ -1,0 +1,53 @@
+info (
+	title:   "notification models"
+	author:  "thopb"
+	email:   "thoahlgbg2002@gamil.com"
+	version: "1.0"
+)
+
+import "model.api"
+
+type (
+	Notification {
+		NotificationID int64  `json:"id"`
+		AssigneeID     int64  `json:"assigneeID"`
+		AssignerID     int64  `json:"assignerID"`
+		RefID          int64  `json:"refID"`
+		RefType        int64  `json:"refType"`
+		Title          string `json:"title"`
+		Description    string `json:"description"`
+		Priority       int64  `json:"priority"`
+		DueDate        int64  `json:"dueDate"`
+		Status         int64  `json:"status"`
+		Unread         int64  `json:"unread"`
+		CreatedAt      int64  `json:"createdAt"`
+	}
+
+	CreateNotificationReq {
+		Sender      int64  `form:"sender"`
+		Receiver    int64  `form:"receiver"`
+		RefID       int64  `form:"refID"`
+		RefType     int64  `form:"refType"`
+		Title       string `form:"title"`
+		Description string `form:"description"`
+		Priority    int64  `form:"priority"`
+		DueDate     int64  `form:"dueDate"`
+	}
+	CreateNotificationRes {
+		Result       Result       `json:"result"`
+		Notification Notification `json:"notification"`
+	}
+)
+
+@server (
+	jwt:        Auth
+	middleware: UserTokenMiddleware
+	prefix:     /notifications
+)
+service notification-api {
+	@doc (
+		summary: "Create notification"
+	)
+	@handler CreateNotification
+	post /create (CreateNotificationReq) returns (CreateNotificationRes)
+}

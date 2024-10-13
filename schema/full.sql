@@ -7,7 +7,7 @@ CREATE TABLE `user_tbl` (
   `address` varchar(255),
   `full_name` varchar(255),
   `avatar_url` varchar(255),
-  `birthday` varchar(255),
+  `birthday` bigint,
   `gender` int,
   `CCCD_number` varchar(255),
   `CCCD_date` bigint,
@@ -75,15 +75,18 @@ CREATE TABLE `contract_tbl` (
   `renter_date` bigint,
   `renter_address` varchar(255),
   `renter_name` varchar(255),
+
   `lessor_id` bigint,
   `lessor_number` varchar(255),
   `lessor_date` bigint,
   `lessor_address` varchar(255),
   `lessor_name` varchar(255),
+
   `room_id` bigint,
   `check_in` bigint,
   `duration` int,
   `purpose` varchar(255),
+
   `created_at` bigint,
   `updated_at` bigint,
   `created_by` bigint,
@@ -91,30 +94,40 @@ CREATE TABLE `contract_tbl` (
   PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `contract_detail_tbl` (
+CREATE TABLE `payment_tbl` (
   `id` bigint,
-  `contract_id` bigint,
+  `contract_id` bigint not null,
+  `amount` bigint not null,
+  `discount` bigint not null,
+  `deposit` bigint not null,
+  `deposit_date` bigint not null,
+  `next_bill` bigint not null,
+  PRIMARY KEY (`id`)
+);
+
+CREATE TABLE `payment_detail_tbl` (
+  `id` bigint,
+  `payment_id` bigint,
   `name` varchar(255),
   `type` int,
   `price` bigint,
   PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `contract_renter_tbl` (
+CREATE TABLE `payment_renter_tbl` (
   `id` bigint,
-  `contract_id` bigint,
+  `payment_id` bigint,
   `user_id` bigint,
   PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `payment_tbl` (
+CREATE TABLE `bill_tbl` (
   `id` bigint,
-  `contract_id` bigint,
+  `payment_id` bigint,
+  `payment_date` bigint,
   `amount` bigint,
   `discount` bigint,
-  `deposit` bigint,
-  `deposit_date` bigint,
-  `next_bill` bigint,
+  `status` int,
   PRIMARY KEY (`id`)
 );
 
@@ -125,14 +138,6 @@ CREATE TABLE `bill_detail_tbl` (
   `price` bigint,
   `type` int,
   `quantity` int,
-  PRIMARY KEY (`id`)
-);
-
-CREATE TABLE `bill_tbl` (
-  `id` bigint,
-  `payment_id` bigint,
-  `payment_date` bigint,
-  `amount` bigint,
   `status` int,
   PRIMARY KEY (`id`)
 );
@@ -142,6 +147,23 @@ CREATE TABLE `bill_pay_tbl` (
   `bill_id` bigint,
   `amount` bigint,
   `pay_date` bigint,
+  `url` varchar(255),
   `user_id` bigint,
   PRIMARY KEY (`id`)
+);
+
+create table `notification_tbl` (
+    `id` bigint,
+    `sender` bigint not null,
+    `receiver` bigint not null,
+    `ref_id` bigint not null,
+    `ref_type` int not null,
+    `title` text not null,
+    `description` text not null,
+    `priority` int not null,
+    `due_date` bigint not null,
+    `status` int not null,
+    `unread` int default 1 not null,
+    `created_at` bigint not null,
+    primary key (`id`)
 );

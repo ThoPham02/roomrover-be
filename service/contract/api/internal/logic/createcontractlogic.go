@@ -254,7 +254,7 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 		Discount:    sql.NullInt64{Valid: true, Int64: req.Discount},
 		Deposit:     sql.NullInt64{Valid: true, Int64: req.Deposit},
 		DepositDate: sql.NullInt64{Valid: true, Int64: req.DepositDate},
-		NextBill:    sql.NullInt64{Valid: true, Int64: common.GetNextMonthDate(req.CheckIn, 1)},
+		NextBill:    sql.NullInt64{Valid: true, Int64: common.GetNextMonthDate(req.CheckIn)},
 	}
 
 	roomModel.EIndex = sql.NullInt64{Int64: room.EIndex, Valid: true}

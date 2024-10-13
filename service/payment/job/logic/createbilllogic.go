@@ -2,9 +2,12 @@ package logic
 
 import (
 	"context"
-	"roomrover/service/payment/job/svc"
-
+	"database/sql"
+	"roomrover/common"
 	contractModel "roomrover/service/contract/model"
+	notificationModel "roomrover/service/notification/model"
+	"roomrover/service/payment/job/svc"
+	"roomrover/service/payment/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -24,113 +27,107 @@ func NewCreateBillLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Create
 }
 
 func (l *CreateBillLogic) CreateBillByTime() error {
-	// var currentTime = common.GetCurrentTime()
-	// var err error
+	var currentTime = common.GetCurrentTime()
+	var err error
 
-	// var contractModels []*contractModel.ContractTbl
+	var paymentModels []*model.PaymentTbl
 
-	// l.Logger.Info("Job create bill by time: ", currentTime)
+	l.Logger.Info("CreateBillByTime Start Time: ", currentTime)
 
-	// contractModels, err = l.svcCtx.ContractFunc.GetContractByTime(currentTime)
-	// if err != nil {
-	// 	l.Logger.Error(err)
-	// 	return nil
-	// }
+	paymentModels, err = l.svcCtx.PaymentModel.FilterPaymentByTime(l.ctx, currentTime+5*86400000)
+	if err != nil {
+		l.Logger.Error(err)
+	}
+	for _, paymentModel := range paymentModels {
+		var paymentDetails []*model.PaymentDetailTbl
+		var contractModel *contractModel.ContractTbl
 
-	// l.Logger.Info(len(contractModels))
+		paymentDetails, err = l.svcCtx.PaymentDetailModel.GetPaymentDetailByPaymentID(l.ctx, paymentModel.Id)
+		if err != nil {
+			l.Logger.Error(err)
+			continue
+		}
+		contractModel, err = l.svcCtx.ContractFunction.GetContractByID(paymentModel.ContractId)
+		if err != nil || contractModel == nil {
+			l.Logger.Error(err)
+			continue
+		}
+		paymentModel.NextBill = common.GetNextMonthDate(contractModel.CheckIn.Int64)
+		err = l.svcCtx.PaymentModel.Update(l.ctx, paymentModel)
+		if err != nil {
+			l.Logger.Error(err)
+			continue
+		}
 
-	// for _, contractModel := range contractModels {
-	// 	var i int64 = common.GetBillIndexByTime(contractModel.Start, currentTime)
+		var billModel = &model.BillTbl{
+			Id:          l.svcCtx.ObjSync.GenServiceObjID(),
+			PaymentId:   sql.NullInt64{Valid: true, Int64: paymentModel.Id},
+			PaymentDate: sql.NullInt64{Valid: true, Int64: currentTime + 5*86400000},
+			Amount:      sql.NullInt64{Valid: true, Int64: paymentModel.Amount},
+			Discount:    sql.NullInt64{Valid: true, Int64: paymentModel.Discount},
+			Status:      sql.NullInt64{Valid: true, Int64: common.BILL_STATUS_UNPAID},
+		}
+		_, err = l.svcCtx.BillModel.Insert(l.ctx, billModel)
+		if err != nil {
+			l.Logger.Error(err)
+			continue
+		}
+		for _, paymentDetail := range paymentDetails {
+			var billDetailModel = &model.BillDetailTbl{
+				Id:       l.svcCtx.ObjSync.GenServiceObjID(),
+				BillId:   sql.NullInt64{Valid: true, Int64: billModel.Id},
+				Name:     paymentDetail.Name,
+				Price:    paymentDetail.Price,
+				Type:     paymentDetail.Type,
+				Quantity: sql.NullInt64{Valid: true, Int64: 0},
+				Status:   sql.NullInt64{Valid: true, Int64: common.PAYMENT_DETAIL_STATUS_DONE},
+			}
 
-	// 	err = l.CreateBillFromContract(contractModel, i+1)
-	// 	if err != nil {
-	// 		l.Logger.Error(err)
-	// 		continue
-	// 	}
+			switch paymentDetail.Type.Int64 {
+			case common.PAYMENT_DETAIL_TYPE_FIXED:
+				billDetailModel.Quantity.Int64 = 1
+			case common.PAYMENT_DETAIL_TYPE_USAGE:
+				billDetailModel.Quantity.Int64 = 0
+				billDetailModel.Status.Int64 = common.PAYMENT_DETAIL_STATUS_DRAF
+			case common.PAYMENT_DETAIL_TYPE_FIXED_USER:
+				var count int64
+				count, err = l.svcCtx.PaymentRenterModel.CountRentersByPaymentID(l.ctx, paymentModel.Id)
+				if err != nil {
+					l.Logger.Error(err)
+					continue
+				}
+				billDetailModel.Quantity.Int64 = count
+			}
 
-	// 	contractModel.NextBill = common.GetNextMonthDate(contractModel.Start, int(i+1))
-	// 	err = l.svcCtx.ContractFunc.UpdateContract(contractModel)
-	// 	if err != nil {
-	// 		l.Logger.Error(err)
-	// 		continue
-	// 	}
-	// }
+			_, err = l.svcCtx.BillDetailModel.Insert(l.ctx, billDetailModel)
+			if err != nil {
+				l.Logger.Error(err)
+				continue
+			}
+		}
 
-	// l.Logger.Info("Job create bill by time Success: ", currentTime)
-	return nil
-}
+		noti := &notificationModel.NotificationTbl{
+			Id:          l.svcCtx.ObjSync.GenServiceObjID(),
+			Sender:      contractModel.LessorId.Int64,
+			Receiver:    contractModel.RenterId.Int64,
+			RefId:       billModel.Id,
+			RefType:     common.NOTIFICATION_REF_TYPE_BILL,
+			Title:       "",
+			Description: "",
+			Priority:    0,
+			DueDate:     0,
+			Status:      0,
+			Unread:      0,
+			CreatedAt:   0,
+		}
+		err = l.svcCtx.NotificationFunction.CreateNotification(noti)
+		if err != nil {
+			l.Logger.Error(err)
+			continue
+		}
+	}
 
-func (l *CreateBillLogic) CreateBillFromContract(contractModel *contractModel.ContractTbl, month int64) error {
-	// var err error
-	// var billID = l.svcCtx.ObjSync.GenServiceObjID()
-	// var currentTime = common.GetCurrentTime()
-	// var total int64
+	l.Logger.Info("CreateBillByTime Start Time Success: ", common.GetCurrentTime())
 
-	// var billModel *model.Bill
-	// var billDetailModels []*model.BillDetail
-
-	// l.Logger.Info("Create bill from contractID: ", contractModel.Id)
-
-	// // get contract detail
-	// contractDetailModel, err := l.svcCtx.ContractFunc.GetContractDetailByContractID(contractModel.Id)
-	// if err != nil {
-	// 	l.Logger.Error(err)
-	// 	return err
-	// }
-
-	// // create bill detail from contract detail
-	// for _, contractDetail := range contractDetailModel {
-	// 	billDetail := &model.BillDetail{
-	// 		Id:                l.svcCtx.ObjSync.GenServiceObjID(),
-	// 		BillId:            billID,
-	// 		ContractServiceId: contractDetail.ServiceId,
-	// 		Price:             contractDetail.Price,
-	// 		Type:              contractDetail.Type,
-	// 	}
-
-	// 	if contractDetail.Type == common.CONTRACT_DETAIL_TYPE_FIXED {
-	// 		billDetail.Quantity = 1
-	// 	} else if contractDetail.Type == common.CONTRACT_DETAIL_TYPE_FIXED_USER {
-	// 		count, err := l.svcCtx.ContractFunc.CountRenterByContractID(contractModel.Id)
-	// 		if err != nil {
-	// 			l.Logger.Error(err)
-	// 			return err
-	// 		}
-	// 		billDetail.Quantity = count
-	// 	} else {
-	// 		billDetail.Quantity = common.NO_USE
-	// 	}
-
-	// 	billDetailModels = append(billDetailModels, billDetail)
-	// 	if billDetail.Quantity == common.NO_USE {
-	// 		continue
-	// 	}
-	// 	total += billDetail.Price * billDetail.Quantity
-	// }
-
-	// // create bill
-	// billModel = &model.Bill{
-	// 	Id:         billID,
-	// 	ContractId: contractModel.Id,
-	// 	Total:      total,
-	// 	Paid:       0,
-	// 	Status:     common.BILL_STATUS_UNPAID,
-	// 	Month:      month,
-	// 	CreatedAt:  currentTime,
-	// 	UpdatedAt:  currentTime,
-	// }
-
-	// err = l.svcCtx.BillDetailModel.InsertMulti(l.ctx, billDetailModels)
-	// if err != nil {
-	// 	l.Logger.Error(err)
-	// 	return err
-	// }
-	// _, err = l.svcCtx.BillModel.Insert(l.ctx, billModel)
-	// if err != nil {
-	// 	l.Logger.Error(err)
-	// 	return err
-	// }
-
-	// l.Logger.Info("Create bill from contractID Success: ", contractModel.Id)
 	return nil
 }

@@ -1,10 +1,27 @@
-CREATE TABLE `bill_detail_tbl` (
+CREATE TABLE `payment_tbl` (
   `id` bigint,
-  `bill_id` bigint,
+  `contract_id` bigint not null,
+  `amount` bigint not null,
+  `discount` bigint not null,
+  `deposit` bigint not null,
+  `deposit_date` bigint not null,
+  `next_bill` bigint not null,
+  PRIMARY KEY (`id`)
+);
+
+CREATE TABLE `payment_detail_tbl` (
+  `id` bigint,
+  `payment_id` bigint,
   `name` varchar(255),
-  `price` bigint,
   `type` int,
-  `quantity` int,
+  `price` bigint,
+  PRIMARY KEY (`id`)
+);
+
+CREATE TABLE `payment_renter_tbl` (
+  `id` bigint,
+  `payment_id` bigint,
+  `user_id` bigint,
   PRIMARY KEY (`id`)
 );
 
@@ -18,11 +35,23 @@ CREATE TABLE `bill_tbl` (
   PRIMARY KEY (`id`)
 );
 
+CREATE TABLE `bill_detail_tbl` (
+  `id` bigint,
+  `bill_id` bigint,
+  `name` varchar(255),
+  `price` bigint,
+  `type` int,
+  `quantity` int,
+  `status` int,
+  PRIMARY KEY (`id`)
+);
+
 CREATE TABLE `bill_pay_tbl` (
   `id` bigint,
   `bill_id` bigint,
   `amount` bigint,
   `pay_date` bigint,
+  `url` varchar(255),
   `user_id` bigint,
   PRIMARY KEY (`id`)
 );

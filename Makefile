@@ -30,6 +30,11 @@ PAYMENT_DIR=$(SERVICE_DIR)/payment
 PAYMENT_API_DIR=$(PAYMENT_DIR)/api
 PAYMENT_MODEL_DIR=$(PAYMENT_DIR)/model
 
+# notification service
+NOTIFICATION_DIR=$(SERVICE_DIR)/notification
+NOTIFICATION_API_DIR=$(NOTIFICATION_DIR)/api
+NOTIFICATION_MODEL_DIR=$(NOTIFICATION_DIR)/model
+
 dep-init:
 	go mod init $(MODULE_NAME)
 	go mod tidy
@@ -57,6 +62,9 @@ gen-contract-service:
 gen-payment-service:
 	goctl api go -api $(API_DIR)/payment.api -dir $(PAYMENT_API_DIR)
 
+gen-notification-service:
+	goctl api go -api $(API_DIR)/notification.api -dir $(NOTIFICATION_API_DIR)
+
 # gen db model
 gen-account-model: 
 	goctl model mysql ddl -src="${SCHEMA_DIR}/account.sql" -dir="${ACCOUNT_MODEL_DIR}" --ignore-columns=""
@@ -70,8 +78,11 @@ gen-contract-model:
 gen-payment-model:
 	goctl model mysql ddl -src="${SCHEMA_DIR}/payment.sql" -dir="${PAYMENT_MODEL_DIR}" --ignore-columns=""
 
-gen-service: gen-account-service gen-inventory-service gen-contract-service gen-payment-service
-gen-model: gen-account-model gen-inventory-model gen-contract-model gen-payment-model
+gen-notification-model:
+	goctl model mysql ddl -src="${SCHEMA_DIR}/notification.sql" -dir="${NOTIFICATION_MODEL_DIR}" --ignore-columns=""
+
+gen-service: gen-account-service gen-inventory-service gen-contract-service gen-payment-service gen-notification-service
+gen-model: gen-account-model gen-inventory-model gen-contract-model gen-payment-model gen-notification-model
 
 runs:
 	go run main.go -f etc/server.yaml
