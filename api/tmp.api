@@ -1,0 +1,228 @@
+@server (
+	jwt:        Auth
+	middleware: UserTokenMiddleware
+	prefix:     /invent
+)
+service invent-api {
+	@doc (
+		summary: "Upload file house"
+	)
+	@handler UploadFileHouse
+	post /upload (UploadFileHouseReq) returns (UploadFileHouseRes)
+	
+	@doc (
+		summary: "Create house"
+	)
+	@handler CreateHouse
+	post /house (CreateHouseReq) returns (CreateHouseRes)
+	
+	@doc (
+		summary: "Filter house"
+	)
+	@handler FilterHouse
+	get /house/filter (FilterHouseReq) returns (FilterHouseRes)
+	
+	@doc (
+		summary: "Get House"
+	)
+	@handler GetHouse
+	get /house/:id (GetHouseReq) returns (GetHouseRes)
+	
+	@doc (
+		summary: "Update House Status"
+	)
+	@handler UpdateHouseStatus
+	put /house/:id/status (UpdateHouseStatusReq) returns (UpdateHouseStatusRes)
+	
+	@doc (
+		summary: "Update House"
+	)
+	@handler UpdateHouse
+	put /house/:id (UpdateHouseReq) returns (UpdateHouseRes)
+	
+	@doc (
+		summary: "Delete House"
+	)
+	@handler DeleteHouse
+	delete /house/:id (DeleteHouseReq) returns (DeleteHouseRes)
+}
+
+// Room API
+type (
+	CreateRoomReq {
+		HouseID  int64  `form:"houseID"`
+		Name     string `form:"name"`
+		Capacity int64  `form:"capacity"`
+	}
+	CreateRoomRes {
+		Result Result `json:"result"`
+		Room   Room   `json:"room"`
+	}
+	UpdateRoomReq {
+		RoomID   int64  `path:"id"`
+		Name     string `form:"name"`
+		Capacity int64  `form:"capacity"`
+	}
+	UpdateRoomRes {
+		Result Result `json:"result"`
+		Room   Room   `json:"room"`
+	}
+	DeleteRoomReq {
+		RoomID int64 `path:"id"`
+	}
+	DeleteRoomRes {
+		Result Result `json:"result"`
+	}
+	GetRoomReq {
+		RoomID int64 `path:"id"`
+	}
+	GetRoomRes {
+		Result Result `json:"result"`
+		Room   Room   `json:"room"`
+	}
+	GetRoomByHouseReq {
+		HouseID int64 `path:"id"`
+		Limit   int64 `form:"limit"`
+		Offset  int64 `form:"offset"`
+	}
+	GetRoomByHouseRes {
+		Result Result `json:"result"`
+		Total  int    `json:"total"`
+		Rooms  []Room `json:"rooms"`
+	}
+	FilterRoomReq {
+		Search string `form:"search,optional"`
+		Type   int64  `form:"type,optional"`
+		Status int64  `form:"status,optional"`
+		Limit  int64  `form:"limit"`
+		Offset int64  `form:"offset"`
+	}
+	FilterRoomRes {
+		Result Result `json:"result"`
+		Total  int    `json:"total"`
+		Rooms  []Room `json:"rooms"`
+	}
+)
+
+@server (
+	jwt:        Auth
+	middleware: UserTokenMiddleware
+	prefix:     /invent
+)
+service invent-api {
+	@doc (
+		summary: "Create room"
+	)
+	@handler CreateRoom
+	post /room (CreateRoomReq) returns (CreateRoomRes)
+	
+	@doc (
+		summary: "Update Room"
+	)
+	@handler UpdateRoom
+	put /room/:id (UpdateRoomReq) returns (UpdateRoomRes)
+	
+	@doc (
+		summary: "Delete Room"
+	)
+	@handler DeleteRoom
+	delete /room/:id (DeleteRoomReq) returns (DeleteRoomRes)
+	
+	@doc (
+		summary: "Get Room"
+	)
+	@handler GetRoom
+	get /room/:id (GetRoomReq) returns (GetRoomRes)
+	
+	@doc (
+		summary: "Get Room By House"
+	)
+	@handler GetRoomByHouse
+	get /room/house/:id (GetRoomByHouseReq) returns (GetRoomByHouseRes)
+	
+	@doc (
+		summary: "Filter Room"
+	)
+	@handler FilterRoom
+	get /room/filter (FilterRoomReq) returns (FilterRoomRes)
+}
+
+type (
+	CreateServiceReq {
+		HouseID int64  `form:"houseID"`
+		Name    string `form:"name"`
+		Price   int64  `form:"price"`
+		Unit    int64  `form:"unit"`
+	}
+	CreateServiceRes {
+		Result  Result  `json:"result"`
+		Service Service `json:"service"`
+	}
+	UpdateServiceReq {
+		ServiceID int64  `path:"id"`
+		Name      string `form:"name"`
+		Price     int64  `form:"price"`
+		Unit      int64  `form:"unit"`
+	}
+	UpdateServiceRes {
+		Result  Result  `json:"result"`
+		Service Service `json:"service"`
+	}
+	DeleteServiceReq {
+		ServiceID int64 `path:"id"`
+	}
+	DeleteServiceRes {
+		Result Result `json:"result"`
+	}
+	GetServiceReq {
+		ServiceID int64 `path:"id"`
+	}
+	GetServiceRes {
+		Result  Result  `json:"result"`
+		Service Service `json:"service"`
+	}
+	GetServiceByHouseReq {
+		HouseID int64 `path:"id"`
+	}
+	GetServiceByHouseRes {
+		Result   Result    `json:"result"`
+		Services []Service `json:"services"`
+	}
+)
+
+@server (
+	jwt:        Auth
+	middleware: UserTokenMiddleware
+	prefix:     /invent
+)
+service invent-api {
+	@doc (
+		summary: "Create Service"
+	)
+	@handler CreateService
+	post /service (CreateServiceReq) returns (CreateServiceRes)
+	
+	@doc (
+		summary: "Update Service"
+	)
+	@handler UpdateService
+	put /service/:id (UpdateServiceReq) returns (UpdateServiceRes)
+	
+	@doc (
+		summary: "Delete Service"
+	)
+	@handler DeleteService
+	delete /service/:id (DeleteServiceReq) returns (DeleteServiceRes)
+	
+	@doc (
+		summary: "Get Service"
+	)
+	@handler GetService
+	get /service/:id (GetServiceReq) returns (GetServiceRes)
+	
+	@doc (
+		summary: "Get Service By House"
+	)
+	@handler GetServiceByHouse
+	get /service/house/:id (GetServiceByHouseReq) returns (GetServiceByHouseRes)
+}

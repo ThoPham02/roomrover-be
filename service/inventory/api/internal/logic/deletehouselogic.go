@@ -16,7 +16,6 @@ type DeleteHouseLogic struct {
 	svcCtx *svc.ServiceContext
 }
 
-// Delete House
 func NewDeleteHouseLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteHouseLogic {
 	return &DeleteHouseLogic{
 		Logger: logx.WithContext(ctx),
@@ -38,10 +37,10 @@ func (l *DeleteHouseLogic) DeleteHouse(req *types.DeleteHouseReq) (resp *types.D
 				Code:    common.UNKNOWN_ERR_CODE,
 				Message: common.UNKNOWN_ERR_MESS,
 			},
-		}, nil
+		}, err
 	}
 
-	err = l.svcCtx.AlbumModel.DeleteByHouseID(l.ctx, req.HouseID)
+	house, err := l.svcCtx.HouseModel.FindOne(l.ctx, req.HouseID)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.DeleteHouseRes{
@@ -49,10 +48,27 @@ func (l *DeleteHouseLogic) DeleteHouse(req *types.DeleteHouseReq) (resp *types.D
 				Code:    common.DB_ERR_CODE,
 				Message: common.DB_ERR_MESS,
 			},
-		}, nil
+		}, err
 	}
-
-	err = l.svcCtx.ServiceModel.DeleteByHouseID(l.ctx, req.HouseID)
+	if house == nil {
+		l.Logger.Error("House not found: ", req.HouseID)
+		return &types.DeleteHouseRes{
+			Result: types.Result{
+				Code:    common.INVALID_REQUEST_CODE,
+				Message: common.INVALID_REQUEST_MESS,
+			},
+		}, err
+	}
+	if house.UserId != userID {
+		l.Logger.Error("User not authorized to delete house: ", userID)
+		return &types.DeleteHouseRes{
+			Result: types.Result{
+				Code:    common.INVALID_REQUEST_CODE,
+				Message: common.INVALID_REQUEST_MESS,
+			},
+		}, err
+	}
+	countContract, err := l.svcCtx.ContractFunction.CountContractByHouseID(req.HouseID)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.DeleteHouseRes{
@@ -60,18 +76,15 @@ func (l *DeleteHouseLogic) DeleteHouse(req *types.DeleteHouseReq) (resp *types.D
 				Code:    common.DB_ERR_CODE,
 				Message: common.DB_ERR_MESS,
 			},
-		}, nil
+		}, err
 	}
-
-	err = l.svcCtx.RoomModel.DeleteByHouseID(l.ctx, req.HouseID)
-	if err != nil {
-		l.Logger.Error(err)
+	if countContract > 0 {
 		return &types.DeleteHouseRes{
 			Result: types.Result{
-				Code:    common.DB_ERR_CODE,
-				Message: common.DB_ERR_MESS,
+				Code:    common.HOUSE_HAS_CONTRACT_ERR_CODE,
+				Message: common.HOUSE_HAS_CONTRACT_ERR_MESS,
 			},
-		}, nil
+		}, err
 	}
 
 	err = l.svcCtx.HouseModel.Delete(l.ctx, req.HouseID)
@@ -82,7 +95,7 @@ func (l *DeleteHouseLogic) DeleteHouse(req *types.DeleteHouseReq) (resp *types.D
 				Code:    common.DB_ERR_CODE,
 				Message: common.DB_ERR_MESS,
 			},
-		}, nil
+		}, err
 	}
 
 	l.Logger.Info("DeleteHouse Success: ", userID)

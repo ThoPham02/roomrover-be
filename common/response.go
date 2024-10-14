@@ -40,6 +40,9 @@ const (
 
 	ROOM_HAS_CONTRACT_CODE = 20002
 	ROOM_HAS_CONTRACT_MESS = "Room has contract"
+
+	HOUSE_HAS_CONTRACT_ERR_CODE = 20003
+	HOUSE_HAS_CONTRACT_ERR_MESS = "House has contract"
 )
 
 // Contract service response code from 30000-39999

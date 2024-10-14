@@ -29,10 +29,14 @@ func (contractFunc *ContractFunction) Start() error {
 	return nil
 }
 
-func (contractFunc *ContractFunction) GetPaymentByTime(time int64) (payments []*model.PaymentTbl, err error) {
-	return contractFunc.ContractService.Ctx.PaymentModel.FindMultiByTime(context.TODO(), time)
+func (cfFunc *ContractFunction) CountContractByHouseID(houseID int64) (count int64, err error) {
+	return cfFunc.ContractService.Ctx.ContractModel.CountByHouseID(context.TODO(), houseID)
 }
 
-func (contractFunc *ContractFunction) GetContractByID(contractID int64) (contract *model.ContractTbl, err error) {
-    return contractFunc.ContractService.Ctx.ContractModel.FindOne(context.TODO(), contractID)
+func (cfFunc *ContractFunction) GetPaymentByTime(time int64) (payments []*model.PaymentTbl, err error) {
+	return cfFunc.ContractService.Ctx.PaymentModel.FindMultiByTime(context.TODO(), time)
+}
+
+func (cfFunc *ContractFunction) GetContractByID(contractID int64) (contract *model.ContractTbl, err error) {
+    return cfFunc.ContractService.Ctx.ContractModel.FindOne(context.TODO(), contractID)
 }

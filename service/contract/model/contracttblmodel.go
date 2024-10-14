@@ -15,6 +15,9 @@ type (
 	ContractTblModel interface {
 		contractTblModel
 		withSession(session sqlx.Session) ContractTblModel
+
+		CountByHouseID(ctx context.Context, houseID int64) (int64, error)
+
 		GetContractByRoomID(ctx context.Context, roomID int64) (*ContractTbl, error)
 		GetContractByTime(ctx context.Context, time int64) ([]*ContractTbl, error)
 		CountContractByCondition(ctx context.Context, renterID int64, lessorID int64, search string, status int64, createFrom int64, createTo int64) (int64, error)
@@ -35,6 +38,20 @@ func NewContractTblModel(conn sqlx.SqlConn) ContractTblModel {
 
 func (m *customContractTblModel) withSession(session sqlx.Session) ContractTblModel {
 	return NewContractTblModel(sqlx.NewSqlConnFromSession(session))
+}
+
+func (m *customContractTblModel) CountByHouseID(ctx context.Context, houseID int64) (int64, error) {
+	query := fmt.Sprintf("select count(*) from %s where `room_id` in (select `id` from `room_tbl` where `house_id` = ?)", m.table)
+	var resp int64
+	err := m.conn.QueryRowCtx(ctx, &resp, query, houseID)
+	switch err {
+	case nil:
+		return resp, nil
+	case sqlx.ErrNotFound:
+		return 0, nil
+	default:
+		return 0, err
+	}
 }
 
 func (m *customContractTblModel) GetContractByRoomID(ctx context.Context, roomID int64) (*ContractTbl, error) {

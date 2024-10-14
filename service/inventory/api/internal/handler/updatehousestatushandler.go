@@ -3,14 +3,12 @@ package handler
 import (
 	"net/http"
 
+	"github.com/zeromicro/go-zero/rest/httpx"
 	"roomrover/service/inventory/api/internal/logic"
 	"roomrover/service/inventory/api/internal/svc"
 	"roomrover/service/inventory/api/internal/types"
-
-	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-// Update House Status
 func UpdateHouseStatusHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.UpdateHouseStatusReq
