@@ -3,9 +3,9 @@ package job
 import (
 	"flag"
 	"fmt"
-	"roomrover/service/payment/job/config"
-	"roomrover/service/payment/job/handler"
-	"roomrover/service/payment/job/svc"
+	"roomrover/service/contract/job/config"
+	"roomrover/service/contract/job/handler"
+	"roomrover/service/contract/job/svc"
 
 	"github.com/robfig/cron/v3"
 

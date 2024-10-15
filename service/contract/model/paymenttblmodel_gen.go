@@ -35,13 +35,13 @@ type (
 	}
 
 	PaymentTbl struct {
-		Id          int64         `db:"id"`
-		ContractId  sql.NullInt64 `db:"contract_id"`
-		Amount      sql.NullInt64 `db:"amount"`
-		Discount    sql.NullInt64 `db:"discount"`
-		Deposit     sql.NullInt64 `db:"deposit"`
-		DepositDate sql.NullInt64 `db:"deposit_date"`
-		NextBill    sql.NullInt64 `db:"next_bill"`
+		Id          int64 `db:"id"`
+		ContractId  int64 `db:"contract_id"`
+		Amount      int64 `db:"amount"`
+		Discount    int64 `db:"discount"`
+		Deposit     int64 `db:"deposit"`
+		DepositDate int64 `db:"deposit_date"`
+		NextBill    int64 `db:"next_bill"`
 	}
 )
 

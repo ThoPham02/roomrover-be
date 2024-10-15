@@ -9,7 +9,7 @@ import (
 	accountModel "roomrover/service/account/model"
 	"roomrover/service/contract/api/internal/svc"
 	"roomrover/service/contract/api/internal/types"
-	"roomrover/service/contract/model"
+	model "roomrover/service/contract/model"
 	inventoryModel "roomrover/service/inventory/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -21,7 +21,6 @@ type UpdateContractLogic struct {
 	svcCtx *svc.ServiceContext
 }
 
-// Update contract
 func NewUpdateContractLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateContractLogic {
 	return &UpdateContractLogic{
 		Logger: logx.WithContext(ctx),
@@ -36,7 +35,7 @@ func (l *UpdateContractLogic) UpdateContract(req *types.UpdateContractReq) (resp
 	var userID int64
 	var currentTime = common.GetCurrentTime()
 
-	var contractRenters []types.ContractRenter
+	var paymentRenters []types.PaymentRenter
 
 	var contractModel *model.ContractTbl
 	var renterModel *accountModel.UserTbl
@@ -55,7 +54,7 @@ func (l *UpdateContractLogic) UpdateContract(req *types.UpdateContractReq) (resp
 		}, nil
 	}
 
-	err = json.Unmarshal([]byte(req.ContractRenter), &contractRenters)
+	err = json.Unmarshal([]byte(req.PaymentRenter), &paymentRenters)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.UpdateContractRes{
@@ -65,7 +64,7 @@ func (l *UpdateContractLogic) UpdateContract(req *types.UpdateContractReq) (resp
 			},
 		}, nil
 	}
-	for _, renter := range contractRenters {
+	for _, renter := range paymentRenters {
 		userCheck, err := l.svcCtx.AccountFunction.GetUserByID(renter.RenterID)
 		if err != nil {
 			l.Logger.Error(err)
@@ -180,15 +179,15 @@ func (l *UpdateContractLogic) UpdateContract(req *types.UpdateContractReq) (resp
 
 	paymentModel = &model.PaymentTbl{
 		Id:          paymentModel.Id,
-		ContractId:  sql.NullInt64{Valid: true, Int64: contractModel.Id},
-		Amount:      sql.NullInt64{Valid: true, Int64: req.Amount},
-		Discount:    sql.NullInt64{Valid: true, Int64: req.Discount},
-		Deposit:     sql.NullInt64{Valid: true, Int64: req.Deposit},
-		DepositDate: sql.NullInt64{Valid: true, Int64: req.DepositDate},
-		NextBill:    sql.NullInt64{Valid: true, Int64: common.GetNextMonthDate(req.CheckIn)},
+		ContractId:  contractModel.Id,
+		Amount:      req.Amount,
+		Discount:    req.Discount,
+		Deposit:     req.Deposit,
+		DepositDate: req.DepositDate,
+		NextBill:    common.GetNextMonthDate(req.CheckIn),
 	}
 
-	err = l.svcCtx.ContractRenterModel.DeleteByContractID(l.ctx, contractModel.Id)
+	err = l.svcCtx.PaymentRenterModel.DeleteByPaymentID(l.ctx, paymentModel.Id)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.UpdateContractRes{
@@ -198,13 +197,12 @@ func (l *UpdateContractLogic) UpdateContract(req *types.UpdateContractReq) (resp
 			},
 		}, nil
 	}
-	for _, renter := range contractRenters {
-		contractRenterModel := &model.ContractRenterTbl{
-			Id:         l.svcCtx.ObjSync.GenServiceObjID(),
-			ContractId: sql.NullInt64{Valid: true, Int64: contractModel.Id},
-			UserId:     sql.NullInt64{Valid: true, Int64: renter.RenterID},
-		}
-		_, err = l.svcCtx.ContractRenterModel.Insert(l.ctx, contractRenterModel)
+	for _, renter := range paymentRenters {
+		_, err = l.svcCtx.PaymentRenterModel.Insert(l.ctx, &model.PaymentRenterTbl{
+			Id:        l.svcCtx.ObjSync.GenServiceObjID(),
+			PaymentId: sql.NullInt64{Valid: true, Int64: paymentModel.Id},
+			UserId:    sql.NullInt64{Valid: true, Int64: renter.RenterID},
+		})
 		if err != nil {
 			l.Logger.Error(err)
 			return &types.UpdateContractRes{

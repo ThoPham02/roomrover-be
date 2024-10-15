@@ -2,7 +2,7 @@ package handler
 
 import (
 	"fmt"
-	"roomrover/service/payment/job/svc"
+	"roomrover/service/contract/job/svc"
 	"time"
 
 	"github.com/robfig/cron/v3"

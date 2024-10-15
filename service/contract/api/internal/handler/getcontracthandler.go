@@ -9,7 +9,6 @@ import (
 	"roomrover/service/contract/api/internal/types"
 )
 
-// Get contract
 func GetContractHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.GetContractReq

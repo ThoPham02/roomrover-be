@@ -41,8 +41,8 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 	var codeTime = time.Now().Format("20060102")
 
 	var contract types.Contract
-	var contractRenters []types.ContractRenter
-	var contractDetails []types.ContractDetail
+	var paymentRenters []types.PaymentRenter
+	var paymentDetails []types.PaymentDetail
 	var renter types.User
 	var lessor types.User
 	var room types.Room
@@ -95,8 +95,8 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 			},
 		}, nil
 	}
-	if len(req.ContractRenter) > 0 {
-		err = json.Unmarshal([]byte(req.ContractRenter), &contractRenters)
+	if len(req.PaymentRenter) > 0 {
+		err = json.Unmarshal([]byte(req.PaymentRenter), &paymentRenters)
 		if err != nil {
 			l.Logger.Error(err)
 			return &types.CreateContractRes{
@@ -106,7 +106,7 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 				},
 			}, nil
 		}
-		for _, renter := range contractRenters {
+		for _, renter := range paymentRenters {
 			userCheck, err := l.svcCtx.AccountFunction.GetUserByID(renter.RenterID)
 			if err != nil {
 				l.Logger.Error(err)
@@ -249,12 +249,12 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 
 	paymentModel = &model.PaymentTbl{
 		Id:          l.svcCtx.ObjSync.GenServiceObjID(),
-		ContractId:  sql.NullInt64{Valid: true, Int64: contractModel.Id},
-		Amount:      sql.NullInt64{Valid: true, Int64: req.Price},
-		Discount:    sql.NullInt64{Valid: true, Int64: req.Discount},
-		Deposit:     sql.NullInt64{Valid: true, Int64: req.Deposit},
-		DepositDate: sql.NullInt64{Valid: true, Int64: req.DepositDate},
-		NextBill:    sql.NullInt64{Valid: true, Int64: common.GetNextMonthDate(req.CheckIn)},
+		ContractId:  contractModel.Id,
+		Amount:      req.Price,
+		Discount:    req.Discount,
+		Deposit:     req.Deposit,
+		DepositDate: req.DepositDate,
+		NextBill:    common.GetNextMonthDate(req.CheckIn),
 	}
 
 	roomModel.EIndex = sql.NullInt64{Int64: room.EIndex, Valid: true}
@@ -272,22 +272,22 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 	}
 
 	for _, service := range serviceModels {
-		contractDetails = append(contractDetails, types.ContractDetail{
-			ID:         userID,
-			ContractID: contractModel.Id,
-			Name:       service.Name.String,
-			Price:      service.Price.Int64,
-			Type:       service.Unit.Int64,
+		paymentDetails = append(paymentDetails, types.PaymentDetail{
+			ID:        userID,
+			PaymentID: paymentModel.Id,
+			Name:      service.Name.String,
+			Price:     service.Price.Int64,
+			Type:      service.Unit.Int64,
 		})
 
-		contractDetail := &model.ContractDetailTbl{
-			Id:         l.svcCtx.ObjSync.GenServiceObjID(),
-			ContractId: sql.NullInt64{Valid: true, Int64: contractModel.Id},
-			Name:       sql.NullString{Valid: true, String: service.Name.String},
-			Type:       sql.NullInt64{Valid: true, Int64: service.Unit.Int64},
-			Price:      sql.NullInt64{Valid: true, Int64: service.Price.Int64},
+		paymentDetail := &model.PaymentDetailTbl{
+			Id:        l.svcCtx.ObjSync.GenServiceObjID(),
+			PaymentId: sql.NullInt64{Valid: true, Int64: paymentModel.Id},
+			Name:      sql.NullString{Valid: true, String: service.Name.String},
+			Type:      sql.NullInt64{Valid: true, Int64: service.Unit.Int64},
+			Price:     sql.NullInt64{Valid: true, Int64: service.Price.Int64},
 		}
-		_, err = l.svcCtx.ContractDetailModel.Insert(l.ctx, contractDetail)
+		_, err = l.svcCtx.PaymentDetailModel.Insert(l.ctx, paymentDetail)
 		if err != nil {
 			l.Logger.Error(err)
 			return &types.CreateContractRes{
@@ -299,13 +299,13 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 		}
 	}
 
-	for _, renter := range contractRenters {
-		contractRenterModel := &model.ContractRenterTbl{
-			Id:         l.svcCtx.ObjSync.GenServiceObjID(),
-			ContractId: sql.NullInt64{Valid: true, Int64: contractModel.Id},
-			UserId:     sql.NullInt64{Valid: true, Int64: renter.RenterID},
+	for _, renter := range paymentRenters {
+		contractRenterModel := &model.PaymentRenterTbl{
+			Id:        l.svcCtx.ObjSync.GenServiceObjID(),
+			PaymentId: sql.NullInt64{Valid: true, Int64: contractModel.Id},
+			UserId:    sql.NullInt64{Valid: true, Int64: renter.RenterID},
 		}
-		_, err = l.svcCtx.ContractRenterModel.Insert(l.ctx, contractRenterModel)
+		_, err = l.svcCtx.PaymentRenterModel.Insert(l.ctx, contractRenterModel)
 		if err != nil {
 			l.Logger.Error(err)
 			return &types.CreateContractRes{
@@ -354,32 +354,25 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 		LessorDate:    contractModel.LessorDate.Int64,
 		LessorAddress: contractModel.LessorAddress.String,
 		LessorName:    contractModel.LessorName.String,
-		// Room: types.Room{
-		// 	RoomID:   roomModel.Id,
-		// 	Name:     roomModel.Name.String,
-		// 	Status:   roomModel.Status,
-		// 	Capacity: roomModel.Capacity.Int64,
-		// 	EIndex:   roomModel.EIndex.Int64,
-		// 	WIndex:   roomModel.WIndex.Int64,
-		// },
-		CheckIn:         contractModel.CheckIn.Int64,
-		Duration:        contractModel.Duration.Int64,
-		Purpose:         contractModel.Purpose.String,
-		ContractRenters: contractRenters,
-		ContractDetails: contractDetails,
-		Payment: types.Payment{
-			PaymentID:   paymentModel.Id,
-			ContractID:  paymentModel.ContractId.Int64,
-			Amount:      paymentModel.Amount.Int64,
-			Discount:    paymentModel.Discount.Int64,
-			Deposit:     paymentModel.Deposit.Int64,
-			DepositDate: paymentModel.DepositDate.Int64,
-			NextBill:    paymentModel.NextBill.Int64,
+		Room:          room,
+		CheckIn:       contractModel.CheckIn.Int64,
+		Duration:      contractModel.Duration.Int64,
+		Purpose:       contractModel.Purpose.String,
+		Payment:       types.Payment{
+			PaymentID:      paymentModel.Id,
+			ContractID:     paymentModel.ContractId,
+			Amount:         paymentModel.Amount,
+			Discount:       paymentModel.Discount,
+			Deposit:        paymentModel.Deposit,
+			DepositDate:    paymentModel.DepositDate,
+			NextBill:       paymentModel.NextBill,
+			PaymentRenters: paymentRenters,
+			PaymentDetails: paymentDetails,
 		},
-		CreatedAt: contractModel.CreatedAt.Int64,
-		UpdatedAt: contractModel.UpdatedAt.Int64,
-		CreatedBy: contractModel.CreatedBy.Int64,
-		UpdatedBy: contractModel.UpdatedBy.Int64,
+		CreatedAt:     contractModel.CreatedAt.Int64,
+		UpdatedAt:     contractModel.UpdatedAt.Int64,
+		CreatedBy:     contractModel.CreatedBy.Int64,
+		UpdatedBy:     contractModel.UpdatedBy.Int64,
 	}
 
 	l.Logger.Info("CreateContractLogic Success: ", userID)

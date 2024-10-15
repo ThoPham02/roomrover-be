@@ -59,9 +59,6 @@ gen-inventory-service:
 gen-contract-service:
 	goctl api go -api $(API_DIR)/contract.api -dir $(CONTRACT_API_DIR)
 
-gen-payment-service:
-	goctl api go -api $(API_DIR)/payment.api -dir $(PAYMENT_API_DIR)
-
 gen-notification-service:
 	goctl api go -api $(API_DIR)/notification.api -dir $(NOTIFICATION_API_DIR)
 
@@ -75,14 +72,11 @@ gen-inventory-model:
 gen-contract-model:
 	goctl model mysql ddl -src="${SCHEMA_DIR}/contract.sql" -dir="${CONTRACT_MODEL_DIR}" --ignore-columns=""
 
-gen-payment-model:
-	goctl model mysql ddl -src="${SCHEMA_DIR}/payment.sql" -dir="${PAYMENT_MODEL_DIR}" --ignore-columns=""
-
 gen-notification-model:
 	goctl model mysql ddl -src="${SCHEMA_DIR}/notification.sql" -dir="${NOTIFICATION_MODEL_DIR}" --ignore-columns=""
 
-gen-service: gen-account-service gen-inventory-service gen-contract-service gen-payment-service gen-notification-service
-gen-model: gen-account-model gen-inventory-model gen-contract-model gen-payment-model gen-notification-model
+gen-service: gen-account-service gen-inventory-service gen-contract-service gen-notification-service
+gen-model: gen-account-model gen-inventory-model gen-contract-model gen-notification-model
 
 runs:
 	go run main.go -f etc/server.yaml

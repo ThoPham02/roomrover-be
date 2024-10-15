@@ -32,11 +32,11 @@ func (contractFunc *ContractFunction) Start() error {
 func (cfFunc *ContractFunction) CountContractByHouseID(houseID int64) (count int64, err error) {
 	return cfFunc.ContractService.Ctx.ContractModel.CountByHouseID(context.TODO(), houseID)
 }
-
-func (cfFunc *ContractFunction) GetPaymentByTime(time int64) (payments []*model.PaymentTbl, err error) {
-	return cfFunc.ContractService.Ctx.PaymentModel.FindMultiByTime(context.TODO(), time)
-}
-
 func (cfFunc *ContractFunction) GetContractByID(contractID int64) (contract *model.ContractTbl, err error) {
-    return cfFunc.ContractService.Ctx.ContractModel.FindOne(context.TODO(), contractID)
+	return cfFunc.ContractService.Ctx.ContractModel.FindOne(context.TODO(), contractID)
 }
+
+// func (cfFunc *ContractFunction) GetPaymentByTime(time int64) (payments []*model.PaymentTbl, err error) {
+// 	return cfFunc.ContractService.Ctx.PaymentModel.FindMultiByTime(context.TODO(), time)
+// }
+

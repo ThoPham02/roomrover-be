@@ -18,7 +18,6 @@ type GetContractLogic struct {
 	svcCtx *svc.ServiceContext
 }
 
-// Get contract
 func NewGetContractLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetContractLogic {
 	return &GetContractLogic{
 		Logger: logx.WithContext(ctx),
@@ -33,15 +32,15 @@ func (l *GetContractLogic) GetContract(req *types.GetContractReq) (resp *types.G
 	var userID int64
 
 	var contract types.Contract
-	var contractDetails []types.ContractDetail
-	var contractRenters []types.ContractRenter
+	var paymentDetails []types.PaymentDetail
+	var paymentRenters []types.PaymentRenter
 
 	var contractModel *model.ContractTbl
 	var renter *accountModel.UserTbl
 	var lessor *accountModel.UserTbl
 	var paymentModel *model.PaymentTbl
-	var contractDetailModels []*model.ContractDetailTbl
-	var contractRentersModels []*model.ContractRenterTbl
+	var paymentDetailModels []*model.PaymentDetailTbl
+	var paymentRentersModels []*model.PaymentRenterTbl
 
 	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
@@ -104,7 +103,7 @@ func (l *GetContractLogic) GetContract(req *types.GetContractReq) (resp *types.G
 		}, nil
 	}
 
-	contractDetailModels, err = l.svcCtx.ContractDetailModel.GetContractDetailByContractID(l.ctx, contractModel.Id)
+	paymentDetailModels, err = l.svcCtx.PaymentDetailModel.GetPaymentDetailByPaymentID(l.ctx, paymentModel.Id)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.GetContractRes{
@@ -114,18 +113,18 @@ func (l *GetContractLogic) GetContract(req *types.GetContractReq) (resp *types.G
 			},
 		}, nil
 	}
-	for _, contractDetailModel := range contractDetailModels {
-		contractDetail := types.ContractDetail{
-			ID:         contractDetailModel.Id,
-			ContractID: contractDetailModel.ContractId.Int64,
-			Name:       contractDetailModel.Name.String,
-			Price:      contractDetailModel.Price.Int64,
-			Type:       contractDetailModel.Type.Int64,
+	for _, detail := range paymentDetailModels {
+		paymentDetail := types.PaymentDetail{
+			ID:        detail.Id,
+			PaymentID: detail.PaymentId.Int64,
+			Name:      detail.Name.String,
+			Price:     detail.Price.Int64,
+			Type:      detail.Type.Int64,
 		}
-		contractDetails = append(contractDetails, contractDetail)
+		paymentDetails = append(paymentDetails, paymentDetail)
 	}
 
-	contractRentersModels, err = l.svcCtx.ContractRenterModel.GetRenterByContractID(l.ctx, contractModel.Id)
+	paymentRentersModels, err = l.svcCtx.PaymentRenterModel.GetRenterByPaymentID(l.ctx, paymentModel.Id)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.GetContractRes{
@@ -135,8 +134,8 @@ func (l *GetContractLogic) GetContract(req *types.GetContractReq) (resp *types.G
 			},
 		}, nil
 	}
-	for _, contractRenterModel := range contractRentersModels {
-		userModel, err := l.svcCtx.AccountFunction.GetUserByID(contractRenterModel.UserId.Int64)
+	for _, renter := range paymentRentersModels {
+		userModel, err := l.svcCtx.AccountFunction.GetUserByID(renter.UserId.Int64)
 		if err != nil {
 			l.Logger.Error(err)
 			return &types.GetContractRes{
@@ -147,14 +146,13 @@ func (l *GetContractLogic) GetContract(req *types.GetContractReq) (resp *types.G
 			}, nil
 		}
 
-		contractRenter := types.ContractRenter{
-			ID:         contractRenterModel.Id,
-			ContractID: contractRenterModel.ContractId.Int64,
-			RenterID:   userModel.Id,
-			Name:       userModel.FullName.String,
-			Phone:      userModel.Phone,
-		}
-		contractRenters = append(contractRenters, contractRenter)
+		paymentRenters = append(paymentRenters, types.PaymentRenter{
+			ID:        renter.Id,
+			PaymentID: renter.PaymentId.Int64,
+			RenterID:  userModel.Id,
+			Name:      userModel.FullName.String,
+			Phone:     userModel.Phone,
+		})
 	}
 
 	contract = types.Contract{
@@ -173,27 +171,19 @@ func (l *GetContractLogic) GetContract(req *types.GetContractReq) (resp *types.G
 		LessorDate:    contractModel.LessorDate.Int64,
 		LessorAddress: contractModel.LessorAddress.String,
 		LessorName:    contractModel.LessorName.String,
-		// Room: types.Room{
-		// 	RoomID:   0,
-		// 	Name:     "",
-		// 	Status:   0,
-		// 	Capacity: 0,
-		// 	EIndex:   0,
-		// 	WIndex:   0,
-		// },
-		CheckIn:         contractModel.CheckIn.Int64,
-		Duration:        contractModel.Duration.Int64,
-		Purpose:         contractModel.Purpose.String,
-		ContractRenters: contractRenters,
-		ContractDetails: contractDetails,
+		CheckIn:       contractModel.CheckIn.Int64,
+		Duration:      contractModel.Duration.Int64,
+		Purpose:       contractModel.Purpose.String,
 		Payment: types.Payment{
-			PaymentID:   paymentModel.Id,
-			ContractID:  paymentModel.ContractId.Int64,
-			Amount:      paymentModel.Amount.Int64,
-			Discount:    paymentModel.Discount.Int64,
-			Deposit:     paymentModel.Deposit.Int64,
-			DepositDate: paymentModel.DepositDate.Int64,
-			NextBill:    paymentModel.NextBill.Int64,
+			PaymentID:      paymentModel.Id,
+			ContractID:     paymentModel.ContractId,
+			Amount:         paymentModel.Amount,
+			Discount:       paymentModel.Discount,
+			Deposit:        paymentModel.Deposit,
+			DepositDate:    paymentModel.DepositDate,
+			NextBill:       paymentModel.NextBill,
+			PaymentRenters: paymentRenters,
+			PaymentDetails: paymentDetails,
 		},
 		CreatedAt: contractModel.CreatedAt.Int64,
 		UpdatedAt: contractModel.UpdatedAt.Int64,

@@ -2,17 +2,17 @@
 package types
 
 type CreateContractReq struct {
-	Renter         string `form:"renter"`
-	Lessor         string `form:"lessor"`
-	ContractRenter string `form:"contractRenter,optional"`
-	Room           string `form:"room"`
-	CheckIn        int64  `form:"checkIn"`
-	Duration       int64  `form:"duration"`
-	Purpose        string `form:"purpose"`
-	Price          int64  `form:"price"`
-	Discount       int64  `form:"discount,optional"`
-	Deposit        int64  `form:"deposit"`
-	DepositDate    int64  `form:"depositDate"`
+	Renter        string `form:"renter"`
+	Lessor        string `form:"lessor"`
+	PaymentRenter string `form:"paymentRenter,optional"`
+	Room          string `form:"room"`
+	CheckIn       int64  `form:"checkIn"`
+	Duration      int64  `form:"duration"`
+	Purpose       string `form:"purpose"`
+	Price         int64  `form:"price"`
+	Discount      int64  `form:"discount,optional"`
+	Deposit       int64  `form:"deposit"`
+	DepositDate   int64  `form:"depositDate"`
 }
 
 type CreateContractRes struct {
@@ -21,29 +21,29 @@ type CreateContractRes struct {
 }
 
 type UpdateContractReq struct {
-	ID             int64  `path:"id"`
-	Status         int64  `form:"status"`
-	RenterID       int64  `form:"renterID"`
-	RenterNumber   string `form:"renterNumber"`
-	RenterDate     string `form:"renterDate"`
-	RenterName     string `form:"renterName"`
-	RenterAddress  string `form:"renterAddress"`
-	LessorID       int64  `form:"lessorID"`
-	LessorNumber   string `form:"lessorNumber"`
-	LessorDate     string `form:"lessorDate"`
-	LessorName     string `form:"lessorName"`
-	LessorAddress  string `form:"lessorAddress"`
-	ContractRenter string `form:"contractRenter"`
-	RoomID         int64  `form:"roomID"`
-	EIndex         int64  `form:"eIndex"`
-	WIndex         int64  `form:"wIndex"`
-	CheckIn        int64  `form:"checkIn"`
-	Duration       int64  `form:"duration"`
-	Purpose        string `form:"purpose"`
-	Amount         int64  `form:"amount"`
-	Discount       int64  `form:"discount"`
-	Deposit        int64  `form:"deposit"`
-	DepositDate    int64  `form:"depositDate"`
+	ID            int64  `path:"id"`
+	Status        int64  `form:"status"`
+	RenterID      int64  `form:"renterID"`
+	RenterNumber  string `form:"renterNumber"`
+	RenterDate    string `form:"renterDate"`
+	RenterName    string `form:"renterName"`
+	RenterAddress string `form:"renterAddress"`
+	LessorID      int64  `form:"lessorID"`
+	LessorNumber  string `form:"lessorNumber"`
+	LessorDate    string `form:"lessorDate"`
+	LessorName    string `form:"lessorName"`
+	LessorAddress string `form:"lessorAddress"`
+	PaymentRenter string `form:"paymentRenter"`
+	RoomID        int64  `form:"roomID"`
+	EIndex        int64  `form:"eIndex"`
+	WIndex        int64  `form:"wIndex"`
+	CheckIn       int64  `form:"checkIn"`
+	Duration      int64  `form:"duration"`
+	Purpose       string `form:"purpose"`
+	Amount        int64  `form:"amount"`
+	Discount      int64  `form:"discount"`
+	Deposit       int64  `form:"deposit"`
+	DepositDate   int64  `form:"depositDate"`
 }
 
 type UpdateContractRes struct {
@@ -158,58 +158,58 @@ type Service struct {
 }
 
 type Contract struct {
-	ContractID      int64            `json:"contractID"`
-	Code            string           `json:"code"`
-	Status          int64            `json:"status"`
-	RenterID        int64            `json:"renterID"`
-	RenterPhone     string           `json:"renterPhone"`
-	RenterNumber    string           `json:"renterNumber"`
-	RenterDate      int64            `json:"renterDate"`
-	RenterAddress   string           `json:"renterAddress"`
-	RenterName      string           `json:"renterName"`
-	LessorID        int64            `json:"lessorID"`
-	LessorPhone     string           `json:"lessorPhone"`
-	LessorNumber    string           `json:"lessorNumber"`
-	LessorDate      int64            `json:"lessorDate"`
-	LessorAddress   string           `json:"lessorAddress"`
-	LessorName      string           `json:"lessorName"`
-	Room            Room             `json:"room"`
-	CheckIn         int64            `json:"checkIn"`
-	Duration        int64            `json:"duration"`
-	Purpose         string           `json:"purpose"`
-	ContractRenters []ContractRenter `json:"contractRenters"`
-	ContractDetails []ContractDetail `json:"contractDetails"`
-	Payment         Payment          `json:"payment"`
-	CreatedAt       int64            `json:"createdAt"`
-	UpdatedAt       int64            `json:"updatedAt"`
-	CreatedBy       int64            `json:"createdBy"`
-	UpdatedBy       int64            `json:"updatedBy"`
+	ContractID    int64   `json:"contractID"`
+	Code          string  `json:"code"`
+	Status        int64   `json:"status"`
+	RenterID      int64   `json:"renterID"`
+	RenterPhone   string  `json:"renterPhone"`
+	RenterNumber  string  `json:"renterNumber"`
+	RenterDate    int64   `json:"renterDate"`
+	RenterAddress string  `json:"renterAddress"`
+	RenterName    string  `json:"renterName"`
+	LessorID      int64   `json:"lessorID"`
+	LessorPhone   string  `json:"lessorPhone"`
+	LessorNumber  string  `json:"lessorNumber"`
+	LessorDate    int64   `json:"lessorDate"`
+	LessorAddress string  `json:"lessorAddress"`
+	LessorName    string  `json:"lessorName"`
+	Room          Room    `json:"room"`
+	CheckIn       int64   `json:"checkIn"`
+	Duration      int64   `json:"duration"`
+	Purpose       string  `json:"purpose"`
+	Payment       Payment `json:"payment"`
+	CreatedAt     int64   `json:"createdAt"`
+	UpdatedAt     int64   `json:"updatedAt"`
+	CreatedBy     int64   `json:"createdBy"`
+	UpdatedBy     int64   `json:"updatedBy"`
 }
 
-type ContractRenter struct {
-	ID         int64  `json:"id"`
-	ContractID int64  `json:"contractID"`
-	RenterID   int64  `json:"renterID"`
-	Name       string `json:"name"`
-	Phone      string `json:"phone"`
+type PaymentRenter struct {
+	ID        int64  `json:"id"`
+	PaymentID int64  `json:"paymentID"`
+	RenterID  int64  `json:"renterID"`
+	Name      string `json:"name"`
+	Phone     string `json:"phone"`
 }
 
-type ContractDetail struct {
-	ID         int64  `json:"id"`
-	ContractID int64  `json:"contractID"`
-	Name       string `json:"name"`
-	Price      int64  `json:"price"`
-	Type       int64  `json:"type"`
+type PaymentDetail struct {
+	ID        int64  `json:"id"`
+	PaymentID int64  `json:"paymentID"`
+	Name      string `json:"name"`
+	Price     int64  `json:"price"`
+	Type      int64  `json:"type"`
 }
 
 type Payment struct {
-	PaymentID   int64 `json:"paymentID"`
-	ContractID  int64 `json:"contractID"`
-	Amount      int64 `json:"amount"`
-	Discount    int64 `json:"discount"`
-	Deposit     int64 `json:"deposit"`
-	DepositDate int64 `json:"depositDate"`
-	NextBill    int64 `json:"nextBill"`
+	PaymentID      int64           `json:"paymentID"`
+	ContractID     int64           `json:"contractID"`
+	Amount         int64           `json:"amount"`
+	Discount       int64           `json:"discount"`
+	Deposit        int64           `json:"deposit"`
+	DepositDate    int64           `json:"depositDate"`
+	NextBill       int64           `json:"nextBill"`
+	PaymentRenters []PaymentRenter `json:"paymentRenters"`
+	PaymentDetails []PaymentDetail `json:"paymentDetails"`
 }
 
 type Bill struct {

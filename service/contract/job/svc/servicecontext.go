@@ -1,11 +1,10 @@
 package svc
 
 import (
-	"roomrover/service/payment/job/config"
-	"roomrover/service/payment/model"
 	"roomrover/sync"
 
-	contractFunc "roomrover/service/contract/function"
+	"roomrover/service/contract/job/config"
+	"roomrover/service/contract/model"
 	inventFunc "roomrover/service/inventory/function"
 	notificationFunc "roomrover/service/notification/function"
 
@@ -24,7 +23,6 @@ type ServiceContext struct {
 	BillPayModel       model.BillPayTblModel
 
 	InventFunction       inventFunc.InventoryFunction
-	ContractFunction     contractFunc.ContractFunction
 	NotificationFunction notificationFunc.NotificationFunction
 }
 
@@ -43,10 +41,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 func (sc *ServiceContext) SetInventFunction(inventFunction inventFunc.InventoryFunction) {
 	sc.InventFunction = inventFunction
-}
-
-func (ctx *ServiceContext) SetContractFunction(contractFunction contractFunc.ContractFunction) {
-	ctx.ContractFunction = contractFunction
 }
 
 func (ctx *ServiceContext) SetNotificationFunction(notificationFunction notificationFunc.NotificationFunction) {

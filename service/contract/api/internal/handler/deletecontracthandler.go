@@ -9,7 +9,6 @@ import (
 	"roomrover/service/contract/api/internal/types"
 )
 
-// Delete contract
 func DeleteContractHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.DeleteContractReq

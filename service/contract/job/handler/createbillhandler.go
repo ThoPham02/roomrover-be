@@ -2,8 +2,8 @@ package handler
 
 import (
 	"context"
-	"roomrover/service/payment/job/logic"
-	"roomrover/service/payment/job/svc"
+	"roomrover/service/contract/job/logic"
+	"roomrover/service/contract/job/svc"
 
 	"github.com/robfig/cron/v3"
 )

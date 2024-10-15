@@ -9,7 +9,6 @@ import (
 	"roomrover/service/contract/api/internal/types"
 )
 
-// Update contract
 func UpdateContractHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.UpdateContractReq

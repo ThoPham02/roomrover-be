@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
@@ -30,12 +31,14 @@ func NewPaymentDetailTblModel(conn sqlx.SqlConn) PaymentDetailTblModel {
 }
 
 func (m *customPaymentDetailTblModel) GetPaymentDetailByPaymentID(ctx context.Context, paymentID int64) ([]*PaymentDetailTbl, error) {
-	query := fmt.Sprintf("select %s from %s where `payment_id` = ?", paymentDetailTblRows, m.table)
+	query := fmt.Sprintf("select %s from %s where `payment_id` = ? ", paymentDetailTblRows, m.table)
 	var resp []*PaymentDetailTbl
 	err := m.conn.QueryRowsCtx(ctx, &resp, query, paymentID)
 	switch err {
 	case nil:
 		return resp, nil
+	case sqlc.ErrNotFound:
+		return nil, ErrNotFound
 	default:
 		return nil, err
 	}
