@@ -17,6 +17,7 @@ type (
 		paymentRenterTblModel
 		GetRenterByPaymentID(ctx context.Context, paymentID int64) ([]*PaymentRenterTbl, error)
 		DeleteByPaymentID(ctx context.Context, paymentID int64) error
+		CountRentersByPaymentID(ctx context.Context, paymentID int64) (int64, error)
 	}
 
 	customPaymentRenterTblModel struct {
@@ -49,4 +50,11 @@ func (m *customPaymentRenterTblModel) DeleteByPaymentID(ctx context.Context, pay
 	query := fmt.Sprintf("delete from %s where `payment_id` = ? ", m.table)
 	_, err := m.conn.ExecCtx(ctx, query, paymentID)
 	return err
+}
+
+func (m *customPaymentRenterTblModel) CountRentersByPaymentID(ctx context.Context, paymentID int64) (int64, error) {
+	query := fmt.Sprintf("select count(*) from %s where `payment_id` = ? ", m.table)
+	var count int64
+	err := m.conn.QueryRowCtx(ctx, &count, query, paymentID)
+	return count, err
 }

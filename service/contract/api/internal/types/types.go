@@ -83,6 +83,60 @@ type FilterContractRes struct {
 	Total     int64      `json:"total"`
 }
 
+type FilterBillReq struct {
+	Search     string `form:"search,optional"`
+	CreateFrom int64  `form:"createFrom,optional"`
+	CreateTo   int64  `form:"createTo,optional"`
+	Status     int64  `form:"status,optional"`
+	Limit      int64  `form:"limit"`
+	Offset     int64  `form:"offset"`
+}
+
+type FilterBillRes struct {
+	Result Result `json:"result"`
+	Bills  []Bill `json:"bills"`
+	Total  int64  `json:"total"`
+}
+
+type GetBillDetailReq struct {
+	ID int64 `path:"id"`
+}
+
+type GetBillDetailRes struct {
+	Result Result `json:"result"`
+	Bill   Bill   `json:"bill"`
+}
+
+type UpdateBillDetailReq struct {
+	ID       int64  `path:"id"`
+	Amount   int64  `form:"amount"`
+	Discount int64  `form:"discount"`
+	Note     string `form:"note"`
+}
+
+type UpdateBillDetailRes struct {
+	Result Result `json:"result"`
+	Bill   Bill   `json:"bill"`
+}
+
+type CreateBillPayReq struct {
+	BillID int64 `form:"billID"`
+	Amount int64 `form:"amount"`
+}
+
+type CreateBillPayRes struct {
+	Result Result `json:"result"`
+	Bill   Bill   `json:"bill"`
+}
+
+type DeleteBillPayReq struct {
+	ID int64 `path:"id"`
+}
+
+type DeleteBillPayRes struct {
+	Result Result `json:"result"`
+}
+
 type Result struct {
 	Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
 	Message string `json:"message"` // Result message: detail response code

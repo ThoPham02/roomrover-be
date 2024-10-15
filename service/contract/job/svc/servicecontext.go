@@ -15,6 +15,7 @@ type ServiceContext struct {
 	Config  config.Config
 	ObjSync sync.ObjSync
 
+	ContractModel      model.ContractTblModel
 	PaymentModel       model.PaymentTblModel
 	PaymentDetailModel model.PaymentDetailTblModel
 	PaymentRenterModel model.PaymentRenterTblModel
@@ -30,6 +31,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:             c,
 		ObjSync:            *sync.NewObjSync(0),
+		ContractModel:      model.NewContractTblModel(sqlx.NewMysql(c.DataSource)),
 		PaymentModel:       model.NewPaymentTblModel(sqlx.NewMysql(c.DataSource)),
 		PaymentDetailModel: model.NewPaymentDetailTblModel(sqlx.NewMysql(c.DataSource)),
 		PaymentRenterModel: model.NewPaymentRenterTblModel(sqlx.NewMysql(c.DataSource)),

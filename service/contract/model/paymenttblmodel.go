@@ -17,6 +17,7 @@ type (
 		paymentTblModel
 		FindByContractID(ctx context.Context, contractID int64) (*PaymentTbl, error)
 		DeleteByContractID(ctx context.Context, contractID int64) error
+		FilterPaymentByTime(ctx context.Context, time int64) ([]*PaymentTbl, error)
 	}
 
 	customPaymentTblModel struct {
@@ -49,4 +50,19 @@ func (m *customPaymentTblModel) DeleteByContractID(ctx context.Context, contract
 	query := fmt.Sprintf("delete from %s where `contract_id` = ? ", m.table)
 	_, err := m.conn.ExecCtx(ctx, query, contractID)
 	return err
+}
+
+func (m *customPaymentTblModel) FilterPaymentByTime(ctx context.Context, time int64) ([]*PaymentTbl, error) {
+	var start = time - 86400000/2
+	var end = time + 86400000/2
+
+	query := fmt.Sprintf("select %s from %s where `next_bill` between ? and ? ", paymentTblRows, m.table)
+	var resp []*PaymentTbl
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, start, end)
+	switch err {
+	case nil:
+		return resp, nil
+	default:
+		return nil, err
+	}
 }

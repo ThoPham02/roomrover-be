@@ -7,7 +7,6 @@ import (
 	"roomrover/common"
 	"roomrover/service/account/api/internal/svc"
 	"roomrover/service/account/api/internal/types"
-	"roomrover/service/account/model"
 	"roomrover/service/account/utils"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -40,18 +39,18 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error
 	userModel, err := l.svcCtx.UserModel.FindOneByPhone(l.ctx, req.Phone)
 	if err != nil {
 		l.Logger.Error(err)
-		if err == model.ErrNotFound {
-			return &types.LoginRes{
-				Result: types.Result{
-					Code:    common.USER_NOT_FOUND_CODE,
-					Message: common.USER_NOT_FOUND_MESS,
-				},
-			}, nil
-		}
 		return &types.LoginRes{
 			Result: types.Result{
 				Code:    common.DB_ERR_CODE,
 				Message: common.DB_ERR_MESS,
+			},
+		}, nil
+	}
+	if userModel == nil {
+		return &types.LoginRes{
+			Result: types.Result{
+				Code:    common.USER_NOT_FOUND_CODE,
+				Message: common.USER_NOT_FOUND_MESS,
 			},
 		}, nil
 	}

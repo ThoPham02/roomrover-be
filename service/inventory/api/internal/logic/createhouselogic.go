@@ -34,7 +34,7 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 	var houseID int64 = l.svcCtx.ObjSync.GenServiceObjID()
 	var currentTime = common.GetCurrentTime()
 
-	var albums []types.Album
+	var albums []string
 	var services []types.Service
 	var rooms []types.Room
 
@@ -121,7 +121,7 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 		_, err = l.svcCtx.AlbumModel.Insert(l.ctx, &model.AlbumTbl{
 			Id:      l.svcCtx.ObjSync.GenServiceObjID(),
 			HouseId: sql.NullInt64{Valid: true, Int64: houseID},
-			Url:     sql.NullString{Valid: true, String: album.Url},
+			Url:     sql.NullString{Valid: true, String: album},
 		})
 		if err != nil {
 			l.Logger.Error(err)

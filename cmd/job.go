@@ -7,8 +7,9 @@ import (
 
 	contractApi "roomrover/service/contract/api"
 	inventApi "roomrover/service/inventory/api"
+	notificationApi "roomrover/service/notification/api"
 
-	paymentScheduler "roomrover/service/payment/job"
+	paymentScheduler "roomrover/service/contract/job"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -35,10 +36,15 @@ func main() {
 	contractFunc := contractApi.NewContractFunction(contractService)
 	contractFunc.Start()
 
+	notiService := notificationApi.NewNotificationService(server)
+	notiService.Start()
+	notiFunc := notificationApi.NewNotificationFunction(notiService)
+	notiFunc.Start()
+
 	paymentScheduler := paymentScheduler.NewPaymentScheduler()
 	paymentScheduler.Start()
-	paymentScheduler.Ctx.SetContractFunction(contractFunc)
 	paymentScheduler.Ctx.SetInventFunction(inventFunc)
+	paymentScheduler.Ctx.SetNotificationFunction(notiFunc)
 
 	fmt.Println("Starting Scheduler ....... ")
 	server.Start()

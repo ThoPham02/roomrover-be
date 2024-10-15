@@ -66,3 +66,11 @@ const (
 const (
 	NOTIFICATION_REF_TYPE_BILL = 1
 )
+
+const (
+	NOTI_STATUS_PENDING = 1
+	NOTI_STATUS_DONE    = 2
+
+	NOTI_TYPE_UNREAD = 1
+	NOTI_TYPE_READ   = 2
+)
