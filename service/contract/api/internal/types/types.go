@@ -120,8 +120,11 @@ type UpdateBillDetailRes struct {
 }
 
 type CreateBillPayReq struct {
-	BillID int64 `form:"billID"`
-	Amount int64 `form:"amount"`
+	BillID  int64  `form:"billID"`
+	Amount  int64  `form:"amount"`
+	PayType int64  `form:"payType"`
+	PayDate int64  `form:"payDate"`
+	Url     string `form:"url"`
 }
 
 type CreateBillPayRes struct {
@@ -267,20 +270,23 @@ type Payment struct {
 }
 
 type Bill struct {
-	BillID      int64        `json:"billID"`
-	PaymentID   int64        `json:"paymentID"`
-	PaymentDate int64        `json:"paymentDate"`
-	Amount      int64        `json:"amount"`
-	Status      int64        `json:"status"`
-	BillDetails []BillDetail `json:"billDetails"`
+	BillID       int64        `json:"billID"`
+	Title        string       `json:"title"`
+	ContractCode string       `json:"contractCode"`
+	PaymentID    int64        `json:"paymentID"`
+	PaymentDate  int64        `json:"paymentDate"`
+	Amount       int64        `json:"amount"`
+	Remain       int64        `json:"remain"`
+	Status       int64        `json:"status"`
+	BillDetails  []BillDetail `json:"billDetails"`
 }
 
 type BillDetail struct {
 	BillDetailID int64  `json:"billDetailID"`
 	BillID       int64  `json:"billID"`
-	Name         int64  `json:"name"`
+	Name         string `json:"name"`
 	Price        int64  `json:"price"`
-	Type         string `json:"type"`
+	Type         int64  `json:"type"`
 	Quantity     int64  `json:"quantity"`
 }
 

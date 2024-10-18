@@ -55,11 +55,13 @@ CREATE TABLE `payment_renter_tbl` (
 
 CREATE TABLE `bill_tbl` (
   `id` bigint,
-  `payment_id` bigint,
+  `title` varchar(255),
+  `payment_id` bigint not null,
   `payment_date` bigint,
-  `amount` bigint,
+  `amount` bigint not null,
   `discount` bigint,
-  `status` int,
+  `remain` bigint not null,
+  `status` int not null,
   PRIMARY KEY (`id`)
 );
 

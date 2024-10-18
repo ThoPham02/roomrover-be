@@ -62,12 +62,13 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 
 		var billModel = &model.BillTbl{
 			Id: l.svcCtx.ObjSync.GenServiceObjID(),
-			// Name:        "Hóa đơn tháng " + common.GetMonthYear(paymentModel.NextBill),
-			PaymentId:   sql.NullInt64{Valid: true, Int64: paymentModel.Id},
+			// Title:       "Hóa đơn tháng " + common.GetMonthYear(paymentModel.NextBill),
+			PaymentId:   paymentModel.Id,
 			PaymentDate: sql.NullInt64{Valid: true, Int64: currentTime + 6*86400000}, // han thanh toan sau 5 ngay
-			Amount:      sql.NullInt64{Valid: true, Int64: paymentModel.Amount},
+			Amount:      paymentModel.Amount,
 			Discount:    sql.NullInt64{Valid: true, Int64: paymentModel.Discount},
-			Status:      sql.NullInt64{Valid: true, Int64: common.BILL_STATUS_UNPAID},
+			Remain:      paymentModel.Amount - paymentModel.Discount,
+			Status:      common.BILL_STATUS_UNPAID,
 		}
 		_, err = l.svcCtx.BillModel.Insert(l.ctx, billModel)
 		if err != nil {
@@ -128,6 +129,5 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 	}
 
 	l.Logger.Info("CreateBillByTime Start Time Success: ", common.GetCurrentTime())
-
 	return nil
 }

@@ -35,12 +35,14 @@ type (
 	}
 
 	BillTbl struct {
-		Id          int64         `db:"id"`
-		PaymentId   sql.NullInt64 `db:"payment_id"`
-		PaymentDate sql.NullInt64 `db:"payment_date"`
-		Amount      sql.NullInt64 `db:"amount"`
-		Discount    sql.NullInt64 `db:"discount"`
-		Status      sql.NullInt64 `db:"status"`
+		Id          int64          `db:"id"`
+		Title       sql.NullString `db:"title"`
+		PaymentId   int64          `db:"payment_id"`
+		PaymentDate sql.NullInt64  `db:"payment_date"`
+		Amount      int64          `db:"amount"`
+		Discount    sql.NullInt64  `db:"discount"`
+		Remain      int64          `db:"remain"`
+		Status      int64          `db:"status"`
 	}
 )
 
@@ -72,14 +74,14 @@ func (m *defaultBillTblModel) FindOne(ctx context.Context, id int64) (*BillTbl, 
 }
 
 func (m *defaultBillTblModel) Insert(ctx context.Context, data *BillTbl) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?)", m.table, billTblRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.PaymentId, data.PaymentDate, data.Amount, data.Discount, data.Status)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?)", m.table, billTblRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.Title, data.PaymentId, data.PaymentDate, data.Amount, data.Discount, data.Remain, data.Status)
 	return ret, err
 }
 
 func (m *defaultBillTblModel) Update(ctx context.Context, data *BillTbl) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, billTblRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.PaymentId, data.PaymentDate, data.Amount, data.Discount, data.Status, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.Title, data.PaymentId, data.PaymentDate, data.Amount, data.Discount, data.Remain, data.Status, data.Id)
 	return err
 }
 

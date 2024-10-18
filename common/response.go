@@ -59,3 +59,11 @@ const (
 	CONTRACT_HAS_BEEN_REJECTED_CODE = 30003
 	CONTRACT_HAS_BEEN_REJECTED_MESS = "Contract has been rejected"
 )
+
+const (
+	BILL_NOT_FOUND_CODE = 40000
+	BILL_NOT_FOUND_MESS = "Bill not found"
+
+	BILL_PAY_NOT_FOUND_CODE = 40001
+	BILL_PAY_NOT_FOUND_MESS = "Bill pay not found"
+)

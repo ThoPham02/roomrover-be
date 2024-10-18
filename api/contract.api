@@ -119,8 +119,11 @@ type (
 	}
 
 	CreateBillPayReq {
-		BillID int64 `form:"billID"`
-		Amount int64 `form:"amount"`
+		BillID  int64  `form:"billID"`
+		Amount  int64  `form:"amount"`
+		PayType int64  `form:"payType"`
+		PayDate int64  `form:"payDate"`
+		Url     string `form:"url"`
 	}
 	CreateBillPayRes {
 		Result Result `json:"result"`
