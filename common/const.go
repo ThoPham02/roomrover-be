@@ -25,9 +25,11 @@ const (
 )
 
 const (
-	ROOM_STATUS_INACTIVE = 1 // khong hoat dong
-	ROOM_STATUS_ACTIVE   = 2 // con cho thue
-	ROOM_STATUS_RENTED   = 4 // da cho thue
+	ROOM_STATUS_INACTIVE        = 1  // Cho xac nhan
+	ROOM_STATUS_ACTIVE          = 2  // con cho thue
+	ROOM_STATUS_RENTED          = 4  // da cho thue
+	ROOM_STATUS_NEARLY_OUT_DATE = 8  // sap het han
+	ROOM_STATUS_TRANSFER        = 16 // chuyen nhuong
 )
 
 // Contract Service
@@ -74,3 +76,5 @@ const (
 	NOTI_TYPE_UNREAD = 1
 	NOTI_TYPE_READ   = 2
 )
+
+const MIN_ID = 1000000000

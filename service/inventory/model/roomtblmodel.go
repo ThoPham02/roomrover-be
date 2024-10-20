@@ -17,8 +17,8 @@ type (
 		withSession(session sqlx.Session) RoomTblModel
 		FindByHouseID(ctx context.Context, houseID, limit, offset int64) ([]*RoomTbl, int, error)
 		DeleteByHouseID(ctx context.Context, houseID int64) error
-		CountRoom(ctx context.Context, search string, houseType int64) (int, error)
-		FilterRoom(ctx context.Context, search string, houseType, limit, offset int64) ([]*RoomTbl, error)
+		CountRoom(ctx context.Context, userID int64, search string, houseType, status int64) (int, error)
+		FilterRoom(ctx context.Context, userID int64, search string, houseType, status, limit, offset int64) ([]*RoomTbl, error)
 		FindByIDs(ctx context.Context, roomIDs []int64) ([]*RoomTbl, error)
 		FindMultiByHouseIDs(ctx context.Context, houseIDs []int64) ([]*RoomTbl, error)
 	}
@@ -40,7 +40,13 @@ func (m *customRoomTblModel) withSession(session sqlx.Session) RoomTblModel {
 }
 
 func (m *customRoomTblModel) FindByHouseID(ctx context.Context, houseID, limit, offset int64) ([]*RoomTbl, int, error) {
-	query := fmt.Sprintf("select %s from %s where `house_id` = ? limit ? offset ?", roomTblRows, m.table)
+	var vals []interface{}
+	query := fmt.Sprintf("select %s from %s where `house_id` = ? ", roomTblRows, m.table)
+	vals = append(vals, houseID)
+	if limit > 0 {
+		query += "limit ? offset ?"
+		vals = append(vals, limit, offset)
+	}
 	count := fmt.Sprintf("select count(*) from %s where `house_id` = ?", m.table)
 	var resp []*RoomTbl
 	var total int
@@ -48,7 +54,7 @@ func (m *customRoomTblModel) FindByHouseID(ctx context.Context, houseID, limit, 
 	if err != nil {
 		return nil, 0, err
 	}
-	err = m.conn.QueryRowsCtx(ctx, &resp, query, houseID, limit, offset)
+	err = m.conn.QueryRowsCtx(ctx, &resp, query, vals...)
 	switch err {
 	case nil:
 		return resp, total, nil
@@ -65,18 +71,26 @@ func (m *customRoomTblModel) DeleteByHouseID(ctx context.Context, houseID int64)
 	return err
 }
 
-func (m *customRoomTblModel) FilterRoom(ctx context.Context, search string, houseType, limit, offset int64) ([]*RoomTbl, error) {
+func (m *customRoomTblModel) FilterRoom(ctx context.Context, userID int64, search string, houseType, status, limit, offset int64) ([]*RoomTbl, error) {
 	query := fmt.Sprintf("select %s from %s where `name` like ? ", roomTblRows, m.table)
 	var vals []interface{}
 	vals = append(vals, "%"+search+"%")
 
 	if houseType != 0 {
-		query += " and `house_id` in (select `id` from `house_tbl` where `type` = ?)"
-		vals = append(vals, houseType)
+		query += " and `house_id` in (select `id` from `house_tbl` where `type` = ? and `user_id` = ?)"
+		vals = append(vals, houseType, userID)
+	} else {
+		query += " and `house_id` in (select `id` from `house_tbl` where `user_id` = ?)"
+		vals = append(vals, userID)
+	}
+
+	if status != 0 {
+		query += " and `status` = ?"
+		vals = append(vals, status)
 	}
 	if limit > 0 {
 		query += " limit ? offset ?"
-		vals = append(vals, limit, offset) 
+		vals = append(vals, limit, offset)
 	}
 
 	var resp []*RoomTbl
@@ -91,14 +105,21 @@ func (m *customRoomTblModel) FilterRoom(ctx context.Context, search string, hous
 	}
 }
 
-func (m *customRoomTblModel) CountRoom(ctx context.Context, search string, houseType int64) (int, error) {
+func (m *customRoomTblModel) CountRoom(ctx context.Context, userID int64, search string, houseType, status int64) (int, error) {
 	query := fmt.Sprintf("select count(*) from %s where `name` like ? ", m.table)
 	var vals []interface{}
 	vals = append(vals, "%"+search+"%")
 
 	if houseType != 0 {
-		query += " and `house_id` in (select `id` from `house_tbl` where `type` = ?)"
-		vals = append(vals, houseType)
+		query += " and `house_id` in (select `id` from `house_tbl` where `type` = ? and `user_id` = ?)"
+		vals = append(vals, houseType, userID)
+	} else {
+		query += " and `house_id` in (select `id` from `house_tbl` where `user_id` = ?)"
+		vals = append(vals, userID)
+	}
+	if status != 0 {
+		query += " and `status` = ?"
+		vals = append(vals, status)
 	}
 
 	var total int
@@ -108,22 +129,22 @@ func (m *customRoomTblModel) CountRoom(ctx context.Context, search string, house
 
 func (m *customRoomTblModel) FindByIDs(ctx context.Context, roomIDs []int64) ([]*RoomTbl, error) {
 	query := fmt.Sprintf("select %s from %s where `id` in (", roomTblRows, m.table)
-    var resp []*RoomTbl
+	var resp []*RoomTbl
 	var vals []interface{}
 	for _, id := range roomIDs {
-        query += "?,"
-        vals = append(vals, id)
-    }
+		query += "?,"
+		vals = append(vals, id)
+	}
 	query = query[:len(query)-1] + ")"
-    err := m.conn.QueryRowsCtx(ctx, &resp, query, vals...)
-    switch err {
-    case nil:
-        return resp, nil
-    case sqlx.ErrNotFound:
-        return nil, nil
-    default:
-        return nil, err
-    }
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, vals...)
+	switch err {
+	case nil:
+		return resp, nil
+	case sqlx.ErrNotFound:
+		return nil, nil
+	default:
+		return nil, err
+	}
 }
 
 func (m *customRoomTblModel) FindMultiByHouseIDs(ctx context.Context, houseIDs []int64) ([]*RoomTbl, error) {

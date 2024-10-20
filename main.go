@@ -45,6 +45,7 @@ func main() {
 	contractFunc.Start()
 
 	inventService.Ctx.SetContractFunction(contractFunc)
+	inventService.Ctx.SetAccountFunction(accountFunc)
 	contractService.Ctx.SetAccountFunction(accountFunc)
 	contractService.Ctx.SetInventFunction(inventFunc)
 

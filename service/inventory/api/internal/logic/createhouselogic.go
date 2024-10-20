@@ -96,7 +96,7 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 		Type:        req.Type,
 		Area:        req.Area,
 		Price:       req.Price,
-		Status:      common.HOUSE_STATUS_INACTIVE,
+		Status:      common.HOUSE_STATUS_DRAFT,
 		BedNum:      sql.NullInt64{Valid: true, Int64: int64(req.BedNum)},
 		LivingNum:   sql.NullInt64{Valid: true, Int64: int64(req.LivingNum)},
 		Address:     sql.NullString{Valid: true, String: req.Address},

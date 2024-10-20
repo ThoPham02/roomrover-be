@@ -31,7 +31,6 @@ func (l *FilterHouseLogic) FilterHouse(req *types.FilterHouseReq) (resp *types.F
 
 	var userID int64
 	var total int64
-	var imageUrls []string
 	var listHouses []types.House
 	var houses []*model.HouseTbl
 
@@ -75,6 +74,7 @@ func (l *FilterHouseLogic) FilterHouse(req *types.FilterHouseReq) (resp *types.F
 	}
 
 	for _, house := range houses {
+		var imageUrls []string
 		var albumModels []*model.AlbumTbl
 		albumModels, err = l.svcCtx.AlbumModel.FindByHouseID(l.ctx, house.Id)
 		if err != nil {

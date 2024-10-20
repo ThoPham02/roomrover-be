@@ -93,6 +93,29 @@ type DeleteHouseRes struct {
 	Result Result `json:"result"`
 }
 
+type FilterRoomReq struct {
+	Search string `form:"search,optional"`
+	Type   int64  `form:"type,optional"`
+	Status int64  `form:"status,optional"`
+	Limit  int64  `form:"limit"`
+	Offset int64  `form:"offset"`
+}
+
+type FilterRoomRes struct {
+	Result Result `json:"result"`
+	Total  int    `json:"total"`
+	Rooms  []Room `json:"rooms"`
+}
+
+type UpdateRoomStatusReq struct {
+	RoomID int64 `path:"id"`
+	Status int64 `form:"status"`
+}
+
+type UpdateRoomStatusRes struct {
+	Result Result `json:"result"`
+}
+
 type SearchHouseReq struct {
 	Search     string `form:"search,optional"`
 	DistrictID int64  `form:"districtID,optional"`
