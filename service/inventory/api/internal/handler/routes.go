@@ -59,6 +59,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/room/:id/status",
 					Handler: UpdateRoomStatusHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/room/:id",
+					Handler: GetRoomHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),

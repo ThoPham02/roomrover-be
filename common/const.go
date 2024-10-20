@@ -34,9 +34,12 @@ const (
 
 // Contract Service
 const (
-	CONTRACT_STATUS_DRAF     = 1
-	CONTRACT_STATUS_ACTIVE   = 2
-	CONTRACT_STATUS_INACTIVE = 4
+	CONTRACT_STATUS_DRAF            = 1  // nhap
+	CONTRACT_STATUS_ACTIVE          = 2  // hoat dong
+	CONTRACT_STATUS_INACTIVE        = 4  // huy
+	CONTRACT_STATUS_NEARLY_OUT_DATE = 8  // sap het han
+	CONTRACT_STATUS_TRANSFER        = 16 // chuyen nhuong
+	CONTRACT_STATUS_OUT_DATE        = 32 // het han
 )
 
 const (
@@ -47,8 +50,9 @@ const (
 
 // Payment Service
 const (
-	PAYMENT_DETAIL_STATUS_DRAF = 1
-	PAYMENT_DETAIL_STATUS_DONE = 2
+	PAYMENT_DETAIL_STATUS_DRAF    = 1
+	PAYMENT_DETAIL_STATUS_PROCESS = 2
+	PAYMENT_DETAIL_STATUS_DONE    = 4
 )
 
 const (

@@ -115,6 +115,16 @@ type (
 	UpdateRoomStatusRes {
 		Result Result `json:"result"`
 	}
+
+	GetRoomReq {
+		ID int64 `path:"id"`
+	}
+	GetRoomRes {
+		Result   Result   `json:"result"`
+		Room     Room     `json:"room"`
+		House    House    `json:"house"`
+		Contract Contract `json:"contract"`
+	}
 )
 
 @server (
@@ -176,6 +186,12 @@ service invent-api {
 	)
 	@handler UpdateRoomStatus
 	put /room/:id/status (UpdateRoomStatusReq) returns (UpdateRoomStatusRes)
+	
+	@doc (
+		summary: "Get Room"
+	)
+	@handler GetRoom
+	get /room/:id (GetRoomReq) returns (GetRoomRes)
 }
 
 type (

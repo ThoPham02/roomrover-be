@@ -36,6 +36,14 @@ func (cfFunc *ContractFunction) GetContractByID(contractID int64) (contract *mod
 	return cfFunc.ContractService.Ctx.ContractModel.FindOne(context.TODO(), contractID)
 }
 
+func (cfFunc *ContractFunction) GetActiveContractByRoomID(roomID int64) (contract *model.ContractTbl, err error) {
+	return cfFunc.ContractService.Ctx.ContractModel.FindActiveByRoomID(context.TODO(), roomID)
+}
+
+func (cfFunc *ContractFunction) GetPaymentByContractID(contractID int64) (payments *model.PaymentTbl, err error) {
+	return cfFunc.ContractService.Ctx.PaymentModel.FindByContractID(context.TODO(), contractID)
+}
+
 // func (cfFunc *ContractFunction) GetPaymentByTime(time int64) (payments []*model.PaymentTbl, err error) {
 // 	return cfFunc.ContractService.Ctx.PaymentModel.FindMultiByTime(context.TODO(), time)
 // }

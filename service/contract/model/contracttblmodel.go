@@ -17,6 +17,7 @@ type (
 		CountByHouseID(ctx context.Context, houseID int64) (int64, error)
 		CountContractByCondition(ctx context.Context, renterID int64, lessorID int64, search string, status int64, createFrom int64, createTo int64) (int64, error)
 		FindContractByCondition(ctx context.Context, renterID int64, lessorID int64, search string, status int64, createFrom int64, createTo int64, offset int64, limit int64) ([]*ContractTbl, error)
+		FindActiveByRoomID(ctx context.Context, roomID int64) (*ContractTbl, error)
 	}
 
 	customContractTblModel struct {
@@ -65,11 +66,11 @@ func (m *customContractTblModel) CountContractByCondition(ctx context.Context, r
 		args = append(args, status)
 	}
 	if createFrom != 0 {
-		query += " and `create_time` >= ?"
+		query += " and `created_at` >= ?"
 		args = append(args, createFrom)
 	}
 	if createTo != 0 {
-		query += " and `create_time` <= ?"
+		query += " and `created_at` <= ?"
 		args = append(args, createTo)
 	}
 	query = fmt.Sprintf("select count(*) from %s where 1=1 %s", m.table, query)
@@ -105,11 +106,11 @@ func (m *customContractTblModel) FindContractByCondition(ctx context.Context, re
 		args = append(args, status)
 	}
 	if createFrom != 0 {
-		query += " and `create_time` >= ?"
+		query += " and `created_at` >= ?"
 		args = append(args, createFrom)
 	}
 	if createTo != 0 {
-		query += " and `create_time` <= ?"
+		query += " and `created_at` <= ?"
 		args = append(args, createTo)
 	}
 	if limit != 0 {
@@ -122,6 +123,20 @@ func (m *customContractTblModel) FindContractByCondition(ctx context.Context, re
 	switch err {
 	case nil:
 		return resp, nil
+	case sqlx.ErrNotFound:
+		return nil, nil
+	default:
+		return nil, err
+	}
+}
+
+func (m *customContractTblModel) FindActiveByRoomID(ctx context.Context, roomID int64) (*ContractTbl, error) {
+	query := fmt.Sprintf("select %s from %s where `room_id` = ? and `status` & 1", contractTblRows, m.table)
+	var resp ContractTbl
+	err := m.conn.QueryRowCtx(ctx, &resp, query, roomID)
+	switch err {
+	case nil:
+		return &resp, nil
 	case sqlx.ErrNotFound:
 		return nil, nil
 	default:

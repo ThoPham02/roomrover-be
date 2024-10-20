@@ -76,8 +76,6 @@ func (l *GetHouseLogic) GetHouse(req *types.GetHouseReq) (resp *types.GetHouseRe
 		}, nil
 	}
 	for _, albumModel := range albumModels {
-		l.Logger.Info(albumModel)
-
 		imageUrls = append(imageUrls, albumModel.Url.String)
 	}
 

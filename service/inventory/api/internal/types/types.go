@@ -116,6 +116,17 @@ type UpdateRoomStatusRes struct {
 	Result Result `json:"result"`
 }
 
+type GetRoomReq struct {
+	ID int64 `path:"id"`
+}
+
+type GetRoomRes struct {
+	Result   Result   `json:"result"`
+	Room     Room     `json:"room"`
+	House    House    `json:"house"`
+	Contract Contract `json:"contract"`
+}
+
 type SearchHouseReq struct {
 	Search     string `form:"search,optional"`
 	DistrictID int64  `form:"districtID,optional"`
