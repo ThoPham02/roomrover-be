@@ -6,11 +6,12 @@ import (
 	"roomrover/service/contract/model"
 	"roomrover/sync"
 
-	"github.com/zeromicro/go-zero/core/stores/sqlx"
-	"github.com/zeromicro/go-zero/rest"
-
 	accountFunc "roomrover/service/account/function"
 	inventFunc "roomrover/service/inventory/function"
+
+	"github.com/go-redis/redis/v8"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
+	"github.com/zeromicro/go-zero/rest"
 )
 
 type ServiceContext struct {
@@ -18,23 +19,38 @@ type ServiceContext struct {
 	UserTokenMiddleware rest.Middleware
 	ObjSync             sync.ObjSync
 
-	ContractModel       model.ContractTblModel
-	ContractRenterModel model.ContractRenterTblModel
-	ContractDetailModel model.ContractDetailTblModel
+	ContractModel      model.ContractTblModel
+	ContractRedis      model.ContractRedis
+	PaymentModel       model.PaymentTblModel
+	PaymentDetailModel model.PaymentDetailTblModel
+	PaymentRenterModel model.PaymentRenterTblModel
+	BillModel          model.BillTblModel
+	BillDetailModel    model.BillDetailTblModel
+	BillPayModel       model.BillPayTblModel
 
 	AccountFunction accountFunc.AccountFunction
 	InventFunction  inventFunc.InventoryFunction
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     c.RedisCache.Host + ":" + c.RedisCache.Port,
+		Password: c.RedisCache.Password,
+		DB:       c.RedisCache.DB,
+	})
+
 	return &ServiceContext{
 		Config:              c,
 		UserTokenMiddleware: middleware.NewUserTokenMiddleware().Handle,
 		ObjSync:             *sync.NewObjSync(0),
-
+		ContractRedis:       model.NewContractRedisClient(rdb),
 		ContractModel:       model.NewContractTblModel(sqlx.NewMysql(c.DataSource)),
-		ContractRenterModel: model.NewContractRenterTblModel(sqlx.NewMysql(c.DataSource)),
-		ContractDetailModel: model.NewContractDetailTblModel(sqlx.NewMysql(c.DataSource)),
+		PaymentModel:        model.NewPaymentTblModel(sqlx.NewMysql(c.DataSource)),
+		PaymentDetailModel:  model.NewPaymentDetailTblModel(sqlx.NewMysql(c.DataSource)),
+		PaymentRenterModel:  model.NewPaymentRenterTblModel(sqlx.NewMysql(c.DataSource)),
+		BillModel:           model.NewBillTblModel(sqlx.NewMysql(c.DataSource)),
+		BillDetailModel:     model.NewBillDetailTblModel(sqlx.NewMysql(c.DataSource)),
+		BillPayModel:        model.NewBillPayTblModel(sqlx.NewMysql(c.DataSource)),
 	}
 }
 

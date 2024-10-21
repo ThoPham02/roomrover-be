@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"database/sql"
 
 	"roomrover/common"
 	"roomrover/service/inventory/api/internal/svc"
@@ -63,8 +64,8 @@ func (l *UpdateHouseStatusLogic) UpdateHouseStatus(req *types.UpdateHouseStatusR
 	}
 
 	houseModel.Status = req.Status
-	houseModel.UpdatedBy = userID
-	houseModel.UpdatedAt = common.GetCurrentTime()
+	houseModel.UpdatedBy = sql.NullInt64{Valid: true, Int64: userID}
+	houseModel.UpdatedAt = sql.NullInt64{Valid: true, Int64: common.GetCurrentTime()}
 
 	err = l.svcCtx.HouseModel.Update(l.ctx, houseModel)
 	if err != nil {

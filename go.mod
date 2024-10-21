@@ -4,6 +4,7 @@ go 1.21.4
 
 require (
 	github.com/cloudinary/cloudinary-go/v2 v2.8.0
+	github.com/go-redis/redis/v8 v8.11.5
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.6.0
 	github.com/robfig/cron/v3 v3.0.0

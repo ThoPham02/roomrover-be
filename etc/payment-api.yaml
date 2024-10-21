@@ -5,3 +5,16 @@ Auth:
   AccessSecret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
   AccessExpire: 604800
 Datasource: thopb:524020@tcp(localhost:3306)/room
+Momo:
+  Endpoint: "https://test-payment.momo.vn/v2/gateway/api/create"
+  AccessKey: "F8BBA842ECF85"
+  SecretKey: "K951B6PE1waDMi640xX08PD3vg6EkVlz"
+  OrderInfo: "pay with MoMo"
+  PartnerCode: "MOMO"
+  RedirectUrl: "localhost:3000"
+  IpnUrl: "localhost:8888/payment/momo/webhook"
+  PartnerName: "MoMo Payment"
+  StoreId: "Test Store"
+  AutoCapture: true
+  Lang: "vi"
+  RequestType: "payWithMethod"

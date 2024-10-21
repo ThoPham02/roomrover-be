@@ -1,7 +1,8 @@
 package svc
 
 import (
-	"roomrover/service/contract/function"
+	accountFunc "roomrover/service/account/function"
+	contractFunc "roomrover/service/contract/function"
 	"roomrover/service/inventory/api/internal/config"
 	"roomrover/service/inventory/api/internal/middleware"
 	"roomrover/service/inventory/model"
@@ -13,33 +14,38 @@ import (
 )
 
 type ServiceContext struct {
-	UserTokenMiddleware rest.Middleware
 	Config              config.Config
+	UserTokenMiddleware rest.Middleware
 	ObjSync             *sync.ObjSync
 	CldClient           *storage.CloudinaryClient
 
-	HouseModel   model.HouseTblModel
 	RoomModel    model.RoomTblModel
+	HouseModel   model.HouseTblModel
 	AlbumModel   model.AlbumTblModel
 	ServiceModel model.ServiceTblModel
 
-	ContractFunction function.ContractFunction
+	AccountFunction  accountFunc.AccountFunction
+	ContractFunction contractFunc.ContractFunction
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
-		UserTokenMiddleware: middleware.NewUserTokenMiddleware().Handle,
 		Config:              c,
-		ObjSync:             sync.NewObjSync(0),
+		UserTokenMiddleware: middleware.NewUserTokenMiddleware().Handle,
+		ObjSync:             sync.NewObjSync(1),
 		CldClient:           storage.NewCloudinaryClient(c.Storage.CloudName, c.Storage.APIKey, c.Storage.APISecret, "inventory"),
 
-		HouseModel:   model.NewHouseTblModel(sqlx.NewMysql(c.DataSource)),
 		RoomModel:    model.NewRoomTblModel(sqlx.NewMysql(c.DataSource)),
+		HouseModel:   model.NewHouseTblModel(sqlx.NewMysql(c.DataSource)),
 		AlbumModel:   model.NewAlbumTblModel(sqlx.NewMysql(c.DataSource)),
 		ServiceModel: model.NewServiceTblModel(sqlx.NewMysql(c.DataSource)),
 	}
 }
 
-func (sc *ServiceContext) SetContractFunction(cf function.ContractFunction) {
-	sc.ContractFunction = cf
+func (ctx *ServiceContext) SetContractFunction(contractFunc contractFunc.ContractFunction) {
+	ctx.ContractFunction = contractFunc
+}
+
+func (ctx *ServiceContext) SetAccountFunction(accountFunc accountFunc.AccountFunction) {
+	ctx.AccountFunction = accountFunc
 }

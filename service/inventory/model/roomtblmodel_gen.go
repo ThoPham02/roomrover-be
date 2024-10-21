@@ -35,14 +35,13 @@ type (
 	}
 
 	RoomTbl struct {
-		Id        int64  `db:"id"`
-		HouseId   int64  `db:"house_id"`
-		Name      string `db:"name"`
-		Status    int64  `db:"status"`
-		CreatedAt int64  `db:"created_at"`
-		UpdatedAt int64  `db:"updated_at"`
-		CreatedBy int64  `db:"created_by"`
-		UpdatedBy int64  `db:"updated_by"`
+		Id       int64          `db:"id"`
+		HouseId  sql.NullInt64  `db:"house_id"`
+		Name     sql.NullString `db:"name"`
+		Status   int64          `db:"status"`
+		Capacity sql.NullInt64  `db:"capacity"`
+		EIndex   sql.NullInt64  `db:"e_index"`
+		WIndex   sql.NullInt64  `db:"w_index"`
 	}
 )
 
@@ -74,14 +73,14 @@ func (m *defaultRoomTblModel) FindOne(ctx context.Context, id int64) (*RoomTbl, 
 }
 
 func (m *defaultRoomTblModel) Insert(ctx context.Context, data *RoomTbl) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?)", m.table, roomTblRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.HouseId, data.Name, data.Status, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?)", m.table, roomTblRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.HouseId, data.Name, data.Status, data.Capacity, data.EIndex, data.WIndex)
 	return ret, err
 }
 
 func (m *defaultRoomTblModel) Update(ctx context.Context, data *RoomTbl) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, roomTblRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.HouseId, data.Name, data.Status, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.HouseId, data.Name, data.Status, data.Capacity, data.EIndex, data.WIndex, data.Id)
 	return err
 }
 

@@ -63,14 +63,20 @@ func (l *GetUserLogic) GetUser(req *types.GetUserReq) (resp *types.GetUserRes, e
 	}
 
 	user = types.User{
-		UserID:    userID,
-		Phone:     userModel.Phone,
-		FullName:  userModel.FullName.String,
-		Birthday:  userModel.Birthday.Int64,
-		AvatarUrl: userModel.AvatarUrl.String,
-		Address:   userModel.Address.String,
-		CreatedAt: userModel.CreatedAt,
-		UpdatedAt: userModel.UpdatedAt,
+		UserID:      userID,
+		Phone:       userModel.Phone,
+		Role:        userModel.Role.Int64,
+		Status:      userModel.Status,
+		Address:     userModel.Address.String,
+		FullName:    userModel.FullName.String,
+		AvatarUrl:   userModel.AvatarUrl.String,
+		Birthday:    userModel.Birthday.Int64,
+		Gender:      userModel.Gender.Int64,
+		CccdNumber:  userModel.CCCDNumber.String,
+		CccdDate:    userModel.CCCDDate.Int64,
+		CccdAddress: userModel.CCCDAddress.String,
+		CreatedAt:   userModel.CreatedAt.Int64,
+		UpdatedAt:   userModel.UpdatedAt.Int64,
 	}
 
 	l.Logger.Info("GetUser success")

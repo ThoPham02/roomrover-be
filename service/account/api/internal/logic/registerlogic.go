@@ -82,14 +82,14 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 		}, nil
 	}
 
-	userModel = &model.Users{
-		UserId:       l.svcCtx.ObjSync.GenServiceObjID(),
+	userModel = &model.UserTbl{
+		Id:           l.svcCtx.ObjSync.GenServiceObjID(),
 		Phone:        req.Phone,
 		PasswordHash: hashpw,
 		Role:         sql.NullInt64{Valid: true, Int64: req.UserRole},
 		Status:       common.USER_ACTIVE,
-		CreatedAt:    currentTime,
-		UpdatedAt:    currentTime,
+		CreatedAt:    sql.NullInt64{Valid: true, Int64: currentTime},
+		UpdatedAt:    sql.NullInt64{Valid: true, Int64: currentTime},
 	}
 
 	_, err = l.svcCtx.UserModel.Insert(l.ctx, userModel)
@@ -104,21 +104,24 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 	}
 
 	user = types.User{
-		UserID:    userModel.UserId,
-		Phone:     userModel.Phone,
-		Role:      userModel.Role.Int64,
-		Status:    userModel.Status,
-		Address:   userModel.Address.String,
-		FullName:  userModel.FullName.String,
-		AvatarUrl: userModel.AvatarUrl.String,
-		Birthday:  userModel.Birthday.Int64,
-		Gender:    userModel.Gender.Int64,
-		CreatedAt: userModel.CreatedAt,
-		UpdatedAt: userModel.UpdatedAt,
+		UserID:      userModel.Id,
+		Phone:       userModel.Phone,
+		Role:        userModel.Role.Int64,
+		Status:      userModel.Status,
+		Address:     userModel.Address.String,
+		FullName:    userModel.FullName.String,
+		AvatarUrl:   userModel.AvatarUrl.String,
+		Birthday:    userModel.Birthday.Int64,
+		Gender:      userModel.Gender.Int64,
+		CccdNumber:  userModel.CCCDNumber.String,
+		CccdDate:    userModel.CCCDDate.Int64,
+		CccdAddress: userModel.CCCDAddress.String,
+		CreatedAt:   userModel.CreatedAt.Int64,
+		UpdatedAt:   userModel.UpdatedAt.Int64,
 	}
 
 	// Generate token
-	token, err = utils.GetJwtToken(accessSecret, iat, accessExpire, userModel.UserId, user)
+	token, err = utils.GetJwtToken(accessSecret, iat, accessExpire, userModel.Id, user)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.RegisterRes{

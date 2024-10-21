@@ -16,7 +16,14 @@ services:
     networks:
       - room-network
     restart: always
-    
+  redis:
+    container_name: room-redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - room-network
+    restart: always
   # backend:
   #   container_name: room-backend
   #   build:

@@ -35,23 +35,24 @@ type (
 	}
 
 	HouseTbl struct {
-		Id          int64  `db:"id"`
-		UserId      int64  `db:"user_id"`
-		Name        string `db:"name"`
-		Description string `db:"description"`
-		Util        int64  `db:"util"`
-		Type        int64  `db:"type"`
-		Area        int64  `db:"area"`
-		Price       int64  `db:"price"`
-		Status      int64  `db:"status"`
-		Address     string `db:"address"`
-		WardId      int64  `db:"ward_id"`
-		DistrictId  int64  `db:"district_id"`
-		ProvinceId  int64  `db:"province_id"`
-		CreatedAt   int64  `db:"created_at"`
-		UpdatedAt   int64  `db:"updated_at"`
-		CreatedBy   int64  `db:"created_by"`
-		UpdatedBy   int64  `db:"updated_by"`
+		Id          int64          `db:"id"`
+		UserId      int64          `db:"user_id"`
+		Name        sql.NullString `db:"name"`
+		Description sql.NullString `db:"description"`
+		Type        int64          `db:"type"`
+		Area        int64          `db:"area"`
+		Price       int64          `db:"price"`
+		Status      int64          `db:"status"`
+		BedNum      sql.NullInt64  `db:"bed_num"`
+		LivingNum   sql.NullInt64  `db:"living_num"`
+		Address     sql.NullString `db:"address"`
+		WardId      int64          `db:"ward_id"`
+		DistrictId  int64          `db:"district_id"`
+		ProvinceId  int64          `db:"province_id"`
+		CreatedAt   sql.NullInt64  `db:"created_at"`
+		UpdatedAt   sql.NullInt64  `db:"updated_at"`
+		CreatedBy   sql.NullInt64  `db:"created_by"`
+		UpdatedBy   sql.NullInt64  `db:"updated_by"`
 	}
 )
 
@@ -83,14 +84,14 @@ func (m *defaultHouseTblModel) FindOne(ctx context.Context, id int64) (*HouseTbl
 }
 
 func (m *defaultHouseTblModel) Insert(ctx context.Context, data *HouseTbl) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, houseTblRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.UserId, data.Name, data.Description, data.Util, data.Type, data.Area, data.Price, data.Status, data.Address, data.WardId, data.DistrictId, data.ProvinceId, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, houseTblRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.UserId, data.Name, data.Description, data.Type, data.Area, data.Price, data.Status, data.BedNum, data.LivingNum, data.Address, data.WardId, data.DistrictId, data.ProvinceId, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy)
 	return ret, err
 }
 
 func (m *defaultHouseTblModel) Update(ctx context.Context, data *HouseTbl) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, houseTblRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.UserId, data.Name, data.Description, data.Util, data.Type, data.Area, data.Price, data.Status, data.Address, data.WardId, data.DistrictId, data.ProvinceId, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.UserId, data.Name, data.Description, data.Type, data.Area, data.Price, data.Status, data.BedNum, data.LivingNum, data.Address, data.WardId, data.DistrictId, data.ProvinceId, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy, data.Id)
 	return err
 }
 

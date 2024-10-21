@@ -1,0 +1,7 @@
+Name: account-api
+Host: 0.0.0.0
+Port: 8888
+Auth:
+  AccessSecret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  AccessExpire: 604800
+Datasource: thopb:524020@tcp(localhost:3306)/room

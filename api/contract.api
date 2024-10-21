@@ -1,7 +1,7 @@
 info (
 	title:   "contract models"
 	author:  "thopb"
-	email:   "thoahlgbg2002@gamil.com"
+	email:   "thoahlgbg2002@gmail.com"
 	version: "1.0"
 )
 
@@ -9,35 +9,205 @@ import "model.api"
 
 type (
 	CreateContractReq {
-		RoomID      int64  `form:"roomID"`
-		Description string `form:"description"`
-		ContractUrl string `form:"contractUrl"`
-		Start       int64  `form:"start"`
-		End         int64  `form:"end"`
-
-		ContractRenter string `form:"contractRenter"`
-		ContractDetail string `form:"contractDetail"`
-
-		Type       int64  `form:"type"`
-		Deposit    int64  `form:"deposit"`
-		Deadline   int64  `form:"deadline"`
-		DepositUrl string `form:"depositUrl"`
+		Renter        string `form:"renter"`
+		Lessor        string `form:"lessor"`
+		PaymentRenter string `form:"paymentRenter,optional"`
+		Room          string `form:"room"`
+		CheckIn       int64  `form:"checkIn"`
+		Duration      int64  `form:"duration"`
+		Purpose       string `form:"purpose"`
+		Price         int64  `form:"price"`
+		Discount      int64  `form:"discount,optional"`
+		Deposit       int64  `form:"deposit"`
+		DepositDate   int64  `form:"depositDate"`
 	}
 	CreateContractRes {
 		Result   Result   `json:"result"`
 		Contract Contract `json:"contract"`
 	}
+
+	UpdateContractReq {
+		ID            int64  `path:"id"`
+		Status        int64  `form:"status"`
+		RenterID      int64  `form:"renterID"`
+		RenterNumber  string `form:"renterNumber"`
+		RenterDate    string `form:"renterDate"`
+		RenterName    string `form:"renterName"`
+		RenterAddress string `form:"renterAddress"`
+		LessorID      int64  `form:"lessorID"`
+		LessorNumber  string `form:"lessorNumber"`
+		LessorDate    string `form:"lessorDate"`
+		LessorName    string `form:"lessorName"`
+		LessorAddress string `form:"lessorAddress"`
+		PaymentRenter string `form:"paymentRenter"`
+		RoomID        int64  `form:"roomID"`
+		EIndex        int64  `form:"eIndex"`
+		WIndex        int64  `form:"wIndex"`
+		CheckIn       int64  `form:"checkIn"`
+		Duration      int64  `form:"duration"`
+		Purpose       string `form:"purpose"`
+		Amount        int64  `form:"amount"`
+		Discount      int64  `form:"discount"`
+		Deposit       int64  `form:"deposit"`
+		DepositDate   int64  `form:"depositDate"`
+	}
+	UpdateContractRes {
+		Result   Result   `json:"result"`
+		Contract Contract `json:"contract"`
+	}
+
+	GetContractReq {
+		ID int64 `path:"id"`
+	}
+	GetContractRes {
+		Result   Result   `json:"result"`
+		Contract Contract `json:"contract"`
+	}
+
+	DeleteContractReq {
+		ID int64 `path:"id"`
+	}
+	DeleteContractRes {
+		Result Result `json:"result"`
+	}
+
+	FilterContractReq {
+		Search     string `form:"search,optional"`
+		CreateFrom int64  `form:"createFrom,optional"`
+		CreateTo   int64  `form:"createTo,optional"`
+		Status     int64  `form:"status,optional"`
+		Limit      int64  `form:"limit"`
+		Offset     int64  `form:"offset"`
+	}
+	FilterContractRes {
+		Result    Result     `json:"result"`
+		Contracts []Contract `json:"contracts"`
+		Total     int64      `json:"total"`
+	}
+
+	FilterBillReq {
+		Search     string `form:"search,optional"`
+		CreateFrom int64  `form:"createFrom,optional"`
+		CreateTo   int64  `form:"createTo,optional"`
+		Status     int64  `form:"status,optional"`
+		Limit      int64  `form:"limit"`
+		Offset     int64  `form:"offset"`
+	}
+	FilterBillRes {
+		Result Result `json:"result"`
+		Bills  []Bill `json:"bills"`
+		Total  int64  `json:"total"`
+	}
+
+	GetBillDetailReq {
+		ID int64 `path:"id"`
+	}
+	GetBillDetailRes {
+		Result Result `json:"result"`
+		Bill   Bill   `json:"bill"`
+	}
+
+	UpdateBillDetailReq {
+		ID       int64  `path:"id"`
+		Amount   int64  `form:"amount"`
+		Discount int64  `form:"discount"`
+		Note     string `form:"note"`
+	}
+	UpdateBillDetailRes {
+		Result Result `json:"result"`
+		Bill   Bill   `json:"bill"`
+	}
+
+	CreateBillPayReq {
+		BillID  int64  `form:"billID"`
+		Amount  int64  `form:"amount"`
+		PayType int64  `form:"payType"`
+		PayDate int64  `form:"payDate"`
+		Url     string `form:"url"`
+	}
+	CreateBillPayRes {
+		Result Result `json:"result"`
+		Bill   Bill   `json:"bill"`
+	}
+
+	DeleteBillPayReq {
+		ID int64 `path:"id"`
+	}
+	DeleteBillPayRes {
+		Result Result `json:"result"`
+	}
 )
 
 @server (
-	jwt:    Auth
+	jwt:        Auth
 	middleware: UserTokenMiddleware
-	prefix: /invent
+	prefix:     /contract
 )
 service contract-api {
 	@doc (
 		summary: "Create contract"
 	)
 	@handler CreateContract
-	post /contract (CreateContractReq) returns (CreateContractRes)
+	post / (CreateContractReq) returns (CreateContractRes)
+	
+	@doc (
+		summary: "Update contract"
+	)
+	@handler UpdateContract
+	put /:id (UpdateContractReq) returns (UpdateContractRes)
+	
+	@doc (
+		summary: "Get contract"
+	)
+	@handler GetContract
+	get /:id (GetContractReq) returns (GetContractRes)
+	
+	@doc (
+		summary: "Delete contract"
+	)
+	@handler DeleteContract
+	delete /:id (DeleteContractReq) returns (DeleteContractRes)
+	
+	@doc (
+		summary: "Filter contract"
+	)
+	@handler FilterContract
+	get /filter (FilterContractReq) returns (FilterContractRes)
+}
+
+@server (
+	jwt:        Auth
+	middleware: UserTokenMiddleware
+	prefix:     /bill
+)
+service contract-api {
+	@doc (
+		summary: "Filter bill"
+	)
+	@handler FilterBill
+	get /filter (FilterBillReq) returns (FilterBillRes)
+	
+	@doc (
+		summary: "Get bill detail"
+	)
+	@handler GetBillDetail
+	get /:id (GetBillDetailReq) returns (GetBillDetailRes)
+	
+	@doc (
+		summary: "Update bill detail"
+	)
+	@handler UpdateBillDetail
+	put /:id (UpdateBillDetailReq) returns (UpdateBillDetailRes)
+	
+	@doc (
+		summary: "Create bill pay"
+	)
+	@handler CreateBillPay
+	post /pay (CreateBillPayReq) returns (CreateBillPayRes)
+	
+	@doc (
+		summary: "Delete bill pay"
+	)
+	@handler DeleteBillPay
+	delete /pay/:id (DeleteBillPayReq) returns (DeleteBillPayRes)
 }

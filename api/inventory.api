@@ -24,16 +24,21 @@ type (
 		Type        int64  `form:"type"`
 		Area        int64  `form:"area"`
 		Price       int64  `form:"price"`
+		BedNum      int    `form:"bedNum,optional"`
+		LivingNum   int    `form:"livingNum,optional"`
 		Address     string `form:"address"`
 		WardID      int64  `form:"wardID"`
 		DistrictID  int64  `form:"districtID"`
 		ProvinceID  int64  `form:"provinceID"`
 		Albums      string `form:"albums,optional"`
+		Rooms       string `form:"rooms,optional"`
+		Services    string `form:"services,optional"`
 	}
 	CreateHouseRes {
 		Result Result `json:"result"`
 		House  House  `json:"house"`
 	}
+
 	FilterHouseReq {
 		Search string `form:"search,optional"`
 		Limit  int64  `form:"limit"`
@@ -44,6 +49,7 @@ type (
 		Total      int64   `json:"total"`
 		ListHouses []House `json:"listHouses"`
 	}
+
 	UpdateHouseStatusReq {
 		HouseID int64 `path:"id"`
 		Status  int64 `form:"status"`
@@ -51,24 +57,29 @@ type (
 	UpdateHouseStatusRes {
 		Result Result `json:"result"`
 	}
+
 	UpdateHouseReq {
 		HouseID     int64  `path:"id"`
 		Name        string `form:"name"`
 		Description string `form:"description"`
 		Type        int64  `form:"type"`
-		Util        int64  `form:"util,optional"`
 		Area        int64  `form:"area"`
 		Price       int64  `form:"price"`
+		BedNum      int    `form:"bedNum,optional"`
+		LivingNum   int    `form:"livingNum,optional"`
 		Address     string `form:"address"`
 		WardID      int64  `form:"wardID"`
 		DistrictID  int64  `form:"districtID"`
 		ProvinceID  int64  `form:"provinceID"`
-		Albums      string `form:"albums"`
+		Albums      string `form:"albums,optional"`
+		Rooms       string `form:"rooms,optional"`
+		Services    string `form:"services,optional"`
 	}
 	UpdateHouseRes {
 		Result Result `json:"result"`
 		House  House  `json:"house"`
 	}
+
 	GetHouseReq {
 		ID int64 `path:"id"`
 	}
@@ -76,32 +87,43 @@ type (
 		Result Result `json:"result"`
 		House  House  `json:"house"`
 	}
-)
 
-type (
-	CreateRoomReq {
-		HouseID     int64  `form:"houseID"`
-		Name        string `form:"name"`
-		Description string `form:"description"`
-		Price       int64  `form:"price"`
-		Area        int64  `form:"area"`
+	DeleteHouseReq {
+		HouseID int64 `path:"id"`
 	}
-	CreateRoomRes {
+	DeleteHouseRes {
 		Result Result `json:"result"`
-		Room   Room   `json:"room"`
 	}
-)
 
-type (
-	CreateServiceReq {
-		HouseID int64  `form:"houseID"`
-		Name    string `form:"name"`
-		Price   int64  `form:"price"`
-		Type    int64  `form:"type"`
+	FilterRoomReq {
+		Search string `form:"search,optional"`
+		Type   int64  `form:"type,optional"`
+		Status int64  `form:"status,optional"`
+		Limit  int64  `form:"limit"`
+		Offset int64  `form:"offset"`
 	}
-	CreateServiceRes {
-		Result  Result  `json:"result"`
-		Service Service `json:"service"`
+	FilterRoomRes {
+		Result Result `json:"result"`
+		Total  int    `json:"total"`
+		Rooms  []Room `json:"rooms"`
+	}
+
+	UpdateRoomStatusReq {
+		RoomID int64 `path:"id"`
+		Status int64 `form:"status"`
+	}
+	UpdateRoomStatusRes {
+		Result Result `json:"result"`
+	}
+
+	GetRoomReq {
+		ID int64 `path:"id"`
+	}
+	GetRoomRes {
+		Result   Result   `json:"result"`
+		Room     Room     `json:"room"`
+		House    House    `json:"house"`
+		Contract Contract `json:"contract"`
 	}
 )
 
@@ -116,47 +138,90 @@ service invent-api {
 	)
 	@handler UploadFileHouse
 	post /upload (UploadFileHouseReq) returns (UploadFileHouseRes)
-
+	
 	@doc (
 		summary: "Create house"
 	)
 	@handler CreateHouse
 	post /house (CreateHouseReq) returns (CreateHouseRes)
-
+	
 	@doc (
 		summary: "Filter house"
 	)
 	@handler FilterHouse
 	get /house/filter (FilterHouseReq) returns (FilterHouseRes)
-
+	
 	@doc (
 		summary: "Get House"
 	)
 	@handler GetHouse
 	get /house/:id (GetHouseReq) returns (GetHouseRes)
-
-	@doc (
-		summary: "Create room"
-	)
-	@handler CreateRoom
-	post /room (CreateRoomReq) returns (CreateRoomRes)
-
-	@doc (
-		summary: "Create Service"
-	)
-	@handler CreateService
-	post /service (CreateServiceReq) returns (CreateServiceRes)
-
+	
 	@doc (
 		summary: "Update House Status"
 	)
 	@handler UpdateHouseStatus
 	put /house/:id/status (UpdateHouseStatusReq) returns (UpdateHouseStatusRes)
-
+	
 	@doc (
 		summary: "Update House"
 	)
 	@handler UpdateHouse
 	put /house/:id (UpdateHouseReq) returns (UpdateHouseRes)
+	
+	@doc (
+		summary: "Delete House"
+	)
+	@handler DeleteHouse
+	delete /house/:id (DeleteHouseReq) returns (DeleteHouseRes)
+	
+	@doc (
+		summary: "Filter Room"
+	)
+	@handler FilterRoom
+	get /room/filter (FilterRoomReq) returns (FilterRoomRes)
+	
+	@doc (
+		summary: "Update Room Status"
+	)
+	@handler UpdateRoomStatus
+	put /room/:id/status (UpdateRoomStatusReq) returns (UpdateRoomStatusRes)
+	
+	@doc (
+		summary: "Get Room"
+	)
+	@handler GetRoom
+	get /room/:id (GetRoomReq) returns (GetRoomRes)
 }
 
+type (
+	SearchHouseReq {
+		Search     string `form:"search,optional"`
+		DistrictID int64  `form:"districtID,optional"`
+		ProvinceID int64  `form:"provinceID,optional"`
+		WardID     int64  `form:"wardID,optional"`
+		Type       int64  `form:"type,optional"`
+		PriceFrom  int64  `form:"priceFrom,optional"`
+		PriceTo    int64  `form:"priceTo,optional"`
+		AreaFrom   int64  `form:"areaFrom,optional"`
+		AreaTo     int64  `form:"areaTo,optional"`
+		Limit      int64  `form:"limit"`
+		Offset     int64  `form:"offset"`
+	}
+	SearchHouseRes {
+		Result Result  `json:"result"`
+		Total  int     `json:"total"`
+		Houses []House `json:"houses"`
+	}
+)
+
+@server (
+	prefix:     /invent
+)
+service invent-api {
+	@doc (
+		summary: "Search House"
+	)
+	@handler SearchHouse
+	get /house/search (SearchHouseReq) returns (SearchHouseRes)
+}

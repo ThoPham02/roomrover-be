@@ -9,7 +9,6 @@ import (
 	"roomrover/service/inventory/api/internal/types"
 )
 
-// Create house
 func CreateHouseHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.CreateHouseReq

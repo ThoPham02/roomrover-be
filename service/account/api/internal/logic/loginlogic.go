@@ -7,7 +7,6 @@ import (
 	"roomrover/common"
 	"roomrover/service/account/api/internal/svc"
 	"roomrover/service/account/api/internal/types"
-	"roomrover/service/account/model"
 	"roomrover/service/account/utils"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -40,14 +39,6 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error
 	userModel, err := l.svcCtx.UserModel.FindOneByPhone(l.ctx, req.Phone)
 	if err != nil {
 		l.Logger.Error(err)
-		if err == model.ErrNotFound {
-			return &types.LoginRes{
-				Result: types.Result{
-					Code:    common.USER_NOT_FOUND_CODE,
-					Message: common.USER_NOT_FOUND_MESS,
-				},
-			}, nil
-		}
 		return &types.LoginRes{
 			Result: types.Result{
 				Code:    common.DB_ERR_CODE,
@@ -55,19 +46,30 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error
 			},
 		}, nil
 	}
+	if userModel == nil {
+		return &types.LoginRes{
+			Result: types.Result{
+				Code:    common.USER_NOT_FOUND_CODE,
+				Message: common.USER_NOT_FOUND_MESS,
+			},
+		}, nil
+	}
 
 	user = types.User{
-		UserID:    userModel.UserId,
-		Phone:     userModel.Phone,
-		Role:      userModel.Role.Int64,
-		Status:    userModel.Status,
-		Address:   userModel.Address.String,
-		FullName:  userModel.FullName.String,
-		AvatarUrl: userModel.AvatarUrl.String,
-		Birthday:  userModel.Birthday.Int64,
-		Gender:    userModel.Gender.Int64,
-		CreatedAt: userModel.CreatedAt,
-		UpdatedAt: userModel.UpdatedAt,
+		UserID:      userModel.Id,
+		Phone:       userModel.Phone,
+		Role:        userModel.Role.Int64,
+		Status:      userModel.Status,
+		Address:     userModel.Address.String,
+		FullName:    userModel.FullName.String,
+		AvatarUrl:   userModel.AvatarUrl.String,
+		Birthday:    userModel.Birthday.Int64,
+		Gender:      userModel.Gender.Int64,
+		CccdNumber:  userModel.CCCDNumber.String,
+		CccdDate:    userModel.CCCDDate.Int64,
+		CccdAddress: userModel.CCCDAddress.String,
+		CreatedAt:   userModel.CreatedAt.Int64,
+		UpdatedAt:   userModel.UpdatedAt.Int64,
 	}
 
 	// Check if the password is correct
@@ -81,7 +83,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error
 	}
 
 	// Generate token
-	token, err := utils.GetJwtToken(accessSecret, iat, accessExpire, userModel.UserId, user)
+	token, err := utils.GetJwtToken(accessSecret, iat, accessExpire, userModel.Id, user)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.LoginRes{

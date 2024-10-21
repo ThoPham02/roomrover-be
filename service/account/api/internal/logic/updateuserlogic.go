@@ -8,6 +8,7 @@ import (
 	"roomrover/service/account/api/internal/svc"
 	"roomrover/service/account/api/internal/types"
 	"roomrover/service/account/model"
+	"roomrover/service/account/utils"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -64,10 +65,29 @@ func (l *UpdateUserLogic) UpdateUser(req *types.UpdateUserReq) (resp *types.Upda
 		}, nil
 	}
 
-	userModel.FullName = sql.NullString{String: req.FullName, Valid: true}
-	userModel.Birthday = sql.NullInt64{Int64: req.Dob, Valid: true}
+	if req.Password != "" {
+		if len(req.Password) < 6 {
+			return &types.UpdateUserRes{
+				Result: types.Result{
+					Code:    common.INVALID_REQUEST_CODE,
+					Message: common.INVALID_REQUEST_MESS,
+				},
+			}, nil
+		}
+		hashedPassword, _ := utils.HashPassword(req.Password)
+		userModel.PasswordHash = hashedPassword
+	}
+
 	userModel.AvatarUrl = sql.NullString{String: req.AvatarUrl, Valid: true}
-	userModel.UpdatedAt = common.GetCurrentTime()
+	userModel.FullName = sql.NullString{String: req.FullName, Valid: true}
+	userModel.Address = sql.NullString{String: req.Address, Valid: true}
+	userModel.Birthday = sql.NullInt64{Int64: req.Birthday, Valid: true}
+	userModel.Gender = sql.NullInt64{Int64: req.Gender, Valid: true}
+	userModel.CCCDNumber = sql.NullString{String: req.CccdNumber, Valid: true}
+	userModel.CCCDDate = sql.NullInt64{Int64: req.CccdDate, Valid: true}
+	userModel.CCCDAddress = sql.NullString{String: req.CccdAddress, Valid: true}
+	userModel.AvatarUrl = sql.NullString{String: req.AvatarUrl, Valid: true}
+	userModel.UpdatedAt = sql.NullInt64{Valid: true, Int64: common.GetCurrentTime()}
 
 	err = l.svcCtx.UserModel.Update(l.ctx, userModel)
 	if err != nil {
@@ -81,14 +101,20 @@ func (l *UpdateUserLogic) UpdateUser(req *types.UpdateUserReq) (resp *types.Upda
 	}
 
 	user = types.User{
-		UserID:    userID,
-		Phone:     userModel.Phone,
-		FullName:  userModel.FullName.String,
-		Birthday:  userModel.Birthday.Int64,
-		AvatarUrl: userModel.AvatarUrl.String,
-		Address:   userModel.Address.String,
-		CreatedAt: userModel.CreatedAt,
-		UpdatedAt: userModel.UpdatedAt,
+		UserID:      userID,
+		Phone:       userModel.Phone,
+		Role:        userModel.Role.Int64,
+		Status:      userModel.Status,
+		Address:     userModel.Address.String,
+		FullName:    userModel.FullName.String,
+		AvatarUrl:   userModel.AvatarUrl.String,
+		Birthday:    userModel.Birthday.Int64,
+		Gender:      userModel.Gender.Int64,
+		CccdNumber:  userModel.CCCDNumber.String,
+		CccdDate:    userModel.CCCDDate.Int64,
+		CccdAddress: userModel.CCCDAddress.String,
+		CreatedAt:   userModel.CreatedAt.Int64,
+		UpdatedAt:   userModel.UpdatedAt.Int64,
 	}
 
 	l.Logger.Info("UpdateUser success")

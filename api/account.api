@@ -1,7 +1,7 @@
 info (
 	title:   "room rover account models"
 	author:  "thopb"
-	email:   "thoahlgbg2002@gamil.com"
+	email:   "thoahlgbg2002@gmail.com"
 	version: "1.0"
 )
 
@@ -33,7 +33,9 @@ type (
 )
 
 type (
-	GetUserReq struct{}
+	GetUserReq {
+		UserID int64 `form:"user_id,optional"`
+	}
 	GetUserRes {
 		Result Result `json:"result"`
 		User   User   `json:"user"`
@@ -42,11 +44,16 @@ type (
 
 type (
 	UpdateUserReq {
-		FullName  string `form:"full_name,optional"`
-		Dob       int64  `form:"dob,optional"`
-		Address   string `form:"address,optional"`
-		AvatarUrl string `form:"avatar_url,optional"`
-		Gender    int64  `form:"gender"`
+		UserID      int64  `path:"id"`
+		Password    string `form:"password,optional"`
+		FullName    string `form:"fullName,optional"`
+		Birthday    int64  `form:"birthday,optional"`
+		Address     string `form:"address,optional"`
+		AvatarUrl   string `form:"avatarUrl,optional"`
+		Gender      int64  `form:"gender,optional"`
+		CccdNumber  string `form:"cccdNumber,optional"`
+		CccdDate    int64  `form:"cccdDate,optional"`
+		CccdAddress string `form:"cccdAddress,optional"`
 	}
 	UpdateUserRes {
 		Result Result `json:"result"`
@@ -75,6 +82,18 @@ type (
 	}
 )
 
+type (
+	FilterUserReq {
+		SearchPhone string `form:"searchPhone,optional"`
+		Limit       int64  `form:"limit,optional"`
+		Offset      int64  `form:"offset,optional"`
+	}
+	FilterUserRes {
+		Result Result `json:"result"`
+		Users  []User `json:"users"`
+	}
+)
+
 @server (
 	prefix: /users
 )
@@ -90,6 +109,12 @@ service account-api {
 	)
 	@handler Register
 	post /register (RegisterReq) returns (RegisterRes)
+	
+	@doc (
+		summary: "Filter User"
+	)
+	@handler FilterUser
+	get /filter (FilterUserReq) returns (FilterUserRes)
 }
 
 @server (
@@ -107,7 +132,7 @@ service account-api {
 		summary: "Update User Info"
 	)
 	@handler UpdateUser
-	put /info (UpdateUserReq) returns (UpdateUserRes)
+	put /:id (UpdateUserReq) returns (UpdateUserRes)
 	
 	@doc (
 		summary: "Change User Password"

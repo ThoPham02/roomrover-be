@@ -35,22 +35,27 @@ type (
 	}
 
 	ContractTbl struct {
-		Id          int64          `db:"id"`
-		RoomId      int64          `db:"room_id"`
-		Status      int64          `db:"status"`
-		ContractUrl sql.NullString `db:"contract_url"`
-		Description string         `db:"description"`
-		Start       int64          `db:"start"`
-		End         int64          `db:"end"`
-		NextBill    int64          `db:"next_bill"`
-		Type        int64          `db:"type"` // 0: k coc, 1: coc
-		Deposit     int64          `db:"deposit"`
-		Deadline    int64          `db:"deadline"`
-		DepositUrl  sql.NullString `db:"deposit_url"`
-		CreatedAt   int64          `db:"created_at"`
-		UpdatedAt   int64          `db:"updated_at"`
-		CreatedBy   int64          `db:"created_by"`
-		UpdatedBy   int64          `db:"updated_by"`
+		Id            int64          `db:"id"`
+		Code          sql.NullString `db:"code"`
+		Status        sql.NullInt64  `db:"status"`
+		RenterId      sql.NullInt64  `db:"renter_id"`
+		RenterNumber  sql.NullString `db:"renter_number"`
+		RenterDate    sql.NullInt64  `db:"renter_date"`
+		RenterAddress sql.NullString `db:"renter_address"`
+		RenterName    sql.NullString `db:"renter_name"`
+		LessorId      sql.NullInt64  `db:"lessor_id"`
+		LessorNumber  sql.NullString `db:"lessor_number"`
+		LessorDate    sql.NullInt64  `db:"lessor_date"`
+		LessorAddress sql.NullString `db:"lessor_address"`
+		LessorName    sql.NullString `db:"lessor_name"`
+		RoomId        sql.NullInt64  `db:"room_id"`
+		CheckIn       sql.NullInt64  `db:"check_in"`
+		Duration      sql.NullInt64  `db:"duration"`
+		Purpose       sql.NullString `db:"purpose"`
+		CreatedAt     sql.NullInt64  `db:"created_at"`
+		UpdatedAt     sql.NullInt64  `db:"updated_at"`
+		CreatedBy     sql.NullInt64  `db:"created_by"`
+		UpdatedBy     sql.NullInt64  `db:"updated_by"`
 	}
 )
 
@@ -82,14 +87,14 @@ func (m *defaultContractTblModel) FindOne(ctx context.Context, id int64) (*Contr
 }
 
 func (m *defaultContractTblModel) Insert(ctx context.Context, data *ContractTbl) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, contractTblRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.RoomId, data.Status, data.ContractUrl, data.Description, data.Start, data.End, data.NextBill, data.Type, data.Deposit, data.Deadline, data.DepositUrl, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, contractTblRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.Code, data.Status, data.RenterId, data.RenterNumber, data.RenterDate, data.RenterAddress, data.RenterName, data.LessorId, data.LessorNumber, data.LessorDate, data.LessorAddress, data.LessorName, data.RoomId, data.CheckIn, data.Duration, data.Purpose, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy)
 	return ret, err
 }
 
 func (m *defaultContractTblModel) Update(ctx context.Context, data *ContractTbl) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, contractTblRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.RoomId, data.Status, data.ContractUrl, data.Description, data.Start, data.End, data.NextBill, data.Type, data.Deposit, data.Deadline, data.DepositUrl, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.Code, data.Status, data.RenterId, data.RenterNumber, data.RenterDate, data.RenterAddress, data.RenterName, data.LessorId, data.LessorNumber, data.LessorDate, data.LessorAddress, data.LessorName, data.RoomId, data.CheckIn, data.Duration, data.Purpose, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy, data.Id)
 	return err
 }
 

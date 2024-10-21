@@ -14,9 +14,10 @@ type (
 	// and implement the added methods in customContractTblModel.
 	ContractTblModel interface {
 		contractTblModel
-		withSession(session sqlx.Session) ContractTblModel
-		GetContractByRoomID(ctx context.Context, roomID int64) (*ContractTbl, error)
-		GetContractByTime(ctx context.Context, time int64) ([]*ContractTbl, error)
+		CountByHouseID(ctx context.Context, houseID int64) (int64, error)
+		CountContractByCondition(ctx context.Context, renterID int64, lessorID int64, search string, status int64, createFrom int64, createTo int64) (int64, error)
+		FindContractByCondition(ctx context.Context, renterID int64, lessorID int64, search string, status int64, createFrom int64, createTo int64, offset int64, limit int64) ([]*ContractTbl, error)
+		FindActiveByRoomID(ctx context.Context, roomID int64) (*ContractTbl, error)
 	}
 
 	customContractTblModel struct {
@@ -31,32 +32,111 @@ func NewContractTblModel(conn sqlx.SqlConn) ContractTblModel {
 	}
 }
 
-func (m *customContractTblModel) withSession(session sqlx.Session) ContractTblModel {
-	return NewContractTblModel(sqlx.NewSqlConnFromSession(session))
-}
-
-func (m *customContractTblModel) GetContractByRoomID(ctx context.Context, roomID int64) (*ContractTbl, error) {
-	query := fmt.Sprintf("select %s from %s where `room_id` = ? limit 1", contractTblRows, m.table)
-	var resp ContractTbl
-	err := m.conn.QueryRowCtx(ctx, &resp, query, roomID)
+func (m *customContractTblModel) CountByHouseID(ctx context.Context, houseID int64) (int64, error) {
+	query := fmt.Sprintf("select count(*) from %s where `room_id` in (select `id` from `room_tbl` where `house_id` = ?)", m.table)
+	var resp int64
+	err := m.conn.QueryRowCtx(ctx, &resp, query, houseID)
 	switch err {
 	case nil:
-		return &resp, nil
+		return resp, nil
 	case sqlx.ErrNotFound:
-		return nil, ErrNotFound
+		return 0, nil
+	default:
+		return 0, err
+	}
+}
+
+func (m *customContractTblModel) CountContractByCondition(ctx context.Context, renterID int64, lessorID int64, search string, status int64, createFrom int64, createTo int64) (int64, error) {
+	var query string
+	var args []interface{}
+	if renterID != 0 {
+		query += " and `renter_id` = ?"
+		args = append(args, renterID)
+	}
+	if lessorID != 0 {
+		query += " and `lessor_id` = ?"
+		args = append(args, lessorID)
+	}
+	if search != "" {
+		query += " and `code` like ?"
+		args = append(args, "%"+search+"%")
+	}
+	if status != 0 {
+		query += " and `status` = ?"
+		args = append(args, status)
+	}
+	if createFrom != 0 {
+		query += " and `created_at` >= ?"
+		args = append(args, createFrom)
+	}
+	if createTo != 0 {
+		query += " and `created_at` <= ?"
+		args = append(args, createTo)
+	}
+	query = fmt.Sprintf("select count(*) from %s where 1=1 %s", m.table, query)
+	var resp int64
+	err := m.conn.QueryRowCtx(ctx, &resp, query, args...)
+	switch err {
+	case nil:
+		return resp, nil
+	case sqlx.ErrNotFound:
+		return 0, nil
+	default:
+		return 0, err
+	}
+}
+
+func (m *customContractTblModel) FindContractByCondition(ctx context.Context, renterID int64, lessorID int64, search string, status int64, createFrom int64, createTo int64, offset int64, limit int64) ([]*ContractTbl, error) {
+	var query string
+	var args []interface{}
+	if renterID != 0 {
+		query += " and `renter_id` = ?"
+		args = append(args, renterID)
+	}
+	if lessorID != 0 {
+		query += " and `lessor_id` = ?"
+		args = append(args, lessorID)
+	}
+	if search != "" {
+		query += " and `code` like ?"
+		args = append(args, "%"+search+"%")
+	}
+	if status != 0 {
+		query += " and `status` = ?"
+		args = append(args, status)
+	}
+	if createFrom != 0 {
+		query += " and `created_at` >= ?"
+		args = append(args, createFrom)
+	}
+	if createTo != 0 {
+		query += " and `created_at` <= ?"
+		args = append(args, createTo)
+	}
+	if limit != 0 {
+		query += " limit ? offset ?"
+		args = append(args, limit, offset)
+	}
+	query = fmt.Sprintf("select %s from %s where 1=1 %s", contractTblRows, m.table, query)
+	var resp []*ContractTbl
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, args...)
+	switch err {
+	case nil:
+		return resp, nil
+	case sqlx.ErrNotFound:
+		return nil, nil
 	default:
 		return nil, err
 	}
 }
 
-func (m *customContractTblModel) GetContractByTime(ctx context.Context, time int64) ([]*ContractTbl, error) {
-	var startTime = time - 2*86400000 // lay ra 2 ngay truoc
-	query := fmt.Sprintf("select %s from %s where `next_bill` between ? and ?", contractTblRows, m.table)
-	var resp []*ContractTbl
-	err := m.conn.QueryRowsCtx(ctx, &resp, query, startTime, time)
+func (m *customContractTblModel) FindActiveByRoomID(ctx context.Context, roomID int64) (*ContractTbl, error) {
+	query := fmt.Sprintf("select %s from %s where `room_id` = ? and `status` & 1", contractTblRows, m.table)
+	var resp ContractTbl
+	err := m.conn.QueryRowCtx(ctx, &resp, query, roomID)
 	switch err {
 	case nil:
-		return resp, nil
+		return &resp, nil
 	case sqlx.ErrNotFound:
 		return nil, nil
 	default:

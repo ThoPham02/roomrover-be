@@ -31,9 +31,7 @@ func (l *FilterHouseLogic) FilterHouse(req *types.FilterHouseReq) (resp *types.F
 
 	var userID int64
 	var total int64
-
 	var listHouses []types.House
-
 	var houses []*model.HouseTbl
 
 	userID, err = common.GetUserIDFromContext(l.ctx)
@@ -76,23 +74,44 @@ func (l *FilterHouseLogic) FilterHouse(req *types.FilterHouseReq) (resp *types.F
 	}
 
 	for _, house := range houses {
+		var imageUrls []string
+		var albumModels []*model.AlbumTbl
+		albumModels, err = l.svcCtx.AlbumModel.FindByHouseID(l.ctx, house.Id)
+		if err != nil {
+			l.Logger.Error(err)
+			return &types.FilterHouseRes{
+				Result: types.Result{
+					Code:    common.DB_ERR_CODE,
+					Message: common.DB_ERR_MESS,
+				},
+			}, nil
+		}
+
+		for _, album := range albumModels {
+			imageUrls = append(imageUrls, album.Url.String)
+		}
+
 		listHouses = append(listHouses, types.House{
 			HouseID:     house.Id,
-			UserID:      userID,
-			Name:        house.Name,
-			Description: house.Description,
+			Name:        house.Name.String,
+			Description: house.Description.String,
 			Type:        house.Type,
+			Status:      house.Status,
 			Area:        house.Area,
 			Price:       house.Price,
-			Status:      house.Status,
-			Address:     house.Address,
+			BedNum:      house.BedNum.Int64,
+			LivingNum:   house.LivingNum.Int64,
+			Albums:      imageUrls,
+			Rooms:       []types.Room{},
+			Services:    []types.Service{},
+			Address:     house.Address.String,
 			WardID:      house.WardId,
 			DistrictID:  house.DistrictId,
 			ProvinceID:  house.ProvinceId,
-			CreatedAt:   house.CreatedAt,
-			UpdatedAt:   house.UpdatedAt,
-			CreatedBy:   house.CreatedBy,
-			UpdatedBy:   house.UpdatedBy,
+			CreatedAt:   house.CreatedAt.Int64,
+			UpdatedAt:   house.UpdatedAt.Int64,
+			CreatedBy:   house.CreatedBy.Int64,
+			UpdatedBy:   house.UpdatedBy.Int64,
 		})
 	}
 

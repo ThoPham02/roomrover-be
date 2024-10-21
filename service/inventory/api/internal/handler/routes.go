@@ -15,56 +15,69 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Middleware{serverCtx.UserTokenMiddleware},
 			[]rest.Route{
 				{
-					// Create house
+					Method:  http.MethodPost,
+					Path:    "/upload",
+					Handler: UploadFileHouseHandler(serverCtx),
+				},
+				{
 					Method:  http.MethodPost,
 					Path:    "/house",
 					Handler: CreateHouseHandler(serverCtx),
 				},
 				{
-					// Get House
-					Method:  http.MethodGet,
-					Path:    "/house/:id",
-					Handler: GetHouseHandler(serverCtx),
-				},
-				{
-					// Update House
-					Method:  http.MethodPut,
-					Path:    "/house/:id",
-					Handler: UpdateHouseHandler(serverCtx),
-				},
-				{
-					// Update House Status
-					Method:  http.MethodPut,
-					Path:    "/house/:id/status",
-					Handler: UpdateHouseStatusHandler(serverCtx),
-				},
-				{
-					// Filter house
 					Method:  http.MethodGet,
 					Path:    "/house/filter",
 					Handler: FilterHouseHandler(serverCtx),
 				},
 				{
-					// Create room
-					Method:  http.MethodPost,
-					Path:    "/room",
-					Handler: CreateRoomHandler(serverCtx),
+					Method:  http.MethodGet,
+					Path:    "/house/:id",
+					Handler: GetHouseHandler(serverCtx),
 				},
 				{
-					// Create Service
-					Method:  http.MethodPost,
-					Path:    "/service",
-					Handler: CreateServiceHandler(serverCtx),
+					Method:  http.MethodPut,
+					Path:    "/house/:id/status",
+					Handler: UpdateHouseStatusHandler(serverCtx),
 				},
 				{
-					// Upload file house
-					Method:  http.MethodPost,
-					Path:    "/upload",
-					Handler: UploadFileHouseHandler(serverCtx),
+					Method:  http.MethodPut,
+					Path:    "/house/:id",
+					Handler: UpdateHouseHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodDelete,
+					Path:    "/house/:id",
+					Handler: DeleteHouseHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/room/filter",
+					Handler: FilterRoomHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPut,
+					Path:    "/room/:id/status",
+					Handler: UpdateRoomStatusHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/room/:id",
+					Handler: GetRoomHandler(serverCtx),
 				},
 			}...,
 		),
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithPrefix("/invent"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/house/search",
+				Handler: SearchHouseHandler(serverCtx),
+			},
+		},
 		rest.WithPrefix("/invent"),
 	)
 }
