@@ -65,7 +65,7 @@ func (m *customHouseTblModel) FindMultiByID(ctx context.Context, ids []int64) ([
 	var listHouse []*HouseTbl
 	var vals []interface{}
 	query := fmt.Sprintf("select %s from %s where `id` in (", houseTblRows, m.table)
-	for id := range ids {
+	for _, id := range ids {
 		query += "?,"
 		vals = append(vals, id)
 	}

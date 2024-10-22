@@ -118,9 +118,11 @@ func (l *FilterContractLogic) FilterContract(req *types.FilterContractReq) (resp
 	}
 	for _, roomModel := range roomModels {
 		mapRoom[roomModel.Id] = *roomModel
+		l.Logger.Info("RoomModel: ", roomModel)
 		houseIDs = append(houseIDs, roomModel.HouseId.Int64)
 	}
 
+	l.Logger.Info("HouseIDs: ", houseIDs)
 	houseModels, err = l.svcCtx.InventFunction.GetHousesByIDs(houseIDs)
 	if err != nil {
 		l.Logger.Error(err)
@@ -131,9 +133,12 @@ func (l *FilterContractLogic) FilterContract(req *types.FilterContractReq) (resp
 			},
 		}, nil
 	}
+	l.Logger.Info("HouseModels: ", houseModels)
 	for _, houseModel := range houseModels {
+		l.Logger.Info("HouseModel: ", houseModel)
 		mapHouse[houseModel.Id] = *houseModel
 	}
+
 
 	for _, contractModel := range contractModels {
 		paymentModel, err := l.svcCtx.PaymentModel.FindByContractID(l.ctx, contractModel.Id)
