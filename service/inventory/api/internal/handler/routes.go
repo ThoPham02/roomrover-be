@@ -64,6 +64,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/room/:id",
 					Handler: GetRoomHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/room/search",
+					Handler: SearchRoomHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),

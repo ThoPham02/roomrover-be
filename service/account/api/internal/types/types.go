@@ -134,17 +134,22 @@ type Album struct {
 }
 
 type Room struct {
-	RoomID    int64  `json:"roomID"`
-	HouseID   int64  `json:"houseID"`
-	Name      string `json:"name"`
-	HouseName string `json:"houseName"`
-	Area      int64  `json:"area"`
-	Price     int64  `json:"price"`
-	Type      int64  `json:"type"`
-	Status    int64  `json:"status"`
-	Capacity  int64  `json:"capacity"`
-	EIndex    int64  `json:"eIndex"`
-	WIndex    int64  `json:"wIndex"`
+	RoomID     int64     `json:"roomID"`
+	HouseID    int64     `json:"houseID"`
+	Name       string    `json:"name"`
+	HouseName  string    `json:"houseName"`
+	ProvinceID int64     `json:"provinceID"`
+	DistrictID int64     `json:"districtID"`
+	WardID     int64     `json:"wardID"`
+	Address    string    `json:"address"`
+	Area       int64     `json:"area"`
+	Price      int64     `json:"price"`
+	Type       int64     `json:"type"`
+	Status     int64     `json:"status"`
+	Capacity   int64     `json:"capacity"`
+	EIndex     int64     `json:"eIndex"`
+	WIndex     int64     `json:"wIndex"`
+	Services   []Service `json:"services"`
 }
 
 type Service struct {

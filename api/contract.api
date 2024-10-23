@@ -64,6 +64,14 @@ type (
 		Contract Contract `json:"contract"`
 	}
 
+	UpdateContractStatusReq {
+		ID     int64 `path:"id"`
+		Status int64 `form:"status"`
+	}
+	UpdateContractStatusRes {
+		Result Result `json:"result"`
+	}
+
 	DeleteContractReq {
 		ID int64 `path:"id"`
 	}
@@ -173,6 +181,12 @@ service contract-api {
 	)
 	@handler FilterContract
 	get /filter (FilterContractReq) returns (FilterContractRes)
+	
+	@doc (
+		summary: "Update contract status"
+	)
+	@handler UpdateContractStatus
+	put /:id/status (UpdateContractStatusReq) returns (UpdateContractStatusRes)
 }
 
 @server (

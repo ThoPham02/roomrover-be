@@ -125,6 +125,19 @@ type (
 		House    House    `json:"house"`
 		Contract Contract `json:"contract"`
 	}
+
+	SearchRoomReq {
+		Search string `form:"search,optional"`
+		Type   int64  `form:"type,optional"`
+		Status int64  `form:"status,optional"`
+		Limit  int64  `form:"limit"`
+		Offset int64  `form:"offset"`
+	}
+	SearchRoomRes {
+		Result Result `json:"result"`
+		Rooms  []Room `json:"rooms"`
+		Total  int    `json:"total"`
+	}
 )
 
 @server (
@@ -192,6 +205,12 @@ service invent-api {
 	)
 	@handler GetRoom
 	get /room/:id (GetRoomReq) returns (GetRoomRes)
+	
+	@doc (
+		summary: "Search Room"
+	)
+	@handler SearchRoom
+	get /room/search (SearchRoomReq) returns (SearchRoomRes)
 }
 
 type (
