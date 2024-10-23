@@ -45,6 +45,8 @@ func (l *FilterContractLogic) FilterContract(req *types.FilterContractReq) (resp
 	var roomModels []*inventoryModel.RoomTbl
 	var houseModels []*inventoryModel.HouseTbl
 
+	var lessorID, renterID int64
+
 	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
 		l.Logger.Error(err)
@@ -55,8 +57,23 @@ func (l *FilterContractLogic) FilterContract(req *types.FilterContractReq) (resp
 			},
 		}, nil
 	}
+	userModel, err := l.svcCtx.AccountFunction.GetUserByID(userID)
+	if err != nil {
+		l.Logger.Error(err)
+		return &types.FilterContractRes{
+			Result: types.Result{
+				Code:    common.UNKNOWN_ERR_CODE,
+				Message: common.UNKNOWN_ERR_MESS,
+			},
+		}, nil
+	}
+	if userModel.Role.Int64 == common.USER_ROLE_LESSOR {
+		lessorID = userModel.Id
+	} else {
+		renterID = userModel.Id
+	}
 
-	count, err = l.svcCtx.ContractModel.CountContractByCondition(l.ctx, userID, 0, req.Search, req.Status, req.CreateFrom, req.CreateTo)
+	count, err = l.svcCtx.ContractModel.CountContractByCondition(l.ctx, lessorID, renterID, req.Search, req.Status, req.CreateFrom, req.CreateTo)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.FilterContractRes{
@@ -75,7 +92,7 @@ func (l *FilterContractLogic) FilterContract(req *types.FilterContractReq) (resp
 		}, nil
 	}
 
-	contractModels, err = l.svcCtx.ContractModel.FindContractByCondition(l.ctx, userID, 0, req.Search, req.Status, req.CreateFrom, req.CreateTo, req.Offset, req.Limit)
+	contractModels, err = l.svcCtx.ContractModel.FindContractByCondition(l.ctx, lessorID, renterID, req.Search, req.Status, req.CreateFrom, req.CreateTo, req.Offset, req.Limit)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.FilterContractRes{
@@ -138,7 +155,6 @@ func (l *FilterContractLogic) FilterContract(req *types.FilterContractReq) (resp
 		l.Logger.Info("HouseModel: ", houseModel)
 		mapHouse[houseModel.Id] = *houseModel
 	}
-
 
 	for _, contractModel := range contractModels {
 		paymentModel, err := l.svcCtx.PaymentModel.FindByContractID(l.ctx, contractModel.Id)
