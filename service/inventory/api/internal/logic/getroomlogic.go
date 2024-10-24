@@ -77,7 +77,7 @@ func (l *GetRoomLogic) GetRoom(req *types.GetRoomReq) (resp *types.GetRoomRes, e
 		}, err
 	}
 
-	albumModels, err := l.svcCtx.AlbumModel.FindByHouseID(l.ctx, req.ID)
+	albumModels, err := l.svcCtx.AlbumModel.FindByHouseID(l.ctx, houseModel.Id)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.GetRoomRes{
@@ -91,7 +91,7 @@ func (l *GetRoomLogic) GetRoom(req *types.GetRoomReq) (resp *types.GetRoomRes, e
 		albums = append(albums, albumModel.Url.String)
 	}
 
-	serviceModels, err := l.svcCtx.ServiceModel.FindByHouseID(l.ctx, req.ID)
+	serviceModels, err := l.svcCtx.ServiceModel.FindByHouseID(l.ctx, houseModel.Id)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.GetRoomRes{
@@ -111,7 +111,7 @@ func (l *GetRoomLogic) GetRoom(req *types.GetRoomReq) (resp *types.GetRoomRes, e
 		})
 	}
 
-	contractModel, err := l.svcCtx.ContractFunction.GetContractByID(roomModel.Id)
+	contractModel, err := l.svcCtx.ContractFunction.GetActiveContractByRoomID(roomModel.Id)
 	if err != nil && err != model.ErrNotFound {
 		l.Logger.Error(err)
 		return &types.GetRoomRes{
@@ -121,6 +121,7 @@ func (l *GetRoomLogic) GetRoom(req *types.GetRoomReq) (resp *types.GetRoomRes, e
 			},
 		}, nil
 	}
+
 	if contractModel != nil {
 		paymentModel, err := l.svcCtx.ContractFunction.GetPaymentByContractID(contractModel.Id)
 		if err != nil || paymentModel == nil {

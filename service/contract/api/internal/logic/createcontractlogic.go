@@ -36,7 +36,7 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 	l.Logger.Info("CreateContractLogic: ", req)
 
 	var userID int64
-	var currentTime = common.GetCurrentTime()
+	var currentTime = common.GetCurrentTime() 
 	var contractCode string
 	var codeTime = time.Now().Format("20060102")
 

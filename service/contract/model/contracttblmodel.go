@@ -15,8 +15,8 @@ type (
 	ContractTblModel interface {
 		contractTblModel
 		CountByHouseID(ctx context.Context, houseID int64) (int64, error)
-		CountContractByCondition(ctx context.Context, renterID int64, lessorID int64, search string, status int64, createFrom int64, createTo int64) (int64, error)
-		FindContractByCondition(ctx context.Context, renterID int64, lessorID int64, search string, status int64, createFrom int64, createTo int64, offset int64, limit int64) ([]*ContractTbl, error)
+		CountContractByCondition(ctx context.Context, lessorID int64, renterID int64, search string, status int64, createFrom int64, createTo int64) (int64, error)
+		FindContractByCondition(ctx context.Context, lessorID int64, renterID int64, search string, status int64, createFrom int64, createTo int64, offset int64, limit int64) ([]*ContractTbl, error)
 		FindActiveByRoomID(ctx context.Context, roomID int64) (*ContractTbl, error)
 	}
 
@@ -46,7 +46,7 @@ func (m *customContractTblModel) CountByHouseID(ctx context.Context, houseID int
 	}
 }
 
-func (m *customContractTblModel) CountContractByCondition(ctx context.Context, renterID int64, lessorID int64, search string, status int64, createFrom int64, createTo int64) (int64, error) {
+func (m *customContractTblModel) CountContractByCondition(ctx context.Context, lessorID int64, renterID int64, search string, status int64, createFrom int64, createTo int64) (int64, error) {
 	var query string
 	var args []interface{}
 	if renterID != 0 {
@@ -86,7 +86,7 @@ func (m *customContractTblModel) CountContractByCondition(ctx context.Context, r
 	}
 }
 
-func (m *customContractTblModel) FindContractByCondition(ctx context.Context, renterID int64, lessorID int64, search string, status int64, createFrom int64, createTo int64, offset int64, limit int64) ([]*ContractTbl, error) {
+func (m *customContractTblModel) FindContractByCondition(ctx context.Context, lessorID int64, renterID int64, search string, status int64, createFrom int64, createTo int64, offset int64, limit int64) ([]*ContractTbl, error) {
 	var query string
 	var args []interface{}
 	if renterID != 0 {

@@ -34,6 +34,7 @@ func (l *GetHouseLogic) GetHouse(req *types.GetHouseReq) (resp *types.GetHouseRe
 	var imageUrls []string
 	var room []types.Room
 	var service []types.Service
+	var user types.User
 
 	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
@@ -121,8 +122,37 @@ func (l *GetHouseLogic) GetHouse(req *types.GetHouseReq) (resp *types.GetHouseRe
 		})
 	}
 
+	userModel, err := l.svcCtx.AccountFunction.GetUserByID(houseModel.UserId)
+	if err != nil || userModel == nil {
+		l.Logger.Error(err)
+		return &types.GetHouseRes{
+			Result: types.Result{
+				Code:    common.DB_ERR_CODE,
+				Message: common.DB_ERR_MESS,
+			},
+		}, nil
+	}
+
+	user = types.User{
+		UserID:      userModel.Id,
+		Phone:       userModel.Phone,
+		Role:        userModel.Role.Int64,
+		Status:      userModel.Status,
+		Address:     userModel.Address.String,
+		FullName:    userModel.FullName.String,
+		AvatarUrl:   userModel.AvatarUrl.String,
+		Birthday:    userModel.Birthday.Int64,
+		Gender:      userModel.Gender.Int64,
+		CccdNumber:  userModel.CCCDNumber.String,
+		CccdDate:    userModel.CCCDDate.Int64,
+		CccdAddress: userModel.CCCDAddress.String,
+		CreatedAt:   userModel.CreatedAt.Int64,
+		UpdatedAt:   userModel.UpdatedAt.Int64,
+	}
+
 	house = types.House{
 		HouseID:     houseModel.Id,
+		User:        user,
 		Name:        houseModel.Name.String,
 		Description: houseModel.Description.String,
 		Type:        houseModel.Type,
