@@ -37,6 +37,8 @@ func (l *FilterBillLogic) FilterBill(req *types.FilterBillReq) (resp *types.Filt
 	var paymentModel *model.PaymentTbl
 	var constractModel *model.ContractTbl
 	var billDetails []*model.BillDetailTbl
+	var renterID int64
+	var lessorID int64
 
 	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
@@ -48,8 +50,29 @@ func (l *FilterBillLogic) FilterBill(req *types.FilterBillReq) (resp *types.Filt
 			},
 		}, nil
 	}
+	userModel, err := l.svcCtx.AccountFunction.GetUserByID(userID)
+	if err != nil || userModel == nil {
+		l.Logger.Error(err)
+		return &types.FilterBillRes{
+			Result: types.Result{
+				Code:    common.DB_ERR_CODE,
+				Message: common.DB_ERR_MESS,
+			},
+		}, nil
+	}
 
-	total, err = l.svcCtx.BillModel.CountByCondition(l.ctx, model.FilterCondition{})
+	if userModel.Role.Int64 == common.USER_ROLE_RENTER {
+		renterID = userID
+	} else {
+		lessorID = userID
+	}
+
+	total, err = l.svcCtx.BillModel.CountByCondition(l.ctx, model.FilterCondition{
+		RenterID: renterID,
+		LessorID: lessorID,
+		Search:   req.Search,
+		Status:   req.Status,
+	})
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.FilterBillRes{
@@ -59,7 +82,14 @@ func (l *FilterBillLogic) FilterBill(req *types.FilterBillReq) (resp *types.Filt
 			},
 		}, nil
 	}
-	billModels, err = l.svcCtx.BillModel.FilterBillByCondition(l.ctx, model.FilterCondition{})
+	billModels, err = l.svcCtx.BillModel.FilterBillByCondition(l.ctx, model.FilterCondition{
+		RenterID: renterID,
+		LessorID: lessorID,
+		Search:   req.Search,
+		Status:   req.Status,
+		Limit:    req.Limit,
+		Offset:   req.Offset,
+	})
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.FilterBillRes{

@@ -33,7 +33,7 @@ func NewBillDetailTblModel(conn sqlx.SqlConn) BillDetailTblModel {
 func (m *customBillDetailTblModel) GetDetailByBillID(ctx context.Context, billID int64) ([]*BillDetailTbl, error) {
 	query := fmt.Sprintf("select %s from %s where `bill_id` = ?", billDetailTblRows, m.table)
 	var resp []*BillDetailTbl
-	err := m.conn.QueryRowsCtx(ctx, resp, query, billID)
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, billID)
 	switch err {
 	case nil:
 		return resp, nil
