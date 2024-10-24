@@ -11,6 +11,14 @@ import (
 var _ BillTblModel = (*customBillTblModel)(nil)
 
 type FilterCondition struct {
+	Search     string
+	RenterID   int64
+	LessorID   int64
+	CreateFrom int64
+	CreateTo   int64
+	Status     int64
+	Limit      int64
+	Offset     int64
 }
 
 type (
@@ -38,6 +46,22 @@ func (m *customBillTblModel) CountByCondition(ctx context.Context, condition Fil
 	query := fmt.Sprintf("select count(*) from %s where 1=1 ", m.table)
 	var args []interface{}
 	var count int64
+	if condition.Search != "" {
+		query += " and (title like ?)"
+		args = append(args, "%"+condition.Search+"%")
+	}
+	if condition.RenterID != 0 {
+		query += " and `payment_id` in (select `id` from `payment_tbl` where `contract_id` in (select `id` from `contract_tbl` where `renter_id` = ?))"
+		args = append(args, condition.RenterID)
+	}
+	if condition.LessorID != 0 {
+		query += " and `payment_id` in (select `id` from `payment_tbl` where `contract_id` in (select `id` from `contract_tbl` where `lessor_id` = ?))"
+		args = append(args, condition.LessorID)
+	}
+	if condition.Status != 0 {
+		query += " and `status` = ?"
+		args = append(args, condition.Status)
+	}
 
 	err := m.conn.QueryRowCtx(ctx, &count, query, args...)
 	switch err {
@@ -54,10 +78,24 @@ func (m *customBillTblModel) FilterBillByCondition(ctx context.Context, conditio
 	query := fmt.Sprintf("select %s from %s where 1=1 ", billTblRows, m.table)
 	var args []interface{}
 	var resp []*BillTbl
+	if condition.Search != "" {
+		query += " and (title like ?)"
+		args = append(args, "%"+condition.Search+"%")
+	}
+	if condition.RenterID != 0 {
+		query += " and `payment_id` in (select `id` from `payment_tbl` where `contract_id` in (select `id` from `contract_tbl` where `renter_id` = ?))"
+		args = append(args, condition.RenterID)
+	}
+	if condition.LessorID != 0 {
+		query += " and `payment_id` in (select `id` from `payment_tbl` where `contract_id` in (select `id` from `contract_tbl` where `lessor_id` = ?))"
+		args = append(args, condition.LessorID)
+	}
+	if condition.Limit != 0 {
+		query += " limit ? offset ?"
+		args = append(args, condition.Limit, condition.Offset)
+	}
 
-
-
-	err := m.conn.QueryRowsCtx(ctx, resp, query, args...)
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, args...)
 	switch err {
 	case nil:
 		return resp, nil

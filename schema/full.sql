@@ -123,11 +123,13 @@ CREATE TABLE `payment_renter_tbl` (
 
 CREATE TABLE `bill_tbl` (
   `id` bigint,
-  `payment_id` bigint,
+  `title` varchar(255),
+  `payment_id` bigint not null,
   `payment_date` bigint,
-  `amount` bigint,
+  `amount` bigint not null,
   `discount` bigint,
-  `status` int,
+  `remain` bigint not null,
+  `status` int not null,
   PRIMARY KEY (`id`)
 );
 
@@ -144,11 +146,12 @@ CREATE TABLE `bill_detail_tbl` (
 
 CREATE TABLE `bill_pay_tbl` (
   `id` bigint,
-  `bill_id` bigint,
-  `amount` bigint,
-  `pay_date` bigint,
+  `bill_id` bigint not null,
+  `user_id` bigint not null,
+  `amount` bigint not null,
+  `pay_date` bigint not null,
+  `type` int not null,
   `url` varchar(255),
-  `user_id` bigint,
   PRIMARY KEY (`id`)
 );
 
