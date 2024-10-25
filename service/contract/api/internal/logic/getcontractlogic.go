@@ -8,6 +8,7 @@ import (
 	"roomrover/service/contract/api/internal/svc"
 	"roomrover/service/contract/api/internal/types"
 	"roomrover/service/contract/model"
+	inventoryModel "roomrover/service/inventory/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -36,8 +37,9 @@ func (l *GetContractLogic) GetContract(req *types.GetContractReq) (resp *types.G
 	var paymentRenters []types.PaymentRenter
 
 	var contractModel *model.ContractTbl
-	var renter *accountModel.UserTbl
-	var lessor *accountModel.UserTbl
+	var renterModel *accountModel.UserTbl
+	var lessorModel *accountModel.UserTbl
+	var houseRoomModel *inventoryModel.HouseRoomTbl
 	var paymentModel *model.PaymentTbl
 	var paymentDetailModels []*model.PaymentDetailTbl
 	var paymentRentersModels []*model.PaymentRenterTbl
@@ -71,7 +73,7 @@ func (l *GetContractLogic) GetContract(req *types.GetContractReq) (resp *types.G
 		}, nil
 	}
 
-	renter, err = l.svcCtx.AccountFunction.GetUserByID(contractModel.RenterId.Int64)
+	renterModel, err = l.svcCtx.AccountFunction.GetUserByID(contractModel.RenterId.Int64)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.GetContractRes{
@@ -81,8 +83,19 @@ func (l *GetContractLogic) GetContract(req *types.GetContractReq) (resp *types.G
 			},
 		}, nil
 	}
-	lessor, err = l.svcCtx.AccountFunction.GetUserByID(contractModel.LessorId.Int64)
+	lessorModel, err = l.svcCtx.AccountFunction.GetUserByID(contractModel.LessorId.Int64)
 	if err != nil {
+		l.Logger.Error(err)
+		return &types.GetContractRes{
+			Result: types.Result{
+				Code:    common.DB_ERR_CODE,
+				Message: common.DB_ERR_MESS,
+			},
+		}, nil
+	}
+
+	houseRoomModel, err = l.svcCtx.InventFunction.GetHouseRoomByRoomID(contractModel.RoomId.Int64)
+	if err != nil || houseRoomModel == nil {
 		l.Logger.Error(err)
 		return &types.GetContractRes{
 			Result: types.Result{
@@ -156,24 +169,57 @@ func (l *GetContractLogic) GetContract(req *types.GetContractReq) (resp *types.G
 	}
 
 	contract = types.Contract{
-		ContractID:    contractModel.Id,
-		Code:          contractModel.Code.String,
-		Status:        contractModel.Status.Int64,
-		RenterID:      contractModel.RenterId.Int64,
-		RenterPhone:   renter.Phone,
-		RenterNumber:  contractModel.RenterNumber.String,
-		RenterDate:    contractModel.RenterDate.Int64,
-		RenterAddress: contractModel.RenterAddress.String,
-		RenterName:    contractModel.RenterName.String,
-		LessorID:      contractModel.LessorId.Int64,
-		LessorPhone:   lessor.Phone,
-		LessorNumber:  contractModel.LessorNumber.String,
-		LessorDate:    contractModel.LessorDate.Int64,
-		LessorAddress: contractModel.LessorAddress.String,
-		LessorName:    contractModel.LessorName.String,
-		CheckIn:       contractModel.CheckIn.Int64,
-		Duration:      contractModel.Duration.Int64,
-		Purpose:       contractModel.Purpose.String,
+		ContractID: contractModel.Id,
+		Code:       contractModel.Code.String,
+		Status:     contractModel.Status.Int64,
+		Renter: types.User{
+			UserID:      renterModel.Id,
+			Phone:       renterModel.Phone,
+			Role:        renterModel.Role.Int64,
+			Status:      renterModel.Status,
+			Address:     renterModel.Address.String,
+			FullName:    renterModel.FullName.String,
+			AvatarUrl:   renterModel.AvatarUrl.String,
+			Birthday:    renterModel.Birthday.Int64,
+			Gender:      renterModel.Gender.Int64,
+			CccdNumber:  contractModel.RenterNumber.String,
+			CccdDate:    contractModel.RenterDate.Int64,
+			CccdAddress: contractModel.RenterAddress.String,
+			CreatedAt:   renterModel.CreatedAt.Int64,
+			UpdatedAt:   renterModel.UpdatedAt.Int64,
+		},
+		Lessor: types.User{
+			UserID:      lessorModel.Id,
+			Phone:       lessorModel.Phone,
+			Role:        lessorModel.Role.Int64,
+			Status:      lessorModel.Status,
+			Address:     lessorModel.Address.String,
+			FullName:    lessorModel.FullName.String,
+			AvatarUrl:   lessorModel.AvatarUrl.String,
+			Birthday:    lessorModel.Birthday.Int64,
+			Gender:      lessorModel.Gender.Int64,
+			CccdNumber:  contractModel.LessorNumber.String,
+			CccdDate:    contractModel.LessorDate.Int64,
+			CccdAddress: contractModel.LessorAddress.String,
+			CreatedAt:   lessorModel.CreatedAt.Int64,
+			UpdatedAt:   lessorModel.UpdatedAt.Int64,
+		},
+		Room: types.Room{
+			RoomID:     houseRoomModel.Id,
+			Name:       houseRoomModel.HouseRoomName.String,
+			ProvinceID: houseRoomModel.ProvinceID.Int64,
+			DistrictID: houseRoomModel.DistrictID.Int64,
+			WardID:     houseRoomModel.WardID.Int64,
+			Address:    houseRoomModel.Address.String,
+			Area:       houseRoomModel.Area.Int64,
+			Price:      houseRoomModel.Price.Int64,
+			Type:       houseRoomModel.Type.Int64,
+			EIndex:     houseRoomModel.EIndex.Int64,
+			WIndex:     houseRoomModel.WIndex.Int64,
+		},
+		CheckIn:  contractModel.CheckIn.Int64,
+		Duration: contractModel.Duration.Int64,
+		Purpose:  contractModel.Purpose.String,
 		Payment: types.Payment{
 			PaymentID:      paymentModel.Id,
 			ContractID:     paymentModel.ContractId,

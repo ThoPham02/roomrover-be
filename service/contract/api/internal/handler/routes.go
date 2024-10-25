@@ -71,7 +71,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/pay",	
+					Path:    "/pay",
 					Handler: CreateBillPayHandler(serverCtx),
 				},
 				{

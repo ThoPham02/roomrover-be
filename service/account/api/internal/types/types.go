@@ -161,30 +161,20 @@ type Service struct {
 }
 
 type Contract struct {
-	ContractID    int64   `json:"contractID"`
-	Code          string  `json:"code"`
-	Status        int64   `json:"status"`
-	RenterID      int64   `json:"renterID"`
-	RenterPhone   string  `json:"renterPhone"`
-	RenterNumber  string  `json:"renterNumber"`
-	RenterDate    int64   `json:"renterDate"`
-	RenterAddress string  `json:"renterAddress"`
-	RenterName    string  `json:"renterName"`
-	LessorID      int64   `json:"lessorID"`
-	LessorPhone   string  `json:"lessorPhone"`
-	LessorNumber  string  `json:"lessorNumber"`
-	LessorDate    int64   `json:"lessorDate"`
-	LessorAddress string  `json:"lessorAddress"`
-	LessorName    string  `json:"lessorName"`
-	Room          Room    `json:"room"`
-	CheckIn       int64   `json:"checkIn"`
-	Duration      int64   `json:"duration"`
-	Purpose       string  `json:"purpose"`
-	Payment       Payment `json:"payment"`
-	CreatedAt     int64   `json:"createdAt"`
-	UpdatedAt     int64   `json:"updatedAt"`
-	CreatedBy     int64   `json:"createdBy"`
-	UpdatedBy     int64   `json:"updatedBy"`
+	ContractID int64   `json:"contractID"`
+	Code       string  `json:"code"`
+	Status     int64   `json:"status"`
+	Renter     User    `json:"renter"`
+	Lessor     User    `json:"lessor"`
+	Room       Room    `json:"room"`
+	CheckIn    int64   `json:"checkIn"`
+	Duration   int64   `json:"duration"`
+	Purpose    string  `json:"purpose"`
+	Payment    Payment `json:"payment"`
+	CreatedAt  int64   `json:"createdAt"`
+	UpdatedAt  int64   `json:"updatedAt"`
+	CreatedBy  int64   `json:"createdBy"`
+	UpdatedBy  int64   `json:"updatedBy"`
 }
 
 type PaymentRenter struct {

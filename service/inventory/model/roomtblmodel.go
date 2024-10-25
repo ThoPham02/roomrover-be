@@ -22,6 +22,7 @@ type (
 		WardID        sql.NullInt64  `db:"ward_id"`
 		Address       sql.NullString `db:"address"`
 		Area          sql.NullInt64  `db:"area"`
+		Type          sql.NullInt64  `db:"type"`
 		Price         sql.NullInt64  `db:"price"`
 		Status        int64          `db:"status"`
 		Capacity      sql.NullInt64  `db:"capacity"`
@@ -40,6 +41,7 @@ type (
 		FindMultiByHouseIDs(ctx context.Context, houseIDs []int64) ([]*RoomTbl, error)
 		SearchRoom(ctx context.Context, userID, houseType int64, search string, status int64, limit, offset int64) ([]*HouseRoomTbl, error)
 		CountSearchRoom(ctx context.Context, userID, houseType int64, search string, status int64) (int, error)
+		GetHouseRoomByRoomID(ctx context.Context, roomID int64) (*HouseRoomTbl, error)
 	}
 
 	customRoomTblModel struct {
@@ -197,6 +199,7 @@ func (m *customRoomTblModel) SearchRoom(ctx context.Context, userID, houseType i
     house_tbl.address AS address,
     house_tbl.area AS area,
     house_tbl.price AS price,
+	house_tbl.type AS type,
     room_tbl.status AS status,
     room_tbl.capacity AS capacity,
     room_tbl.e_index AS e_index,
@@ -256,4 +259,35 @@ func (m *customRoomTblModel) CountSearchRoom(ctx context.Context, userID, houseT
 	var total int
 	err := m.conn.QueryRowCtx(ctx, &total, query, vals...)
 	return total, err
+}
+
+func (m *customRoomTblModel) GetHouseRoomByRoomID(ctx context.Context, roomID int64) (*HouseRoomTbl, error) {
+	query := `SELECT
+    room_tbl.id AS id,
+    house_tbl.id AS house_id,
+    CONCAT(house_tbl.name, ' - ', room_tbl.name) AS house_room_name,
+    house_tbl.district_id AS district_id,
+    house_tbl.province_id AS province_id,
+    house_tbl.ward_id AS ward_id,
+    house_tbl.address AS address,
+    house_tbl.area AS area,
+    house_tbl.price AS price,
+    house_tbl.type AS type,
+    room_tbl.status AS status,
+    room_tbl.capacity AS capacity,
+    room_tbl.e_index AS e_index,
+    room_tbl.w_index AS w_index
+	FROM room_tbl
+	JOIN house_tbl ON room_tbl.house_id = house_tbl.id
+	WHERE room_tbl.id = ?`
+	var resp HouseRoomTbl
+	err := m.conn.QueryRowCtx(ctx, &resp, query, roomID)
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlx.ErrNotFound:
+		return nil, nil
+	default:
+		return nil, err
+	}
 }
