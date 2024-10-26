@@ -36,12 +36,6 @@ func NewZaloPaymentLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ZaloP
 
 type object map[string]interface{}
 
-var (
-	app_id = "2553"
-	key1   = "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL"
-	key2   = "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz"
-)
-
 type ZaloRes struct {
 	ReturnCode       int    `json:"return_code"`
 	ReturnMessage    string `json:"return_message"`
@@ -113,22 +107,22 @@ func (l *ZaloPaymentLogic) ZaloPayment(req *types.ZaloPaymentReq) (resp *types.Z
 	billPayID := l.svcCtx.ObjSync.GenServiceObjID()
 	transID := strconv.FormatInt(billPayID, 10)
 	embedData, _ := json.Marshal(object{
-		"redirecturl": "https://humgroom.netlify.app/",
+		"redirecturl": l.svcCtx.Config.ZaloPay.RedirectUrl,
 	})
 	items, _ := json.Marshal([]object{})
 
 	params := make(url.Values)
-	params.Add("app_id", app_id)
+	params.Add("app_id", l.svcCtx.Config.ZaloPay.AppID)
 	params.Add("amount", strconv.FormatInt(int64(billModel.Amount), 10))
 	params.Add("app_user", "user123")
 	params.Add("embed_data", string(embedData))
 	params.Add("item", string(items))
 	params.Add("description", "RoomRover - Thanh toan hoa don thue nha ")
-	params.Add("bank_code", "zalopayapp")
+	params.Add("bank_code", l.svcCtx.Config.ZaloPay.BankCode)
 	params.Add("phone", lessorModel.Phone)
 	params.Add("email", "thoahlgbg2002@gmail.com")
 	params.Add("address", lessorModel.Address.String)
-	params.Add("callback_url", "https://ed65-58-187-159-76.ngrok-free.app/bill/zalo/callback")
+	params.Add("callback_url", l.svcCtx.Config.ZaloPay.CallbackUrl)
 
 	now := time.Now()
 	params.Add("app_time", strconv.FormatInt(now.UnixNano()/int64(time.Millisecond), 10))
@@ -136,7 +130,7 @@ func (l *ZaloPaymentLogic) ZaloPayment(req *types.ZaloPaymentReq) (resp *types.Z
 
 	data := fmt.Sprintf("%v|%v|%v|%v|%v|%v|%v", params.Get("app_id"), params.Get("app_trans_id"), params.Get("app_user"),
 		params.Get("amount"), params.Get("app_time"), params.Get("embed_data"), params.Get("item"))
-	params.Add("mac", hmacutil.HexStringEncode(hmacutil.SHA256, key1, data))
+	params.Add("mac", hmacutil.HexStringEncode(hmacutil.SHA256, l.svcCtx.Config.ZaloPay.Key1, data))
 
 	res, err := http.PostForm("https://sb-openapi.zalopay.vn/v2/create", params)
 	if err != nil {

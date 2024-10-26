@@ -15,4 +15,12 @@ type Config struct {
 		Password string
 		DB       int
 	}
+	ZaloPay struct {
+		AppID       string
+		Key1        string
+		Key2        string
+		RedirectUrl string
+		BankCode    string
+		CallbackUrl string
+	}
 }
