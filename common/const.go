@@ -82,3 +82,14 @@ const (
 )
 
 const MIN_ID = 1000000000
+
+const (
+	BILL_PAY_TYPE_MONEY    = 1
+	BILL_PAY_TYPE_TRANSFER = 2
+	BILL_PAY_TYPE_ZALO     = 4
+)
+
+const (
+	BILL_PAY_STATUS_PROCESS = 1
+	BILL_PAY_STATUS_DONE    = 2
+)

@@ -149,6 +149,36 @@ type DeleteBillPayRes struct {
 	Result Result `json:"result"`
 }
 
+type UpdateBillStatusReq struct {
+	ID     int64 `path:"id"`
+	Status int64 `form:"status"`
+}
+
+type UpdateBillStatusRes struct {
+	Result Result `json:"result"`
+}
+
+type ZaloPaymentReq struct {
+	BillID int64 `form:"billID"`
+}
+
+type ZaloPaymentRes struct {
+	Result   Result `json:"result"`
+	OrderUrl string `json:"orderUrl"`
+	QrCode   string `json:"qrCode"`
+}
+
+type ZaloPaymentCallbackReq struct {
+	Mac  string `json:"mac"`
+	Data string `json:"data"`
+	Type int    `json:"type"`
+}
+
+type ZaloPaymentCallbackRes struct {
+	ReturnCode    int    `json:"return_code"`
+	ReturnMessage string `json:"return_message"`
+}
+
 type Result struct {
 	Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
 	Message string `json:"message"` // Result message: detail response code
@@ -229,30 +259,20 @@ type Service struct {
 }
 
 type Contract struct {
-	ContractID    int64   `json:"contractID"`
-	Code          string  `json:"code"`
-	Status        int64   `json:"status"`
-	RenterID      int64   `json:"renterID"`
-	RenterPhone   string  `json:"renterPhone"`
-	RenterNumber  string  `json:"renterNumber"`
-	RenterDate    int64   `json:"renterDate"`
-	RenterAddress string  `json:"renterAddress"`
-	RenterName    string  `json:"renterName"`
-	LessorID      int64   `json:"lessorID"`
-	LessorPhone   string  `json:"lessorPhone"`
-	LessorNumber  string  `json:"lessorNumber"`
-	LessorDate    int64   `json:"lessorDate"`
-	LessorAddress string  `json:"lessorAddress"`
-	LessorName    string  `json:"lessorName"`
-	Room          Room    `json:"room"`
-	CheckIn       int64   `json:"checkIn"`
-	Duration      int64   `json:"duration"`
-	Purpose       string  `json:"purpose"`
-	Payment       Payment `json:"payment"`
-	CreatedAt     int64   `json:"createdAt"`
-	UpdatedAt     int64   `json:"updatedAt"`
-	CreatedBy     int64   `json:"createdBy"`
-	UpdatedBy     int64   `json:"updatedBy"`
+	ContractID int64   `json:"contractID"`
+	Code       string  `json:"code"`
+	Status     int64   `json:"status"`
+	Renter     User    `json:"renter"`
+	Lessor     User    `json:"lessor"`
+	Room       Room    `json:"room"`
+	CheckIn    int64   `json:"checkIn"`
+	Duration   int64   `json:"duration"`
+	Purpose    string  `json:"purpose"`
+	Payment    Payment `json:"payment"`
+	CreatedAt  int64   `json:"createdAt"`
+	UpdatedAt  int64   `json:"updatedAt"`
+	CreatedBy  int64   `json:"createdBy"`
+	UpdatedBy  int64   `json:"updatedBy"`
 }
 
 type PaymentRenter struct {
@@ -287,6 +307,12 @@ type Bill struct {
 	BillID       int64        `json:"billID"`
 	Title        string       `json:"title"`
 	ContractCode string       `json:"contractCode"`
+	RenterID     int64        `json:"renterID"`
+	RenterName   string       `json:"renterName"`
+	RenterPhone  string       `json:"renterPhone"`
+	LessorID     int64        `json:"lessorID"`
+	LessorName   string       `json:"lessorName"`
+	LessorPhone  string       `json:"lessorPhone"`
 	PaymentID    int64        `json:"paymentID"`
 	PaymentDate  int64        `json:"paymentDate"`
 	Amount       int64        `json:"amount"`

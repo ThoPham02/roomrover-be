@@ -144,6 +144,33 @@ type (
 	DeleteBillPayRes {
 		Result Result `json:"result"`
 	}
+
+	UpdateBillStatusReq {
+		ID     int64 `path:"id"`
+		Status int64 `form:"status"`
+	}
+	UpdateBillStatusRes {
+		Result Result `json:"result"`
+	}
+
+	ZaloPaymentReq {
+		BillID int64 `form:"billID"`
+	}
+	ZaloPaymentRes {
+		Result   Result `json:"result"`
+		OrderUrl string `json:"orderUrl"`
+		QrCode   string `json:"qrCode"`
+	}
+
+	ZaloPaymentCallbackReq {
+		Mac  string `json:"mac"`
+		Data string `json:"data"`
+		Type int    `json:"type"`
+	}
+	ZaloPaymentCallbackRes {
+		ReturnCode    int    `json:"return_code"`
+		ReturnMessage string `json:"return_message"`
+	}
 )
 
 @server (
@@ -224,4 +251,28 @@ service contract-api {
 	)
 	@handler DeleteBillPay
 	delete /pay/:id (DeleteBillPayReq) returns (DeleteBillPayRes)
+	
+	@doc (
+		summary: "Update bill status"
+	)
+	@handler UpdateBillStatus
+	put /:id/status (UpdateBillStatusReq) returns (UpdateBillStatusRes)
+	
+	@doc (
+		summary: "Zalo payment"
+	)
+	@handler ZaloPayment
+	post /zalo (ZaloPaymentReq) returns (ZaloPaymentRes)
+	
+}
+
+@server (
+	prefix:     /bill
+)
+service contract-api {
+	@doc (
+		summary: "Callback zalo payment"
+	)
+	@handler ZaloPaymentCallback
+	post /zalo/callback (ZaloPaymentCallbackReq) returns (ZaloPaymentCallbackRes)
 }

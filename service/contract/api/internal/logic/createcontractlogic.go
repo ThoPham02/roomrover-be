@@ -36,7 +36,7 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 	l.Logger.Info("CreateContractLogic: ", req)
 
 	var userID int64
-	var currentTime = common.GetCurrentTime() 
+	var currentTime = common.GetCurrentTime()
 	var contractCode string
 	var codeTime = time.Now().Format("20060102")
 
@@ -339,26 +339,26 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 	}
 
 	contract = types.Contract{
-		ContractID:    contractModel.Id,
-		Code:          contractModel.Code.String,
-		Status:        contractModel.Status.Int64,
-		RenterID:      contractModel.RenterId.Int64,
-		RenterPhone:   renterModel.Phone,
-		RenterNumber:  contractModel.RenterNumber.String,
-		RenterDate:    contractModel.RenterDate.Int64,
-		RenterAddress: contractModel.RenterAddress.String,
-		RenterName:    contractModel.RenterName.String,
-		LessorID:      contractModel.LessorId.Int64,
-		LessorPhone:   lessorModel.Phone,
-		LessorNumber:  contractModel.LessorNumber.String,
-		LessorDate:    contractModel.LessorDate.Int64,
-		LessorAddress: contractModel.LessorAddress.String,
-		LessorName:    contractModel.LessorName.String,
-		Room:          room,
-		CheckIn:       contractModel.CheckIn.Int64,
-		Duration:      contractModel.Duration.Int64,
-		Purpose:       contractModel.Purpose.String,
-		Payment:       types.Payment{
+		ContractID: contractModel.Id,
+		Code:       contractModel.Code.String,
+		Status:     contractModel.Status.Int64,
+		// RenterID:      contractModel.RenterId.Int64,
+		// RenterPhone:   renterModel.Phone,
+		// RenterNumber:  contractModel.RenterNumber.String,
+		// RenterDate:    contractModel.RenterDate.Int64,
+		// RenterAddress: contractModel.RenterAddress.String,
+		// RenterName:    contractModel.RenterName.String,
+		// LessorID:      contractModel.LessorId.Int64,
+		// LessorPhone:   lessorModel.Phone,
+		// LessorNumber:  contractModel.LessorNumber.String,
+		// LessorDate:    contractModel.LessorDate.Int64,
+		// LessorAddress: contractModel.LessorAddress.String,
+		// LessorName:    contractModel.LessorName.String,
+		Room:     room,
+		CheckIn:  contractModel.CheckIn.Int64,
+		Duration: contractModel.Duration.Int64,
+		Purpose:  contractModel.Purpose.String,
+		Payment: types.Payment{
 			PaymentID:      paymentModel.Id,
 			ContractID:     paymentModel.ContractId,
 			Amount:         paymentModel.Amount,
@@ -369,10 +369,10 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 			PaymentRenters: paymentRenters,
 			PaymentDetails: paymentDetails,
 		},
-		CreatedAt:     contractModel.CreatedAt.Int64,
-		UpdatedAt:     contractModel.UpdatedAt.Int64,
-		CreatedBy:     contractModel.CreatedBy.Int64,
-		UpdatedBy:     contractModel.UpdatedBy.Int64,
+		CreatedAt: contractModel.CreatedAt.Int64,
+		UpdatedAt: contractModel.UpdatedAt.Int64,
+		CreatedBy: contractModel.CreatedBy.Int64,
+		UpdatedBy: contractModel.UpdatedBy.Int64,
 	}
 
 	l.Logger.Info("CreateContractLogic Success: ", userID)

@@ -71,7 +71,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/pay",	
+					Path:    "/pay",
 					Handler: CreateBillPayHandler(serverCtx),
 				},
 				{
@@ -79,9 +79,30 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/pay/:id",
 					Handler: DeleteBillPayHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPut,
+					Path:    "/:id/status",
+					Handler: UpdateBillStatusHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/zalo",
+					Handler: ZaloPaymentHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithPrefix("/bill"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/zalo/callback",
+				Handler: ZaloPaymentCallbackHandler(serverCtx),
+			},
+		},
 		rest.WithPrefix("/bill"),
 	)
 }
