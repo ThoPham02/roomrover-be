@@ -149,6 +149,36 @@ type DeleteBillPayRes struct {
 	Result Result `json:"result"`
 }
 
+type UpdateBillStatusReq struct {
+	ID     int64 `path:"id"`
+	Status int64 `form:"status"`
+}
+
+type UpdateBillStatusRes struct {
+	Result Result `json:"result"`
+}
+
+type ZaloPaymentReq struct {
+	BillID int64 `form:"billID"`
+}
+
+type ZaloPaymentRes struct {
+	Result   Result `json:"result"`
+	OrderUrl string `json:"orderUrl"`
+	QrCode   string `json:"qrCode"`
+}
+
+type ZaloPaymentCallbackReq struct {
+	Mac  string `json:"mac"`
+	Data string `json:"data"`
+	Type int    `json:"type"`
+}
+
+type ZaloPaymentCallbackRes struct {
+	ReturnCode    int    `json:"return_code"`
+	ReturnMessage string `json:"return_message"`
+}
+
 type Result struct {
 	Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
 	Message string `json:"message"` // Result message: detail response code
@@ -277,6 +307,12 @@ type Bill struct {
 	BillID       int64        `json:"billID"`
 	Title        string       `json:"title"`
 	ContractCode string       `json:"contractCode"`
+	RenterID     int64        `json:"renterID"`
+	RenterName   string       `json:"renterName"`
+	RenterPhone  string       `json:"renterPhone"`
+	LessorID     int64        `json:"lessorID"`
+	LessorName   string       `json:"lessorName"`
+	LessorPhone  string       `json:"lessorPhone"`
 	PaymentID    int64        `json:"paymentID"`
 	PaymentDate  int64        `json:"paymentDate"`
 	Amount       int64        `json:"amount"`

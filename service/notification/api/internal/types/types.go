@@ -160,6 +160,12 @@ type Bill struct {
 	BillID       int64        `json:"billID"`
 	Title        string       `json:"title"`
 	ContractCode string       `json:"contractCode"`
+	RenterID     int64        `json:"renterID"`
+	RenterName   string       `json:"renterName"`
+	RenterPhone  string       `json:"renterPhone"`
+	LessorID     int64        `json:"lessorID"`
+	LessorName   string       `json:"lessorName"`
+	LessorPhone  string       `json:"lessorPhone"`
 	PaymentID    int64        `json:"paymentID"`
 	PaymentDate  int64        `json:"paymentDate"`
 	Amount       int64        `json:"amount"`

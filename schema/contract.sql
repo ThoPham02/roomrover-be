@@ -62,6 +62,7 @@ CREATE TABLE `bill_tbl` (
   `discount` bigint,
   `remain` bigint not null,
   `status` int not null,
+  `paid_date` bigint,
   PRIMARY KEY (`id`)
 );
 
@@ -82,6 +83,8 @@ CREATE TABLE `bill_pay_tbl` (
   `user_id` bigint not null,
   `amount` bigint not null,
   `pay_date` bigint not null,
+  `status` int not null,
+  `trans_id` varchar(255),
   `type` int not null,
   `url` varchar(255),
   PRIMARY KEY (`id`)
