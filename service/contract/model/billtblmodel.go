@@ -62,6 +62,14 @@ func (m *customBillTblModel) CountByCondition(ctx context.Context, condition Fil
 		query += " and `status` = ?"
 		args = append(args, condition.Status)
 	}
+	if condition.CreateFrom!= 0 {
+        query += " and `payment_date` >= ?"
+        args = append(args, condition.CreateFrom)
+    }
+	if condition.CreateTo != 0 {
+		query += " and `payment_date` <= ?"
+		args = append(args, condition.CreateTo)
+	}
 
 	err := m.conn.QueryRowCtx(ctx, &count, query, args...)
 	switch err {
@@ -90,6 +98,19 @@ func (m *customBillTblModel) FilterBillByCondition(ctx context.Context, conditio
 		query += " and `payment_id` in (select `id` from `payment_tbl` where `contract_id` in (select `id` from `contract_tbl` where `lessor_id` = ?))"
 		args = append(args, condition.LessorID)
 	}
+	if condition.Status != 0 {
+		query += " and `status` = ?"
+		args = append(args, condition.Status)
+	}
+	if condition.CreateFrom!= 0 {
+        query += " and `payment_date` >= ?"
+        args = append(args, condition.CreateFrom)
+    }
+	if condition.CreateTo != 0 {
+		query += " and `payment_date` <= ?"
+		args = append(args, condition.CreateTo)
+	}
+
 	if condition.Limit != 0 {
 		query += " limit ? offset ?"
 		args = append(args, condition.Limit, condition.Offset)

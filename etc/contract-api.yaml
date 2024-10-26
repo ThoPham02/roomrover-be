@@ -11,9 +11,9 @@ RedisCache:
   Password: ""
   DB: 0
 ZaloPay:
-  AppID: "5240201234"
+  AppID: "2553"
   Key1: "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL"
   Key2: "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz"
-  RedirectDomain: "https://0129-58-187-159-76.ngrok-free.app"
+  RedirectDomain: "https://21c6-58-187-159-76.ngrok-free.app"
   BankCode: "zalopayapp"
-  CallbackUrl: "https://ed65-58-187-159-76.ngrok-free.app/bill/zalo/callback"
+  CallbackUrl: "https://21c6-58-187-159-76.ngrok-free.app/api/bill/zalo/callback"

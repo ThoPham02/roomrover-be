@@ -135,11 +135,9 @@ func (l *FilterContractLogic) FilterContract(req *types.FilterContractReq) (resp
 	}
 	for _, roomModel := range roomModels {
 		mapRoom[roomModel.Id] = *roomModel
-		l.Logger.Info("RoomModel: ", roomModel)
 		houseIDs = append(houseIDs, roomModel.HouseId.Int64)
 	}
 
-	l.Logger.Info("HouseIDs: ", houseIDs)
 	houseModels, err = l.svcCtx.InventFunction.GetHousesByIDs(houseIDs)
 	if err != nil {
 		l.Logger.Error(err)
@@ -150,9 +148,7 @@ func (l *FilterContractLogic) FilterContract(req *types.FilterContractReq) (resp
 			},
 		}, nil
 	}
-	l.Logger.Info("HouseModels: ", houseModels)
 	for _, houseModel := range houseModels {
-		l.Logger.Info("HouseModel: ", houseModel)
 		mapHouse[houseModel.Id] = *houseModel
 	}
 
@@ -172,18 +168,16 @@ func (l *FilterContractLogic) FilterContract(req *types.FilterContractReq) (resp
 			ContractID: contractModel.Id,
 			Code:       contractModel.Code.String,
 			Status:     contractModel.Status.Int64,
-			// RenterID:      contractModel.RenterId.Int64,
-			// RenterPhone:   mapUserPhone[contractModel.RenterId.Int64],
-			// RenterNumber:  contractModel.RenterNumber.String,
-			// RenterDate:    contractModel.RenterDate.Int64,
-			// RenterAddress: contractModel.RenterAddress.String,
-			// RenterName:    contractModel.RenterName.String,
-			// LessorID:      contractModel.LessorId.Int64,
-			// LessorPhone:   mapUserPhone[contractModel.LessorId.Int64],
-			// LessorNumber:  contractModel.LessorNumber.String,
-			// LessorDate:    contractModel.LessorDate.Int64,
-			// LessorAddress: contractModel.LessorAddress.String,
-			// LessorName:    contractModel.LessorName.String,
+			Renter: types.User{
+				UserID:   contractModel.RenterId.Int64,
+				Phone:    mapUserPhone[contractModel.RenterId.Int64],
+				FullName: contractModel.RenterName.String,
+			},
+			Lessor: types.User{
+				UserID:   contractModel.LessorId.Int64,
+				Phone:    mapUserPhone[contractModel.LessorId.Int64],
+				FullName: contractModel.LessorName.String,
+			},
 			Room: types.Room{
 				RoomID:    contractModel.RoomId.Int64,
 				HouseID:   mapRoom[contractModel.RoomId.Int64].HouseId.Int64,
@@ -208,8 +202,6 @@ func (l *FilterContractLogic) FilterContract(req *types.FilterContractReq) (resp
 				Deposit:     paymentModel.Deposit,
 				DepositDate: paymentModel.DepositDate,
 				NextBill:    paymentModel.NextBill,
-				// PaymentRenters: paymentRenters,
-				// PaymentDetails: paymentDetails,
 			},
 			CreatedAt: contractModel.CreatedAt.Int64,
 			UpdatedAt: contractModel.UpdatedAt.Int64,

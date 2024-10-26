@@ -152,6 +152,7 @@ func (l *ZaloPaymentLogic) ZaloPayment(req *types.ZaloPaymentReq) (resp *types.Z
 
 	res, err := http.PostForm("https://sb-openapi.zalopay.vn/v2/create", params)
 	if err != nil {
+		l.Logger.Error(err)
 		return &types.ZaloPaymentRes{
 			Result: types.Result{
 				Code:    common.UNKNOWN_ERR_CODE,
@@ -162,10 +163,9 @@ func (l *ZaloPaymentLogic) ZaloPayment(req *types.ZaloPaymentReq) (resp *types.Z
 	defer res.Body.Close()
 
 	body, _ := ioutil.ReadAll(res.Body)
-
 	var result ZaloRes
-
 	if err := json.Unmarshal(body, &result); err != nil {
+		l.Logger.Error(err)
 		return &types.ZaloPaymentRes{
 			Result: types.Result{
 				Code:    common.UNKNOWN_ERR_CODE,
@@ -174,6 +174,7 @@ func (l *ZaloPaymentLogic) ZaloPayment(req *types.ZaloPaymentReq) (resp *types.Z
 		}, nil
 	}
 	if result.ReturnCode != 1 {
+		l.Logger.Error(result.ReturnMessage)
 		return &types.ZaloPaymentRes{
 			Result: types.Result{
 				Code:    common.UNKNOWN_ERR_CODE,

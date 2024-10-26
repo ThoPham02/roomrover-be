@@ -267,7 +267,7 @@ service contract-api {
 }
 
 @server (
-	prefix:     /bill
+	prefix:     /api/bill
 )
 service contract-api {
 	@doc (
