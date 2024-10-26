@@ -50,6 +50,7 @@ func (l *ZaloPaymentLogic) ZaloPayment(req *types.ZaloPaymentReq) (resp *types.Z
 	l.Logger.Info("ZaloPayment: ", req)
 
 	var userID int64
+	var redirecPath string
 
 	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
@@ -60,6 +61,23 @@ func (l *ZaloPaymentLogic) ZaloPayment(req *types.ZaloPaymentReq) (resp *types.Z
 				Message: common.UNKNOWN_ERR_MESS,
 			},
 		}, nil
+	}
+
+	userModel, err := l.svcCtx.AccountFunction.GetUserByID(userID)
+	if err != nil || userModel == nil {
+		l.Logger.Error(err)
+		return &types.ZaloPaymentRes{
+			Result: types.Result{
+				Code:    common.UNKNOWN_ERR_CODE,
+				Message: common.UNKNOWN_ERR_MESS,
+			},
+		}, nil
+	}
+
+	if userModel.Role.Int64 == common.USER_ROLE_RENTER {
+		redirecPath = "/renter/payment"
+	} else {
+		redirecPath = "/lessor/payment"
 	}
 
 	billModel, err := l.svcCtx.BillModel.FindOne(l.ctx, req.BillID)
@@ -107,7 +125,7 @@ func (l *ZaloPaymentLogic) ZaloPayment(req *types.ZaloPaymentReq) (resp *types.Z
 	billPayID := l.svcCtx.ObjSync.GenServiceObjID()
 	transID := strconv.FormatInt(billPayID, 10)
 	embedData, _ := json.Marshal(object{
-		"redirecturl": l.svcCtx.Config.ZaloPay.RedirectUrl,
+		"redirecturl": l.svcCtx.Config.ZaloPay.RedirectDomain + redirecPath,
 	})
 	items, _ := json.Marshal([]object{})
 

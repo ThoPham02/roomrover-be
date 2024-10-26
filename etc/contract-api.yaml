@@ -14,6 +14,6 @@ ZaloPay:
   AppID: "5240201234"
   Key1: "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL"
   Key2: "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz"
-  RedirectUrl: "https://humgroom.netlify.app/"
+  RedirectDomain: "https://0129-58-187-159-76.ngrok-free.app"
   BankCode: "zalopayapp"
   CallbackUrl: "https://ed65-58-187-159-76.ngrok-free.app/bill/zalo/callback"
