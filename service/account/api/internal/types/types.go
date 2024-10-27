@@ -114,6 +114,7 @@ type House struct {
 	Price       int64     `json:"price"`
 	BedNum      int64     `json:"bedNum"`
 	LivingNum   int64     `json:"livingNum"`
+	Unit        int64     `json:"unit"`
 	Albums      []string  `json:"albums"`
 	Rooms       []Room    `json:"rooms"`
 	Services    []Service `json:"services"`

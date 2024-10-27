@@ -161,6 +161,7 @@ func (l *GetHouseLogic) GetHouse(req *types.GetHouseReq) (resp *types.GetHouseRe
 		Price:       houseModel.Price,
 		BedNum:      houseModel.BedNum.Int64,
 		LivingNum:   houseModel.LivingNum.Int64,
+		Unit:        houseModel.Unit.Int64,
 		Albums:      imageUrls,
 		Rooms:       room,
 		Services:    service,

@@ -9,6 +9,7 @@ CREATE TABLE `house_tbl` (
   `status` int NOT NULL,
   `bed_num` int,
   `living_num` int,
+  `unit` int,
   `address` varchar(255),
   `ward_id` int NOT NULL,
   `district_id` int NOT NULL,

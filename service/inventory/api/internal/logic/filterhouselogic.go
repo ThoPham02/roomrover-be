@@ -101,6 +101,7 @@ func (l *FilterHouseLogic) FilterHouse(req *types.FilterHouseReq) (resp *types.F
 			Price:       house.Price,
 			BedNum:      house.BedNum.Int64,
 			LivingNum:   house.LivingNum.Int64,
+			Unit:        house.Unit.Int64,
 			Albums:      imageUrls,
 			Rooms:       []types.Room{},
 			Services:    []types.Service{},

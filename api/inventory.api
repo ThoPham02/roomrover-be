@@ -26,6 +26,7 @@ type (
 		Price       int64  `form:"price"`
 		BedNum      int    `form:"bedNum,optional"`
 		LivingNum   int    `form:"livingNum,optional"`
+		Unit        int    `form:"unit,optional"`
 		Address     string `form:"address"`
 		WardID      int64  `form:"wardID"`
 		DistrictID  int64  `form:"districtID"`
@@ -33,6 +34,7 @@ type (
 		Albums      string `form:"albums,optional"`
 		Rooms       string `form:"rooms,optional"`
 		Services    string `form:"services,optional"`
+		Option      int    `form:"option,optional"`
 	}
 	CreateHouseRes {
 		Result Result `json:"result"`
@@ -67,6 +69,7 @@ type (
 		Price       int64  `form:"price"`
 		BedNum      int    `form:"bedNum,optional"`
 		LivingNum   int    `form:"livingNum,optional"`
+		Unit        int    `form:"unit,optional"`
 		Address     string `form:"address"`
 		WardID      int64  `form:"wardID"`
 		DistrictID  int64  `form:"districtID"`
@@ -74,6 +77,7 @@ type (
 		Albums      string `form:"albums,optional"`
 		Rooms       string `form:"rooms,optional"`
 		Services    string `form:"services,optional"`
+		Option      int    `form:"option,optional"`
 	}
 	UpdateHouseRes {
 		Result Result `json:"result"`

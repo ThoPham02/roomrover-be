@@ -44,7 +44,7 @@ func (l *GetRoomLogic) GetRoom(req *types.GetRoomReq) (resp *types.GetRoomRes, e
 				Code:    common.UNKNOWN_ERR_CODE,
 				Message: common.UNKNOWN_ERR_MESS,
 			},
-		}, err
+		}, nil
 	}
 
 	roomModel, err = l.svcCtx.RoomModel.FindOne(l.ctx, req.ID)
@@ -55,7 +55,7 @@ func (l *GetRoomLogic) GetRoom(req *types.GetRoomReq) (resp *types.GetRoomRes, e
 					Code:    common.ROOM_NOT_FOUND_CODE,
 					Message: common.ROOM_NOT_FOUND_MESS,
 				},
-			}, err
+			}, nil
 		}
 		l.Logger.Error(err)
 		return &types.GetRoomRes{
@@ -63,7 +63,7 @@ func (l *GetRoomLogic) GetRoom(req *types.GetRoomReq) (resp *types.GetRoomRes, e
 				Code:    common.UNKNOWN_ERR_CODE,
 				Message: common.UNKNOWN_ERR_MESS,
 			},
-		}, err
+		}, nil
 	}
 
 	houseModel, err = l.svcCtx.HouseModel.FindOne(l.ctx, roomModel.HouseId.Int64)
@@ -74,7 +74,7 @@ func (l *GetRoomLogic) GetRoom(req *types.GetRoomReq) (resp *types.GetRoomRes, e
 				Code:    common.UNKNOWN_ERR_CODE,
 				Message: common.UNKNOWN_ERR_MESS,
 			},
-		}, err
+		}, nil
 	}
 
 	albumModels, err := l.svcCtx.AlbumModel.FindByHouseID(l.ctx, houseModel.Id)
@@ -138,18 +138,20 @@ func (l *GetRoomLogic) GetRoom(req *types.GetRoomReq) (resp *types.GetRoomRes, e
 			ContractID: contractModel.Id,
 			Code:       contractModel.Code.String,
 			Status:     contractModel.Status.Int64,
-			// RenterID:      contractModel.RenterId.Int64,
-			// RenterPhone:   contract.RenterNumber,
-			// RenterNumber:  contractModel.RenterNumber.String,
-			// RenterDate:    contractModel.RenterDate.Int64,
-			// RenterAddress: contractModel.RenterAddress.String,
-			// RenterName:    contractModel.RenterName.String,
-			// LessorID:      contractModel.LessorId.Int64,
-			// LessorPhone:   contract.LessorNumber,
-			// LessorNumber:  contractModel.LessorNumber.String,
-			// LessorDate:    contractModel.LessorDate.Int64,
-			// LessorAddress: contractModel.LessorAddress.String,
-			// LessorName:    contractModel.LessorName.String,
+			Lessor: types.User{
+				UserID:      contractModel.LessorId.Int64,
+				FullName:    contractModel.LessorName.String,
+				CccdNumber:  contractModel.LessorNumber.String,
+				CccdDate:    contractModel.LessorDate.Int64,
+				CccdAddress: contractModel.LessorAddress.String,
+			},
+			Renter: types.User{
+				UserID:      contractModel.RenterId.Int64,
+				FullName:    contractModel.RenterName.String,
+				CccdNumber:  contractModel.RenterNumber.String,
+				CccdDate:    contractModel.RenterDate.Int64,
+				CccdAddress: contractModel.RenterAddress.String,
+			},
 			CheckIn:  contractModel.CheckIn.Int64,
 			Duration: contractModel.Duration.Int64,
 			Purpose:  contractModel.Purpose.String,

@@ -18,6 +18,7 @@ type CreateHouseReq struct {
 	Price       int64  `form:"price"`
 	BedNum      int    `form:"bedNum,optional"`
 	LivingNum   int    `form:"livingNum,optional"`
+	Unit        int    `form:"unit,optional"`
 	Address     string `form:"address"`
 	WardID      int64  `form:"wardID"`
 	DistrictID  int64  `form:"districtID"`
@@ -25,6 +26,7 @@ type CreateHouseReq struct {
 	Albums      string `form:"albums,optional"`
 	Rooms       string `form:"rooms,optional"`
 	Services    string `form:"services,optional"`
+	Option      int    `form:"option,optional"`
 }
 
 type CreateHouseRes struct {
@@ -62,6 +64,7 @@ type UpdateHouseReq struct {
 	Price       int64  `form:"price"`
 	BedNum      int    `form:"bedNum,optional"`
 	LivingNum   int    `form:"livingNum,optional"`
+	Unit        int    `form:"unit,optional"`
 	Address     string `form:"address"`
 	WardID      int64  `form:"wardID"`
 	DistrictID  int64  `form:"districtID"`
@@ -69,6 +72,7 @@ type UpdateHouseReq struct {
 	Albums      string `form:"albums,optional"`
 	Rooms       string `form:"rooms,optional"`
 	Services    string `form:"services,optional"`
+	Option      int    `form:"option,optional"`
 }
 
 type UpdateHouseRes struct {
@@ -194,6 +198,7 @@ type House struct {
 	Price       int64     `json:"price"`
 	BedNum      int64     `json:"bedNum"`
 	LivingNum   int64     `json:"livingNum"`
+	Unit        int64     `json:"unit"`
 	Albums      []string  `json:"albums"`
 	Rooms       []Room    `json:"rooms"`
 	Services    []Service `json:"services"`
