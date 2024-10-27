@@ -80,15 +80,6 @@ type UpdateHouseRes struct {
 	House  House  `json:"house"`
 }
 
-type GetHouseReq struct {
-	ID int64 `path:"id"`
-}
-
-type GetHouseRes struct {
-	Result Result `json:"result"`
-	House  House  `json:"house"`
-}
-
 type DeleteHouseReq struct {
 	HouseID int64 `path:"id"`
 }
@@ -145,6 +136,42 @@ type SearchRoomRes struct {
 	Total  int    `json:"total"`
 }
 
+type CreateContactReq struct {
+	HouseID  int64 `form:"houseID"`
+	LessorID int64 `form:"lessorID"`
+	Datetime int64 `form:"datetime"`
+}
+
+type CreateContactRes struct {
+	Result  Result  `json:"result"`
+	Contact Contact `json:"contact"`
+}
+
+type DeleteContactReq struct {
+	ID int64 `path:"id"`
+}
+
+type DeleteContactRes struct {
+	Result Result `json:"result"`
+}
+
+type FilterContactReq struct {
+}
+
+type FilterContactRes struct {
+	Result   Result    `json:"result"`
+	Contacts []Contact `json:"contacts"`
+}
+
+type UpdateContactStatusReq struct {
+	ID     int64 `path:"id"`
+	Status int64 `form:"status"`
+}
+
+type UpdateContactStatusRes struct {
+	Result Result `json:"result"`
+}
+
 type SearchHouseReq struct {
 	Search     string `form:"search,optional"`
 	DistrictID int64  `form:"districtID,optional"`
@@ -155,6 +182,7 @@ type SearchHouseReq struct {
 	PriceTo    int64  `form:"priceTo,optional"`
 	AreaFrom   int64  `form:"areaFrom,optional"`
 	AreaTo     int64  `form:"areaTo,optional"`
+	Unit       int64  `form:"unit,optional"`
 	Limit      int64  `form:"limit"`
 	Offset     int64  `form:"offset"`
 }
@@ -163,6 +191,15 @@ type SearchHouseRes struct {
 	Result Result  `json:"result"`
 	Total  int     `json:"total"`
 	Houses []House `json:"houses"`
+}
+
+type GetHouseReq struct {
+	ID int64 `path:"id"`
+}
+
+type GetHouseRes struct {
+	Result Result `json:"result"`
+	House  House  `json:"house"`
 }
 
 type Result struct {
@@ -245,6 +282,20 @@ type Service struct {
 	Unit      int64  `json:"unit"`
 }
 
+type Contact struct {
+	ID          int64  `json:"id"`
+	HouseID     int64  `json:"houseID"`
+	HouseName   string `json:"houseName"`
+	RenterID    int64  `json:"renterID"`
+	RenterName  string `json:"renterName"`
+	RenterPhone string `json:"renterPhone"`
+	LessorID    int64  `json:"lessorID"`
+	LessorName  string `json:"lessorName"`
+	LessorPhone string `json:"lessorPhone"`
+	Datetime    int64  `json:"datetime"`
+	Status      int64  `json:"status"`
+}
+
 type Contract struct {
 	ContractID int64   `json:"contractID"`
 	Code       string  `json:"code"`
@@ -306,6 +357,7 @@ type Bill struct {
 	Remain       int64        `json:"remain"`
 	Status       int64        `json:"status"`
 	BillDetails  []BillDetail `json:"billDetails"`
+	BillPays     []BillPay    `json:"billPays"`
 }
 
 type BillDetail struct {
@@ -318,9 +370,13 @@ type BillDetail struct {
 }
 
 type BillPay struct {
-	BillPayID int64 `json:"billPayID"`
-	BillID    int64 `json:"billID"`
-	Amount    int64 `json:"amount"`
-	PayDate   int64 `json:"payDate"`
-	UserID    int64 `json:"userID"`
+	BillPayID int64  `json:"billPayID"`
+	UserID    int64  `json:"userID"`
+	BillID    int64  `json:"billID"`
+	Amount    int64  `json:"amount"`
+	PayDate   int64  `json:"payDate"`
+	Status    int64  `json:"status"`
+	Type      int64  `json:"type"`
+	Url       string `json:"url"`
+	TransId   string `json:"transId"`
 }

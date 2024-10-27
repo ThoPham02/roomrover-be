@@ -47,3 +47,13 @@ CREATE TABLE `service_tbl` (
   `unit` int,
   PRIMARY KEY (`id`)
 );
+
+CREATE TABLE `contact_tbl` (
+  `id` bigint,
+  `house_id` bigint,
+  `renter_id` bigint,
+  `lessor_id` bigint,
+  `datetime` bigint,
+  `status` int NOT NULL,
+  PRIMARY KEY (`id`)
+)

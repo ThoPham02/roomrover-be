@@ -45,7 +45,7 @@ func (l *SearchHouseLogic) SearchHouse(req *types.SearchHouseReq) (resp *types.S
 	var albumModels []*model.AlbumTbl
 	var userModels []*accountModel.UserTbl
 
-	total, listHousesModel, err = l.svcCtx.HouseModel.SearchHouse(l.ctx, req.Search, req.DistrictID, req.ProvinceID, req.WardID, req.PriceFrom, req.PriceTo, req.AreaFrom, req.AreaTo, req.Limit, req.Offset)
+	total, listHousesModel, err = l.svcCtx.HouseModel.SearchHouse(l.ctx, req.Search, req.DistrictID, req.ProvinceID, req.WardID, req.Type, req.Unit, req.PriceFrom, req.PriceTo, req.AreaFrom, req.AreaTo, req.Limit, req.Offset)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.SearchHouseRes{

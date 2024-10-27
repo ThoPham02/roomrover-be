@@ -17,7 +17,7 @@ type (
 		withSession(session sqlx.Session) HouseTblModel
 		FilterHouse(ctx context.Context, userID int64, search string, limit, offset int64) (total int64, listHouses []*HouseTbl, err error)
 		FindMultiByID(ctx context.Context, ids []int64) ([]*HouseTbl, error)
-		SearchHouse(ctx context.Context, search string, districtID, provinceID, wardID int64, priceFrom, priceTo, areaFrom, areaTo, limit, offset int64) (total int64, listHouses []*HouseTbl, err error)
+		SearchHouse(ctx context.Context, search string, districtID, provinceID, wardID, typeHouse, unit int64, priceFrom, priceTo, areaFrom, areaTo, limit, offset int64) (total int64, listHouses []*HouseTbl, err error)
 	}
 
 	customHouseTblModel struct {
@@ -78,7 +78,7 @@ func (m *customHouseTblModel) FindMultiByID(ctx context.Context, ids []int64) ([
 	return listHouse, nil
 }
 
-func (m *customHouseTblModel) SearchHouse(ctx context.Context, search string, districtID, provinceID, wardID, priceFrom, priceTo, areaFrom, areaTo, limit, offset int64) (total int64, listHouses []*HouseTbl, err error) {
+func (m *customHouseTblModel) SearchHouse(ctx context.Context, search string, districtID, provinceID, wardID, typeHouse, unit, priceFrom, priceTo, areaFrom, areaTo, limit, offset int64) (total int64, listHouses []*HouseTbl, err error) {
 	var searchVal string = "%" + search + "%"
 	var vals []interface{}
 	selectQuery := fmt.Sprintf("select %s from %s where `name` like ?", houseTblRows, m.table)
@@ -119,6 +119,17 @@ func (m *customHouseTblModel) SearchHouse(ctx context.Context, search string, di
 		selectQuery += " and `area` <= ?"
 		vals = append(vals, areaTo)
 	}
+	if typeHouse > 0 {
+		countQuery += " and `type` = ?"
+		selectQuery += " and `type` = ?"
+		vals = append(vals, typeHouse)
+	}
+	if unit > 0 {
+		countQuery += " and `unit` & ?"
+		selectQuery += " and `unit` & ?"
+		vals = append(vals, unit)
+	}
+
 	err = m.conn.QueryRowCtx(ctx, &total, countQuery, vals...)
 	if err != nil {
 		return 0, nil, err

@@ -28,24 +28,11 @@ func NewGetHouseLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetHouse
 func (l *GetHouseLogic) GetHouse(req *types.GetHouseReq) (resp *types.GetHouseRes, err error) {
 	l.Logger.Info("GetHouse", req)
 
-	var userID int64
-
 	var house types.House
 	var imageUrls []string
 	var room []types.Room
 	var service []types.Service
 	var user types.User
-
-	userID, err = common.GetUserIDFromContext(l.ctx)
-	if err != nil {
-		l.Logger.Error(err)
-		return &types.GetHouseRes{
-			Result: types.Result{
-				Code:    common.UNKNOWN_ERR_CODE,
-				Message: common.UNKNOWN_ERR_MESS,
-			},
-		}, nil
-	}
 
 	houseModel, err := l.svcCtx.HouseModel.FindOne(l.ctx, req.ID)
 	if err != nil {
@@ -175,7 +162,7 @@ func (l *GetHouseLogic) GetHouse(req *types.GetHouseReq) (resp *types.GetHouseRe
 		UpdatedBy:   houseModel.UpdatedBy.Int64,
 	}
 
-	l.Logger.Info("GetHouse Success", userID)
+	l.Logger.Info("GetHouse Success")
 	return &types.GetHouseRes{
 		Result: types.Result{
 			Code:    common.SUCCESS_CODE,

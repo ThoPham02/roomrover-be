@@ -259,6 +259,20 @@ type Service struct {
 	Unit      int64  `json:"unit"`
 }
 
+type Contact struct {
+	ID          int64  `json:"id"`
+	HouseID     int64  `json:"houseID"`
+	HouseName   string `json:"houseName"`
+	RenterID    int64  `json:"renterID"`
+	RenterName  string `json:"renterName"`
+	RenterPhone string `json:"renterPhone"`
+	LessorID    int64  `json:"lessorID"`
+	LessorName  string `json:"lessorName"`
+	LessorPhone string `json:"lessorPhone"`
+	Datetime    int64  `json:"datetime"`
+	Status      int64  `json:"status"`
+}
+
 type Contract struct {
 	ContractID int64   `json:"contractID"`
 	Code       string  `json:"code"`
@@ -320,6 +334,7 @@ type Bill struct {
 	Remain       int64        `json:"remain"`
 	Status       int64        `json:"status"`
 	BillDetails  []BillDetail `json:"billDetails"`
+	BillPays     []BillPay    `json:"billPays"`
 }
 
 type BillDetail struct {
@@ -332,9 +347,13 @@ type BillDetail struct {
 }
 
 type BillPay struct {
-	BillPayID int64 `json:"billPayID"`
-	BillID    int64 `json:"billID"`
-	Amount    int64 `json:"amount"`
-	PayDate   int64 `json:"payDate"`
-	UserID    int64 `json:"userID"`
+	BillPayID int64  `json:"billPayID"`
+	UserID    int64  `json:"userID"`
+	BillID    int64  `json:"billID"`
+	Amount    int64  `json:"amount"`
+	PayDate   int64  `json:"payDate"`
+	Status    int64  `json:"status"`
+	Type      int64  `json:"type"`
+	Url       string `json:"url"`
+	TransId   string `json:"transId"`
 }

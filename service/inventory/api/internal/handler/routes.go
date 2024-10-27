@@ -15,6 +15,26 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Middleware{serverCtx.UserTokenMiddleware},
 			[]rest.Route{
 				{
+					Method:  http.MethodPut,
+					Path:    "/contact/:id",
+					Handler: UpdateContactStatusHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/contact/filter",
+					Handler: FilterContactHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodDelete,
+					Path:    "/contact/:id",
+					Handler: DeleteContactHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/contact",
+					Handler: CreateContactHandler(serverCtx),
+				},
+				{
 					Method:  http.MethodPost,
 					Path:    "/upload",
 					Handler: UploadFileHouseHandler(serverCtx),
@@ -28,11 +48,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodGet,
 					Path:    "/house/filter",
 					Handler: FilterHouseHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodGet,
-					Path:    "/house/:id",
-					Handler: GetHouseHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPut,
@@ -81,6 +96,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodGet,
 				Path:    "/house/search",
 				Handler: SearchHouseHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/house/:id",
+				Handler: GetHouseHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/invent"),

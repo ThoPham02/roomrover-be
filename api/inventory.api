@@ -84,14 +84,6 @@ type (
 		House  House  `json:"house"`
 	}
 
-	GetHouseReq {
-		ID int64 `path:"id"`
-	}
-	GetHouseRes {
-		Result Result `json:"result"`
-		House  House  `json:"house"`
-	}
-
 	DeleteHouseReq {
 		HouseID int64 `path:"id"`
 	}
@@ -142,6 +134,38 @@ type (
 		Rooms  []Room `json:"rooms"`
 		Total  int    `json:"total"`
 	}
+
+	CreateContactReq {
+		HouseID  int64 `form:"houseID"`
+		LessorID int64 `form:"lessorID"`
+		Datetime int64 `form:"datetime"`
+	}
+	CreateContactRes {
+		Result  Result  `json:"result"`
+		Contact Contact `json:"contact"`
+	}
+
+	DeleteContactReq {
+		ID int64 `path:"id"`
+	}
+	DeleteContactRes {
+		Result Result `json:"result"`
+	}
+
+	FilterContactReq {
+	}
+	FilterContactRes {
+		Result   Result    `json:"result"`
+		Contacts []Contact `json:"contacts"`
+	}
+
+	UpdateContactStatusReq {
+		ID     int64 `path:"id"`
+		Status int64 `form:"status"`
+	}
+	UpdateContactStatusRes {
+		Result Result `json:"result"`
+	}
 )
 
 @server (
@@ -150,6 +174,30 @@ type (
 	prefix:     /invent
 )
 service invent-api {
+	@doc(
+		summary: Update Contact Status
+	)
+	@handler UpdateContactStatus
+	put /contact/:id (UpdateContactStatusReq) returns (UpdateContactStatusRes)
+	
+	@doc(
+		summary: Filter Contact
+	)
+	@handler FilterContact
+	get /contact/filter (FilterContactReq) returns (FilterContactRes)
+	
+	@doc (
+		summary: "Delete contact"
+	)
+	@handler DeleteContact
+	delete /contact/:id (DeleteContactReq) returns (DeleteContactRes)
+	
+	@doc (
+		summary: "Create contact"
+	)
+	@handler CreateContact
+	post /contact (CreateContactReq) returns (CreateContactRes)
+	
 	@doc (
 		summary: "Upload file house"
 	)
@@ -167,12 +215,6 @@ service invent-api {
 	)
 	@handler FilterHouse
 	get /house/filter (FilterHouseReq) returns (FilterHouseRes)
-	
-	@doc (
-		summary: "Get House"
-	)
-	@handler GetHouse
-	get /house/:id (GetHouseReq) returns (GetHouseRes)
 	
 	@doc (
 		summary: "Update House Status"
@@ -228,6 +270,7 @@ type (
 		PriceTo    int64  `form:"priceTo,optional"`
 		AreaFrom   int64  `form:"areaFrom,optional"`
 		AreaTo     int64  `form:"areaTo,optional"`
+		Unit       int64  `form:"unit,optional"`
 		Limit      int64  `form:"limit"`
 		Offset     int64  `form:"offset"`
 	}
@@ -235,6 +278,14 @@ type (
 		Result Result  `json:"result"`
 		Total  int     `json:"total"`
 		Houses []House `json:"houses"`
+	}
+
+	GetHouseReq {
+		ID int64 `path:"id"`
+	}
+	GetHouseRes {
+		Result Result `json:"result"`
+		House  House  `json:"house"`
 	}
 )
 
@@ -247,4 +298,10 @@ service invent-api {
 	)
 	@handler SearchHouse
 	get /house/search (SearchHouseReq) returns (SearchHouseRes)
+	
+	@doc (
+		summary: "Get House"
+	)
+	@handler GetHouse
+	get /house/:id (GetHouseReq) returns (GetHouseRes)
 }

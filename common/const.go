@@ -32,6 +32,11 @@ const (
 	ROOM_STATUS_TRANSFER        = 16 // chuyen nhuong
 )
 
+const (
+	CONTACT_STATUS_TYPE_WATTING = 1 // Cho xac nhan
+	CONTACT_STATUS_TYPE_CONFIRM = 2 // Dong y
+)
+
 // Contract Service
 const (
 	CONTRACT_STATUS_DRAF            = 1  // nhap
