@@ -23,6 +23,7 @@ type ServiceContext struct {
 	HouseModel   model.HouseTblModel
 	AlbumModel   model.AlbumTblModel
 	ServiceModel model.ServiceTblModel
+	ContactModel model.ContactTblModel
 
 	AccountFunction  accountFunc.AccountFunction
 	ContractFunction contractFunc.ContractFunction
@@ -39,6 +40,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		HouseModel:   model.NewHouseTblModel(sqlx.NewMysql(c.DataSource)),
 		AlbumModel:   model.NewAlbumTblModel(sqlx.NewMysql(c.DataSource)),
 		ServiceModel: model.NewServiceTblModel(sqlx.NewMysql(c.DataSource)),
+		ContactModel: model.NewContactTblModel(sqlx.NewMysql(c.DataSource)),
 	}
 }
 

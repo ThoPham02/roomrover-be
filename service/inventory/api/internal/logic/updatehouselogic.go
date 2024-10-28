@@ -83,7 +83,7 @@ func (l *UpdateHouseLogic) UpdateHouse(req *types.UpdateHouseReq) (resp *types.U
 					Code:    common.INVALID_REQUEST_CODE,
 					Message: common.INVALID_REQUEST_MESS,
 				},
-			}, err
+			}, nil
 		}
 		for _, room := range rooms {
 			if room.RoomID > common.MIN_ID {
@@ -142,7 +142,7 @@ func (l *UpdateHouseLogic) UpdateHouse(req *types.UpdateHouseReq) (resp *types.U
 					Code:    common.INVALID_REQUEST_CODE,
 					Message: common.INVALID_REQUEST_MESS,
 				},
-			}, err
+			}, nil
 		}
 
 		for _, service := range services {
@@ -238,8 +238,9 @@ func (l *UpdateHouseLogic) UpdateHouse(req *types.UpdateHouseReq) (resp *types.U
 		Area:        req.Area,
 		Price:       req.Price,
 		Status:      houseModel.Status,
-		BedNum:      sql.NullInt64{},
-		LivingNum:   sql.NullInt64{},
+		BedNum:      sql.NullInt64{Valid: true, Int64: int64(req.BedNum)},
+		LivingNum:   sql.NullInt64{Valid: true, Int64: int64(req.LivingNum)},
+		Unit:        sql.NullInt64{Valid: true, Int64: int64(req.Unit)},
 		Address:     sql.NullString{String: req.Address, Valid: true},
 		WardId:      req.WardID,
 		DistrictId:  req.DistrictID,

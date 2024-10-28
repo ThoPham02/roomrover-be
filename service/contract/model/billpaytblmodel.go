@@ -16,6 +16,7 @@ type (
 	BillPayTblModel interface {
 		billPayTblModel
 		FindOneByTransID(ctx context.Context, appTransID string) (*BillPayTbl, error)
+		GetPayByBillID(ctx context.Context, billID int64) ([]*BillPayTbl, error)
 	}
 
 	customBillPayTblModel struct {
@@ -37,6 +38,20 @@ func (m *customBillPayTblModel) FindOneByTransID(ctx context.Context, appTransID
 	switch err {
 	case nil:
 		return &resp, nil
+	case sqlc.ErrNotFound:
+		return nil, nil
+	default:
+		return nil, err
+	}
+}
+
+func (m *customBillPayTblModel) GetPayByBillID(ctx context.Context, billID int64) ([]*BillPayTbl, error) {
+	query := fmt.Sprintf("select %s from %s where `bill_id` = ?", billPayTblRows, m.table)
+	var resp []*BillPayTbl
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, billID)
+	switch err {
+	case nil:
+		return resp, nil
 	case sqlc.ErrNotFound:
 		return nil, nil
 	default:

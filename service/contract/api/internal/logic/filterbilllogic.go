@@ -68,10 +68,12 @@ func (l *FilterBillLogic) FilterBill(req *types.FilterBillReq) (resp *types.Filt
 	}
 
 	total, err = l.svcCtx.BillModel.CountByCondition(l.ctx, model.FilterCondition{
-		RenterID: renterID,
-		LessorID: lessorID,
-		Search:   req.Search,
-		Status:   req.Status,
+		RenterID:   renterID,
+		LessorID:   lessorID,
+		CreateFrom: req.CreateFrom,
+		CreateTo:   req.CreateTo,
+		Search:     req.Search,
+		Status:     req.Status,
 	})
 	if err != nil {
 		l.Logger.Error(err)
@@ -83,12 +85,14 @@ func (l *FilterBillLogic) FilterBill(req *types.FilterBillReq) (resp *types.Filt
 		}, nil
 	}
 	billModels, err = l.svcCtx.BillModel.FilterBillByCondition(l.ctx, model.FilterCondition{
-		RenterID: renterID,
-		LessorID: lessorID,
-		Search:   req.Search,
-		Status:   req.Status,
-		Limit:    req.Limit,
-		Offset:   req.Offset,
+		RenterID:   renterID,
+		LessorID:   lessorID,
+		Search:     req.Search,
+		Status:     req.Status,
+		CreateFrom: req.CreateFrom,
+		CreateTo:   req.CreateTo,
+		Limit:      req.Limit,
+		Offset:     req.Offset,
 	})
 	if err != nil {
 		l.Logger.Error(err)

@@ -29,6 +29,7 @@ func (l *GetBillDetailLogic) GetBillDetail(req *types.GetBillDetailReq) (resp *t
 
 	var userID int64
 	var details []types.BillDetail
+	var pays []types.BillPay
 
 	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
@@ -105,18 +106,55 @@ func (l *GetBillDetailLogic) GetBillDetail(req *types.GetBillDetailReq) (resp *t
 		}, nil
 	}
 	for _, v := range billDetails {
-		details = append(
-			details,
-			types.BillDetail{
-				BillDetailID: v.Id,
-				BillID:       v.BillId.Int64,
-				Name:         v.Name.String,
-				Price:        v.Price.Int64,
-				Type:         v.Type.Int64,
-				Quantity:     v.Quantity.Int64,
-			},
-		)
+		details = append(details, types.BillDetail{
+			BillDetailID: v.Id,
+			BillID:       v.BillId.Int64,
+			Name:         v.Name.String,
+			Price:        v.Price.Int64,
+			Type:         v.Type.Int64,
+			Quantity:     v.Quantity.Int64,
+		})
 	}
+
+	billPays, err := l.svcCtx.BillPayModel.GetPayByBillID(l.ctx, billModel.Id)
+	if err != nil {
+		l.Logger.Error(err)
+		return &types.GetBillDetailRes{
+			Result: types.Result{
+				Code:    common.UNKNOWN_ERR_CODE,
+				Message: common.UNKNOWN_ERR_MESS,
+			},
+		}, nil
+	}
+
+	for _, v := range billPays {
+		if v.Status == common.BILL_PAY_STATUS_PROCESS && v.PayDate < common.GetCurrentTime()-15*60*1000 {
+			err = l.svcCtx.BillPayModel.Delete(l.ctx, v.Id)
+			if err != nil {
+				l.Logger.Error(err)
+				return &types.GetBillDetailRes{
+					Result: types.Result{
+						Code:    common.UNKNOWN_ERR_CODE,
+						Message: common.UNKNOWN_ERR_MESS,
+					},
+				}, nil
+			}
+			continue
+		}
+
+		pays = append(pays, types.BillPay{
+			BillPayID: v.Id,
+			UserID:    userID,
+			BillID:    v.BillId,
+			Amount:    v.Amount,
+			PayDate:   v.PayDate,
+			Status:    v.Status,
+			Type:      v.Type,
+			Url:       v.Url.String,
+			TransId:   v.TransId.String,
+		})
+	}
+
 	l.Logger.Info("GetBillDetail Success: ", userID)
 	return &types.GetBillDetailRes{
 		Result: types.Result{
@@ -139,6 +177,7 @@ func (l *GetBillDetailLogic) GetBillDetail(req *types.GetBillDetailReq) (resp *t
 			Remain:       billModel.Remain,
 			Status:       billModel.Status,
 			BillDetails:  details,
+			BillPays:     pays,
 		},
 	}, nil
 }

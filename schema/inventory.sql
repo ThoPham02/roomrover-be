@@ -9,6 +9,7 @@ CREATE TABLE `house_tbl` (
   `status` int NOT NULL,
   `bed_num` int,
   `living_num` int,
+  `unit` int,
   `address` varchar(255),
   `ward_id` int NOT NULL,
   `district_id` int NOT NULL,
@@ -46,3 +47,13 @@ CREATE TABLE `service_tbl` (
   `unit` int,
   PRIMARY KEY (`id`)
 );
+
+CREATE TABLE `contact_tbl` (
+  `id` bigint,
+  `house_id` bigint,
+  `renter_id` bigint,
+  `lessor_id` bigint,
+  `datetime` bigint,
+  `status` int NOT NULL,
+  PRIMARY KEY (`id`)
+)

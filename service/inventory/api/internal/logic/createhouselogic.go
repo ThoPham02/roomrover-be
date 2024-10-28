@@ -37,6 +37,12 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 	var albums []string
 	var services []types.Service
 	var rooms []types.Room
+	var houseStatus int64 = common.HOUSE_STATUS_DRAFT
+	var roomStatus int64 = common.ROOM_STATUS_INACTIVE
+	if req.Option == 1 {
+		houseStatus = common.HOUSE_STATUS_ACTIVE
+		roomStatus = common.ROOM_STATUS_ACTIVE
+	}
 
 	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
@@ -46,7 +52,7 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 				Code:    common.UNKNOWN_ERR_CODE,
 				Message: common.UNKNOWN_ERR_MESS,
 			},
-		}, err
+		}, nil
 	}
 
 	if len(req.Albums) > 0 {
@@ -58,7 +64,7 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 					Code:    common.INVALID_REQUEST_CODE,
 					Message: common.INVALID_REQUEST_MESS,
 				},
-			}, err
+			}, nil
 		}
 	}
 
@@ -71,7 +77,7 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 					Code:    common.INVALID_REQUEST_CODE,
 					Message: common.INVALID_REQUEST_MESS,
 				},
-			}, err
+			}, nil
 		}
 	}
 
@@ -84,7 +90,7 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 					Code:    common.INVALID_REQUEST_CODE,
 					Message: common.INVALID_REQUEST_MESS,
 				},
-			}, err
+			}, nil
 		}
 	}
 
@@ -96,9 +102,10 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 		Type:        req.Type,
 		Area:        req.Area,
 		Price:       req.Price,
-		Status:      common.HOUSE_STATUS_DRAFT,
+		Status:      houseStatus,
 		BedNum:      sql.NullInt64{Valid: true, Int64: int64(req.BedNum)},
 		LivingNum:   sql.NullInt64{Valid: true, Int64: int64(req.LivingNum)},
+		Unit:        sql.NullInt64{Valid: true, Int64: int64(req.Unit)},
 		Address:     sql.NullString{Valid: true, String: req.Address},
 		WardId:      req.WardID,
 		DistrictId:  req.DistrictID,
@@ -115,7 +122,7 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 				Code:    common.DB_ERR_CODE,
 				Message: common.DB_ERR_MESS,
 			},
-		}, err
+		}, nil
 	}
 	for _, album := range albums {
 		_, err = l.svcCtx.AlbumModel.Insert(l.ctx, &model.AlbumTbl{
@@ -130,7 +137,7 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 					Code:    common.DB_ERR_CODE,
 					Message: common.DB_ERR_MESS,
 				},
-			}, err
+			}, nil
 		}
 	}
 	for _, room := range rooms {
@@ -138,7 +145,7 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 			Id:       l.svcCtx.ObjSync.GenServiceObjID(),
 			HouseId:  sql.NullInt64{Valid: true, Int64: houseID},
 			Name:     sql.NullString{Valid: true, String: room.Name},
-			Status:   common.ROOM_STATUS_INACTIVE,
+			Status:   roomStatus,
 			Capacity: sql.NullInt64{Valid: true, Int64: room.Capacity},
 			EIndex:   sql.NullInt64{Valid: true, Int64: 0},
 			WIndex:   sql.NullInt64{Valid: true, Int64: 0},
@@ -150,7 +157,7 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 					Code:    common.DB_ERR_CODE,
 					Message: common.DB_ERR_MESS,
 				},
-			}, err
+			}, nil
 		}
 	}
 	for _, service := range services {
@@ -168,14 +175,14 @@ func (l *CreateHouseLogic) CreateHouse(req *types.CreateHouseReq) (resp *types.C
 					Code:    common.DB_ERR_CODE,
 					Message: common.DB_ERR_MESS,
 				},
-			}, err
+			}, nil
 		}
 	}
 
 	l.Logger.Info("CreateHouse Success: ", userID)
 	return &types.CreateHouseRes{
 		Result: types.Result{
-			Code: common.SUCCESS_CODE,
+			Code:    common.SUCCESS_CODE,
 			Message: common.SUCCESS_MESS,
 		},
 	}, nil

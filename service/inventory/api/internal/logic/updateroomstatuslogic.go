@@ -41,7 +41,7 @@ func (l *UpdateRoomStatusLogic) UpdateRoomStatus(req *types.UpdateRoomStatusReq)
 				Code:    common.UNKNOWN_ERR_CODE,
 				Message: common.UNKNOWN_ERR_MESS,
 			},
-		}, err
+		}, nil
 	}
 
 	roomModel, err = l.svcCtx.RoomModel.FindOne(l.ctx, req.RoomID)
@@ -60,7 +60,7 @@ func (l *UpdateRoomStatusLogic) UpdateRoomStatus(req *types.UpdateRoomStatusReq)
 				Code:    common.DB_ERR_CODE,
 				Message: common.DB_ERR_MESS,
 			},
-		}, err
+		}, nil
 	}
 
 	if roomModel.Status == req.Status {
@@ -81,7 +81,7 @@ func (l *UpdateRoomStatusLogic) UpdateRoomStatus(req *types.UpdateRoomStatusReq)
 				Code:    common.DB_ERR_CODE,
 				Message: common.DB_ERR_MESS,
 			},
-		}, err
+		}, nil
 	}
 	houseModel, err := l.svcCtx.HouseModel.FindOne(l.ctx, roomModel.HouseId.Int64)
 	if err != nil || houseModel == nil {
@@ -91,7 +91,7 @@ func (l *UpdateRoomStatusLogic) UpdateRoomStatus(req *types.UpdateRoomStatusReq)
 				Code:    common.DB_ERR_CODE,
 				Message: common.DB_ERR_MESS,
 			},
-		}, err
+		}, nil
 	}
 
 	if houseModel.Status != common.HOUSE_STATUS_INACTIVE {
@@ -103,7 +103,7 @@ func (l *UpdateRoomStatusLogic) UpdateRoomStatus(req *types.UpdateRoomStatusReq)
 					Code:    common.DB_ERR_CODE,
 					Message: common.DB_ERR_MESS,
 				},
-			}, err
+			}, nil
 		}
 
 		for _, room := range roomModels {
@@ -131,7 +131,7 @@ func (l *UpdateRoomStatusLogic) UpdateRoomStatus(req *types.UpdateRoomStatusReq)
 					Code:    common.DB_ERR_CODE,
 					Message: common.DB_ERR_MESS,
 				},
-			}, err
+			}, nil
 		}
 	}
 

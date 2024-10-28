@@ -103,6 +103,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: ZaloPaymentCallbackHandler(serverCtx),
 			},
 		},
-		rest.WithPrefix("/bill"),
+		rest.WithPrefix("/api/bill"),
 	)
 }
