@@ -156,11 +156,17 @@ type DeleteContactRes struct {
 }
 
 type FilterContactReq struct {
+	From   int64 `form:"from,optional"`
+	To     int64 `form:"to,optional"`
+	Status int64 `form:"status,optional"`
+	Limit  int64 `form:"limit"`
+	Offset int64 `form:"offset"`
 }
 
 type FilterContactRes struct {
 	Result   Result    `json:"result"`
 	Contacts []Contact `json:"contacts"`
+	Total    int       `json:"total"`
 }
 
 type UpdateContactStatusReq struct {

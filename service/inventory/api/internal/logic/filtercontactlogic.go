@@ -53,12 +53,23 @@ func (l *FilterContactLogic) FilterContact(req *types.FilterContactReq) (resp *t
 	}
 
 	if userModel.Role.Int64 == common.USER_ROLE_LESSOR {
-		renterID = userID
-	} else if userModel.Role.Int64 == common.USER_ROLE_RENTER {
 		lessorID = userID
+	} else if userModel.Role.Int64 == common.USER_ROLE_RENTER {
+		renterID = userID
 	}
 
-	contactModels, err := l.svcCtx.ContactModel.FindMultiByUser(l.ctx, renterID, lessorID)
+	total, err := l.svcCtx.ContactModel.CountByUser(l.ctx, renterID, lessorID, req.From, req.To, req.Status)
+	if err != nil {
+		l.Logger.Error(err)
+		return &types.FilterContactRes{
+			Result: types.Result{
+				Code:    common.DB_ERR_CODE,
+				Message: common.DB_ERR_MESS,
+			},
+		}, nil
+	}
+
+	contactModels, err := l.svcCtx.ContactModel.FindMultiByUser(l.ctx, renterID, lessorID, req.From, req.To, req.Status, req.Limit, req.Offset)
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.FilterContactRes{
@@ -103,7 +114,7 @@ func (l *FilterContactLogic) FilterContact(req *types.FilterContactReq) (resp *t
 		}
 
 		contacts = append(contacts, types.Contact{
-			ID:          userID,
+			ID:          contact.Id,
 			HouseID:     contact.HouseId.Int64,
 			HouseName:   houseModel.Name.String,
 			RenterID:    contact.RenterId.Int64,
@@ -124,5 +135,6 @@ func (l *FilterContactLogic) FilterContact(req *types.FilterContactReq) (resp *t
 			Message: common.SUCCESS_MESS,
 		},
 		Contacts: contacts,
+		Total:    total,
 	}, nil
 }

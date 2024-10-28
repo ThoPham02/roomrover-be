@@ -43,7 +43,7 @@ func (l *UpdateContactStatusLogic) UpdateContactStatus(req *types.UpdateContactS
 	}
 
 	contactModel, err = l.svcCtx.ContactModel.FindOne(l.ctx, req.ID)
-	if err != nil {
+	if err != nil || contactModel == nil {
 		l.Logger.Error(err)
 		return &types.UpdateContactStatusRes{
 			Result: types.Result{
@@ -53,7 +53,7 @@ func (l *UpdateContactStatusLogic) UpdateContactStatus(req *types.UpdateContactS
 		}, nil
 	}
 
-	contactModel.Status = common.CONTACT_STATUS_TYPE_CONFIRM
+	contactModel.Status = req.Status
 	err = l.svcCtx.ContactModel.Update(l.ctx, contactModel)
 	if err != nil {
 		l.Logger.Error(err)

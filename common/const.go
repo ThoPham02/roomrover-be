@@ -35,6 +35,7 @@ const (
 const (
 	CONTACT_STATUS_TYPE_WATTING = 1 // Cho xac nhan
 	CONTACT_STATUS_TYPE_CONFIRM = 2 // Dong y
+	CONTACT_STATUS_TYPE_CANCEL  = 4 // Huy
 )
 
 // Contract Service
