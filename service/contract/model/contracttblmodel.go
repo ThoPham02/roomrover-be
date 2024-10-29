@@ -113,11 +113,12 @@ func (m *customContractTblModel) FindContractByCondition(ctx context.Context, le
 		query += " and `created_at` <= ?"
 		args = append(args, createTo)
 	}
+	query = fmt.Sprintf("select %s from %s where 1=1 %s", contractTblRows, m.table, query)
+	query += " order by `updated_at` desc"
 	if limit != 0 {
 		query += " limit ? offset ?"
 		args = append(args, limit, offset)
 	}
-	query = fmt.Sprintf("select %s from %s where 1=1 %s", contractTblRows, m.table, query)
 	var resp []*ContractTbl
 	err := m.conn.QueryRowsCtx(ctx, &resp, query, args...)
 	switch err {
