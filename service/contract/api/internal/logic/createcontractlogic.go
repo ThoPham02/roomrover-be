@@ -158,7 +158,7 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 			},
 		}, nil
 	}
-	if renterModel == nil || lessorModel == nil || roomModel == nil {
+	if renterModel == nil || lessorModel == nil || roomModel == nil || roomModel.Status != common.ROOM_STATUS_ACTIVE {
 		return &types.CreateContractRes{
 			Result: types.Result{
 				Code:    common.INVALID_REQUEST_CODE,
@@ -210,6 +210,41 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 		}, nil
 	}
 
+	roomActive, err := l.svcCtx.InventFunction.CountRoomActiveByHouseID(roomModel.HouseId.Int64)
+	if err != nil {
+		l.Logger.Error(err)
+		return &types.CreateContractRes{
+			Result: types.Result{
+				Code:    common.DB_ERR_CODE,
+				Message: common.DB_ERR_MESS,
+			},
+		}, nil
+	}
+	if roomActive == 1 {
+		houseModel, err := l.svcCtx.InventFunction.GetHouseByID(roomModel.HouseId.Int64)
+		if err != nil {
+			l.Logger.Error(err)
+			return &types.CreateContractRes{
+				Result: types.Result{
+					Code:    common.DB_ERR_CODE,
+					Message: common.DB_ERR_MESS,
+				},
+			}, nil
+		}
+		houseModel.Status = common.HOUSE_STATUS_SOLD_OUT
+		houseModel.UpdatedAt = sql.NullInt64{Int64: currentTime, Valid: true}
+		err = l.svcCtx.InventFunction.UpdateHouse(houseModel)
+		if err != nil {
+			l.Logger.Error(err)
+			return &types.CreateContractRes{
+				Result: types.Result{
+					Code:    common.DB_ERR_CODE,
+					Message: common.DB_ERR_MESS,
+				},
+			}, nil
+		}
+	}
+
 	keyContractCode := "CONTRACT|" + strconv.FormatInt(userID, 10) + "|" + codeTime + "|"
 	count, err := l.svcCtx.ContractRedis.IncreaseContractCode(l.ctx, keyContractCode, 24*time.Hour)
 	if err != nil {
@@ -228,19 +263,20 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 		Code:          sql.NullString{Valid: true, String: contractCode},
 		Status:        sql.NullInt64{Valid: true, Int64: common.CONTRACT_STATUS_DRAF},
 		RenterId:      sql.NullInt64{Valid: true, Int64: renterModel.Id},
-		RenterNumber:  sql.NullString{Valid: true, String: renterModel.CCCDNumber.String},
-		RenterDate:    sql.NullInt64{Valid: true, Int64: renterModel.CCCDDate.Int64},
-		RenterAddress: sql.NullString{Valid: true, String: renterModel.Address.String},
-		RenterName:    sql.NullString{Valid: true, String: renterModel.FullName.String},
+		RenterNumber:  sql.NullString{Valid: true, String: renter.CccdNumber},
+		RenterDate:    sql.NullInt64{Valid: true, Int64: renter.CccdDate},
+		RenterAddress: sql.NullString{Valid: true, String: renter.Address},
+		RenterName:    sql.NullString{Valid: true, String: renter.FullName},
 		LessorId:      sql.NullInt64{Valid: true, Int64: lessorModel.Id},
-		LessorNumber:  sql.NullString{Valid: true, String: lessorModel.CCCDNumber.String},
-		LessorDate:    sql.NullInt64{Valid: true, Int64: lessorModel.CCCDDate.Int64},
-		LessorAddress: sql.NullString{Valid: true, String: lessorModel.Address.String},
-		LessorName:    sql.NullString{Valid: true, String: lessorModel.FullName.String},
+		LessorNumber:  sql.NullString{Valid: true, String: lessor.CccdNumber},
+		LessorDate:    sql.NullInt64{Valid: true, Int64: lessor.CccdDate},
+		LessorAddress: sql.NullString{Valid: true, String: lessor.CccdAddress},
+		LessorName:    sql.NullString{Valid: true, String: lessor.FullName},
 		RoomId:        sql.NullInt64{Valid: true, Int64: roomModel.Id},
 		CheckIn:       sql.NullInt64{Valid: true, Int64: req.CheckIn},
 		Duration:      sql.NullInt64{Valid: true, Int64: req.Duration},
 		Purpose:       sql.NullString{Valid: true, String: req.Purpose},
+		ConfirmedImgs: sql.NullString{},
 		CreatedAt:     sql.NullInt64{Valid: true, Int64: currentTime},
 		UpdatedAt:     sql.NullInt64{Valid: true, Int64: currentTime},
 		CreatedBy:     sql.NullInt64{Valid: true, Int64: userID},

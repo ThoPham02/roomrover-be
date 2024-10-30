@@ -30,6 +30,7 @@ type ServiceContext struct {
 
 	AccountFunction accountFunc.AccountFunction
 	InventFunction  inventFunc.InventoryFunction
+	
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {

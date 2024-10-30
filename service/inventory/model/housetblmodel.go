@@ -151,7 +151,7 @@ func (m *customHouseTblModel) SearchHouse(ctx context.Context, search string, di
 	if err != nil {
 		return 0, nil, err
 	}
-
+	selectQuery += " order by `updated_at` desc"
 	if limit > 0 {
 		selectQuery += " limit ? offset ?"
 		vals = append(vals, limit, offset)

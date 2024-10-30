@@ -53,32 +53,13 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 			l.Logger.Error(err)
 			continue
 		}
-		paymentModel.NextBill = common.GetNextMonthDate(contractModel.CheckIn.Int64)
-		err = l.svcCtx.PaymentModel.Update(l.ctx, paymentModel)
-		if err != nil {
-			l.Logger.Error(err)
-			continue
-		}
 
-		var billModel = &model.BillTbl{
-			Id: l.svcCtx.ObjSync.GenServiceObjID(),
-			// Title:       "Hóa đơn tháng " + common.GetMonthYear(paymentModel.NextBill),
-			PaymentId:   paymentModel.Id,
-			PaymentDate: sql.NullInt64{Valid: true, Int64: currentTime + 6*86400000}, // han thanh toan sau 5 ngay
-			Amount:      paymentModel.Amount,
-			Discount:    sql.NullInt64{Valid: true, Int64: paymentModel.Discount},
-			Remain:      paymentModel.Amount - paymentModel.Discount,
-			Status:      common.BILL_STATUS_UNPAID,
-		}
-		_, err = l.svcCtx.BillModel.Insert(l.ctx, billModel)
-		if err != nil {
-			l.Logger.Error(err)
-			continue
-		}
+		var billID int64 = l.svcCtx.ObjSync.GenServiceObjID()
+		var billStatus int64 = common.BILL_STATUS_UNPAID
 		for _, paymentDetail := range paymentDetails {
 			var billDetailModel = &model.BillDetailTbl{
 				Id:       l.svcCtx.ObjSync.GenServiceObjID(),
-				BillId:   sql.NullInt64{Valid: true, Int64: billModel.Id},
+				BillId:   sql.NullInt64{Valid: true, Int64: billID},
 				Name:     paymentDetail.Name,
 				Price:    paymentDetail.Price,
 				Type:     paymentDetail.Type,
@@ -92,6 +73,7 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 			case common.PAYMENT_DETAIL_TYPE_USAGE:
 				billDetailModel.Quantity.Int64 = 0
 				billDetailModel.Status.Int64 = common.PAYMENT_DETAIL_STATUS_DRAF
+				billStatus = common.BILL_STATUS_DRAF
 			case common.PAYMENT_DETAIL_TYPE_FIXED_USER:
 				var count int64
 				count, err = l.svcCtx.PaymentRenterModel.CountRentersByPaymentID(l.ctx, paymentModel.Id)
@@ -107,6 +89,28 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 				l.Logger.Error(err)
 				continue
 			}
+		}
+		paymentModel.NextBill = common.GetNextMonthDate(contractModel.CheckIn.Int64)
+		err = l.svcCtx.PaymentModel.Update(l.ctx, paymentModel)
+		if err != nil {
+			l.Logger.Error(err)
+			continue
+		}
+
+		var billModel = &model.BillTbl{
+			Id:          billID,
+			Title:       sql.NullString{Valid: true, String: fmt.Sprintf("Hóa đơn thanh toán tháng %d", common.GetBillIndexByTime(contractModel.CheckIn.Int64, currentTime))},
+			PaymentId:   paymentModel.Id,
+			PaymentDate: sql.NullInt64{Valid: true, Int64: currentTime + 6*86400000}, // han thanh toan sau 5 ngay
+			Amount:      paymentModel.Amount,
+			Discount:    sql.NullInt64{Valid: true, Int64: paymentModel.Discount},
+			Remain:      paymentModel.Amount - paymentModel.Discount,
+			Status:      billStatus,
+		}
+		_, err = l.svcCtx.BillModel.Insert(l.ctx, billModel)
+		if err != nil {
+			l.Logger.Error(err)
+			continue
 		}
 
 		noti := &notiModel.NotificationTbl{
