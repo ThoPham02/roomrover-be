@@ -3,6 +3,7 @@ package model
 import (
 	"context"
 	"fmt"
+	"roomrover/common"
 
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
@@ -56,9 +57,9 @@ func (m *customPaymentTblModel) FilterPaymentByTime(ctx context.Context, time in
 	var start = time - 86400000/2
 	var end = time + 86400000/2
 
-	query := fmt.Sprintf("select %s from %s where `next_bill` between ? and ? ", paymentTblRows, m.table)
+	query := fmt.Sprintf("select %s from %s where `next_bill` between ? and ? and `contract_id` in (select `id` from `contract_tbl` where `status` & ?)", paymentTblRows, m.table)
 	var resp []*PaymentTbl
-	err := m.conn.QueryRowsCtx(ctx, &resp, query, start, end)
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, start, end, common.CONTRACT_STATUS_ACTIVE+common.CONTRACT_STATUS_NEARLY_OUT_DATE)
 	switch err {
 	case nil:
 		return resp, nil

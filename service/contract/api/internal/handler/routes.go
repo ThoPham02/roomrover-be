@@ -15,6 +15,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Middleware{serverCtx.UserTokenMiddleware},
 			[]rest.Route{
 				{
+					Method:  http.MethodPut,
+					Path:    "/:id/confirm",
+					Handler: ConfirmContractHandler(serverCtx),
+				},
+				{
 					Method:  http.MethodPost,
 					Path:    "/",
 					Handler: CreateContractHandler(serverCtx),

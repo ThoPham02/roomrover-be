@@ -2,6 +2,8 @@ package api
 
 import (
 	"context"
+	"database/sql"
+	"roomrover/common"
 	"roomrover/service/account/function"
 	"roomrover/service/account/model"
 
@@ -39,4 +41,25 @@ func (af *AccountFunction) GetUsersByIDs(userIDs []int64) (users []*model.UserTb
 
 func (af *AccountFunction) UpdateUser(user *model.UserTbl) error {
 	return af.AccountService.Ctx.UserModel.Update(context.Background(), user)
+}
+
+func (af *AccountFunction) FindUserByPhone(phone string) (user *model.UserTbl, err error) {
+	return af.AccountService.Ctx.UserModel.FindOneByPhone(context.Background(), phone)
+}
+
+func (af *AccountFunction) CreateInactivatedUser(userID int64, phone string, fullName, cccdNumber string, cccdDate int64, cccdAddress string) error {
+	var current = common.GetCurrentTime()
+	_, err := af.AccountService.Ctx.UserModel.Insert(context.Background(), &model.UserTbl{
+		Id:          userID,
+		Phone:       phone,
+		Role:        sql.NullInt64{Valid: true, Int64: common.USER_ROLE_RENTER},
+		Status:      common.USER_INACTIVE,
+		FullName:    sql.NullString{Valid: true, String: fullName},
+		CCCDNumber:  sql.NullString{Valid: true, String: cccdNumber},
+		CCCDDate:    sql.NullInt64{Valid: true, Int64: cccdDate},
+		CCCDAddress: sql.NullString{Valid: true, String: cccdAddress},
+		CreatedAt:   sql.NullInt64{Valid: true, Int64: current},
+		UpdatedAt:   sql.NullInt64{Valid: true, Int64: current},
+	})
+	return err
 }

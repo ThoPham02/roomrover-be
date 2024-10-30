@@ -25,11 +25,10 @@ const (
 )
 
 const (
-	ROOM_STATUS_INACTIVE        = 1  // Cho xac nhan
-	ROOM_STATUS_ACTIVE          = 2  // con cho thue
-	ROOM_STATUS_RENTED          = 4  // da cho thue
-	ROOM_STATUS_NEARLY_OUT_DATE = 8  // sap het han
-	ROOM_STATUS_TRANSFER        = 16 // chuyen nhuong
+	ROOM_STATUS_INACTIVE = 1 // Cho xac nhan
+	ROOM_STATUS_ACTIVE   = 2 // con cho thue
+	ROOM_STATUS_RENTED   = 4 // da cho thue
+	ROOM_STATUS_STOP     = 8 // tam dung
 )
 
 const (
@@ -41,11 +40,11 @@ const (
 // Contract Service
 const (
 	CONTRACT_STATUS_DRAF            = 1  // nhap
-	CONTRACT_STATUS_ACTIVE          = 2  // hoat dong
-	CONTRACT_STATUS_INACTIVE        = 4  // huy
-	CONTRACT_STATUS_NEARLY_OUT_DATE = 8  // sap het han
-	CONTRACT_STATUS_TRANSFER        = 16 // chuyen nhuong
-	CONTRACT_STATUS_OUT_DATE        = 32 // het han
+	CONTRACT_STATUS_WAIT_DEPOSIT    = 2  // cho dat coc
+	CONTRACT_STATUS_ACTIVE          = 4  // hoat dong
+	CONTRACT_STATUS_OUT_DATE        = 8  // het han
+	CONTRACT_STATUS_INACTIVE        = 16 // huy
+	CONTRACT_STATUS_NEARLY_OUT_DATE = 32 // sap het han
 )
 
 const (

@@ -179,6 +179,17 @@ type ZaloPaymentCallbackRes struct {
 	ReturnMessage string `json:"return_message"`
 }
 
+type ConfirmContractReq struct {
+	ID       int64  `path:"id"`
+	Renters  string `form:"renters"`
+	Albums   string `form:"albums"`
+	Services string `form:"services"`
+}
+
+type ConfirmContractRes struct {
+	Result Result `json:"result"`
+}
+
 type Result struct {
 	Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
 	Message string `json:"message"` // Result message: detail response code
@@ -291,11 +302,14 @@ type Contract struct {
 }
 
 type PaymentRenter struct {
-	ID        int64  `json:"id"`
-	PaymentID int64  `json:"paymentID"`
-	RenterID  int64  `json:"renterID"`
-	Name      string `json:"name"`
-	Phone     string `json:"phone"`
+	ID          int64  `json:"id"`
+	PaymentID   int64  `json:"paymentID"`
+	RenterID    int64  `json:"renterID"`
+	Name        string `json:"name"`
+	Phone       string `json:"phone"`
+	CccdNumber  string `json:"cccdNumber"`  // so can cuoc
+	CccdDate    int64  `json:"cccdDate"`    // ngay cap
+	CccdAddress string `json:"cccdAddress"` // noi cap
 }
 
 type PaymentDetail struct {
@@ -304,6 +318,7 @@ type PaymentDetail struct {
 	Name      string `json:"name"`
 	Price     int64  `json:"price"`
 	Type      int64  `json:"type"`
+	Index     int64  `json:"index"`
 }
 
 type Payment struct {

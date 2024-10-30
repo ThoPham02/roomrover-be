@@ -133,6 +133,7 @@ func (l *GetContractLogic) GetContract(req *types.GetContractReq) (resp *types.G
 			Name:      detail.Name.String,
 			Price:     detail.Price.Int64,
 			Type:      detail.Type.Int64,
+			Index:     detail.Index.Int64,
 		}
 		paymentDetails = append(paymentDetails, paymentDetail)
 	}

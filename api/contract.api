@@ -171,6 +171,16 @@ type (
 		ReturnCode    int    `json:"return_code"`
 		ReturnMessage string `json:"return_message"`
 	}
+
+	ConfirmContractReq {
+		ID       int64  `path:"id"`
+		Renters  string `form:"renters"`
+		Albums   string `form:"albums"`
+		Services string `form:"services"`
+	}
+	ConfirmContractRes {
+		Result Result `json:"result"`
+	}
 )
 
 @server (
@@ -179,6 +189,12 @@ type (
 	prefix:     /contract
 )
 service contract-api {
+	@doc(
+		summary: "Confirm contract"
+	)
+	@handler ConfirmContract
+	put /:id/confirm (ConfirmContractReq) returns (ConfirmContractRes)
+	
 	@doc (
 		summary: "Create contract"
 	)

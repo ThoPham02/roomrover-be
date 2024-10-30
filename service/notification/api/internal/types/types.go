@@ -144,11 +144,14 @@ type Contract struct {
 }
 
 type PaymentRenter struct {
-	ID        int64  `json:"id"`
-	PaymentID int64  `json:"paymentID"`
-	RenterID  int64  `json:"renterID"`
-	Name      string `json:"name"`
-	Phone     string `json:"phone"`
+	ID          int64  `json:"id"`
+	PaymentID   int64  `json:"paymentID"`
+	RenterID    int64  `json:"renterID"`
+	Name        string `json:"name"`
+	Phone       string `json:"phone"`
+	CccdNumber  string `json:"cccdNumber"`  // so can cuoc
+	CccdDate    int64  `json:"cccdDate"`    // ngay cap
+	CccdAddress string `json:"cccdAddress"` // noi cap
 }
 
 type PaymentDetail struct {
@@ -157,6 +160,7 @@ type PaymentDetail struct {
 	Name      string `json:"name"`
 	Price     int64  `json:"price"`
 	Type      int64  `json:"type"`
+	Index     int64  `json:"index"`
 }
 
 type Payment struct {

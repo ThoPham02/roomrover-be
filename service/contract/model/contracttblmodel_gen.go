@@ -52,6 +52,7 @@ type (
 		CheckIn       sql.NullInt64  `db:"check_in"`
 		Duration      sql.NullInt64  `db:"duration"`
 		Purpose       sql.NullString `db:"purpose"`
+		ConfirmedImgs sql.NullString `db:"confirmed_imgs"`
 		CreatedAt     sql.NullInt64  `db:"created_at"`
 		UpdatedAt     sql.NullInt64  `db:"updated_at"`
 		CreatedBy     sql.NullInt64  `db:"created_by"`
@@ -87,14 +88,14 @@ func (m *defaultContractTblModel) FindOne(ctx context.Context, id int64) (*Contr
 }
 
 func (m *defaultContractTblModel) Insert(ctx context.Context, data *ContractTbl) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, contractTblRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.Code, data.Status, data.RenterId, data.RenterNumber, data.RenterDate, data.RenterAddress, data.RenterName, data.LessorId, data.LessorNumber, data.LessorDate, data.LessorAddress, data.LessorName, data.RoomId, data.CheckIn, data.Duration, data.Purpose, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, contractTblRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.Code, data.Status, data.RenterId, data.RenterNumber, data.RenterDate, data.RenterAddress, data.RenterName, data.LessorId, data.LessorNumber, data.LessorDate, data.LessorAddress, data.LessorName, data.RoomId, data.CheckIn, data.Duration, data.Purpose, data.ConfirmedImgs, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy)
 	return ret, err
 }
 
 func (m *defaultContractTblModel) Update(ctx context.Context, data *ContractTbl) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, contractTblRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.Code, data.Status, data.RenterId, data.RenterNumber, data.RenterDate, data.RenterAddress, data.RenterName, data.LessorId, data.LessorNumber, data.LessorDate, data.LessorAddress, data.LessorName, data.RoomId, data.CheckIn, data.Duration, data.Purpose, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.Code, data.Status, data.RenterId, data.RenterNumber, data.RenterDate, data.RenterAddress, data.RenterName, data.LessorId, data.LessorNumber, data.LessorDate, data.LessorAddress, data.LessorName, data.RoomId, data.CheckIn, data.Duration, data.Purpose, data.ConfirmedImgs, data.CreatedAt, data.UpdatedAt, data.CreatedBy, data.UpdatedBy, data.Id)
 	return err
 }
 

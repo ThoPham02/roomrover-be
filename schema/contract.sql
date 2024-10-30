@@ -18,6 +18,7 @@ CREATE TABLE `contract_tbl` (
   `check_in` bigint,
   `duration` int,
   `purpose` varchar(255),
+  `confirmed_imgs` text,
 
   `created_at` bigint,
   `updated_at` bigint,
@@ -43,6 +44,7 @@ CREATE TABLE `payment_detail_tbl` (
   `name` varchar(255),
   `type` int,
   `price` bigint,
+  `index` int,
   PRIMARY KEY (`id`)
 );
 

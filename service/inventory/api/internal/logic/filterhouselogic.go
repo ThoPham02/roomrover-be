@@ -45,7 +45,7 @@ func (l *FilterHouseLogic) FilterHouse(req *types.FilterHouseReq) (resp *types.F
 		}, nil
 	}
 
-	total, houses, err = l.svcCtx.HouseModel.FilterHouse(l.ctx, userID, req.Search, req.Limit, req.Offset)
+	total, houses, err = l.svcCtx.HouseModel.FilterHouse(l.ctx, userID, req.Search, req.Type, req.Status, req.Limit, req.Offset)
 	if err != nil {
 		if err == model.ErrNotFound {
 			return &types.FilterHouseRes{
