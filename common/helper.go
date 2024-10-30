@@ -21,7 +21,7 @@ func GetCurrentTime() int64 {
 
 func GetNextMonthDate(start int64) int64 {
 	var currentTime = GetCurrentTime()
-	var n int = int(math.Round(float64(currentTime-start) / float64(86400000*30))) + 1
+	var n int = int(math.Round(float64(currentTime-start)/float64(86400000*30))) + 1
 
 	t := time.UnixMilli(start)
 	year, month, day := t.Date()

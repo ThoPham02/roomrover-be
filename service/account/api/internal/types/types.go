@@ -165,6 +165,10 @@ type Contact struct {
 	ID          int64  `json:"id"`
 	HouseID     int64  `json:"houseID"`
 	HouseName   string `json:"houseName"`
+	ProvinceID  int64  `json:"provinceID"`
+	DistrictID  int64  `json:"districtID"`
+	WardID      int64  `json:"wardID"`
+	Address     string `json:"address"`
 	RenterID    int64  `json:"renterID"`
 	RenterName  string `json:"renterName"`
 	RenterPhone string `json:"renterPhone"`
