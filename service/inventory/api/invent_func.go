@@ -61,7 +61,7 @@ func (sc *InventoryFunction) CountRoomActiveByHouseID(houseID int64) (count int6
 	return sc.InventService.Ctx.RoomModel.CountRoomActiveByHouseID(context.Background(), houseID)
 }
 
-func (sc *InventoryFunction) GetHousesByID(houseID int64) (house *model.HouseTbl, err error) {
+func (sc *InventoryFunction) GetHouseByID(houseID int64) (house *model.HouseTbl, err error) {
 	return sc.InventService.Ctx.HouseModel.FindOne(context.Background(), houseID)
 }
 
