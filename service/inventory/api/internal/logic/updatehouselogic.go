@@ -50,6 +50,13 @@ func (l *UpdateHouseLogic) UpdateHouse(req *types.UpdateHouseReq) (resp *types.U
 	var updateServiceModels []*model.ServiceTbl
 	var createServiceModels []*model.ServiceTbl
 
+	var houseStatus int64 = common.HOUSE_STATUS_DRAFT
+	var roomStatus int64 = common.ROOM_STATUS_INACTIVE
+	if req.Option == 1 {
+		houseStatus = common.HOUSE_STATUS_ACTIVE
+		roomStatus = common.ROOM_STATUS_ACTIVE
+	}
+
 	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
 		l.Logger.Error(err)
@@ -102,6 +109,7 @@ func (l *UpdateHouseLogic) UpdateHouse(req *types.UpdateHouseReq) (resp *types.U
 
 				roomModel.Capacity = sql.NullInt64{Int64: room.Capacity, Valid: true}
 				roomModel.Name = sql.NullString{String: room.Name, Valid: true}
+				roomModel.Status = roomStatus
 
 				updateRoomModels = append(updateRoomModels, roomModel)
 			} else {
@@ -109,7 +117,7 @@ func (l *UpdateHouseLogic) UpdateHouse(req *types.UpdateHouseReq) (resp *types.U
 					Id:       l.svcCtx.ObjSync.GenServiceObjID(),
 					HouseId:  sql.NullInt64{Int64: req.HouseID, Valid: true},
 					Name:     sql.NullString{Valid: true, String: room.Name},
-					Status:   common.ROOM_STATUS_ACTIVE,
+					Status:   roomStatus,
 					Capacity: sql.NullInt64{Valid: true, Int64: room.Capacity},
 					EIndex:   sql.NullInt64{Valid: true, Int64: 0},
 					WIndex:   sql.NullInt64{Valid: true, Int64: 0},
@@ -237,7 +245,7 @@ func (l *UpdateHouseLogic) UpdateHouse(req *types.UpdateHouseReq) (resp *types.U
 		Type:        req.Type,
 		Area:        req.Area,
 		Price:       req.Price,
-		Status:      houseModel.Status,
+		Status:      houseStatus,
 		BedNum:      sql.NullInt64{Valid: true, Int64: int64(req.BedNum)},
 		LivingNum:   sql.NullInt64{Valid: true, Int64: int64(req.LivingNum)},
 		Unit:        sql.NullInt64{Valid: true, Int64: int64(req.Unit)},
