@@ -107,6 +107,16 @@ func (l *ConfirmContractLogic) ConfirmContract(req *types.ConfirmContractReq) (r
 			}, nil
 		}
 
+		err = l.svcCtx.PaymentRenterModel.DeleteByPaymentID(l.ctx, paymentID)
+		if err != nil {
+			l.Logger.Error(err)
+			return &types.ConfirmContractRes{
+				Result: types.Result{
+					Code:    common.DB_ERR_CODE,
+					Message: common.DB_ERR_MESS,
+				},
+			}, nil
+		}
 		for _, renter := range renters {
 			var userID int64
 			userModel, err := l.svcCtx.AccountFunction.FindUserByPhone(renter.Phone)

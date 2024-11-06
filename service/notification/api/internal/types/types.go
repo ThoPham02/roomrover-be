@@ -131,20 +131,21 @@ type Contact struct {
 }
 
 type Contract struct {
-	ContractID int64   `json:"contractID"`
-	Code       string  `json:"code"`
-	Status     int64   `json:"status"`
-	Renter     User    `json:"renter"`
-	Lessor     User    `json:"lessor"`
-	Room       Room    `json:"room"`
-	CheckIn    int64   `json:"checkIn"`
-	Duration   int64   `json:"duration"`
-	Purpose    string  `json:"purpose"`
-	Payment    Payment `json:"payment"`
-	CreatedAt  int64   `json:"createdAt"`
-	UpdatedAt  int64   `json:"updatedAt"`
-	CreatedBy  int64   `json:"createdBy"`
-	UpdatedBy  int64   `json:"updatedBy"`
+	ContractID    int64    `json:"contractID"`
+	Code          string   `json:"code"`
+	Status        int64    `json:"status"`
+	Renter        User     `json:"renter"`
+	Lessor        User     `json:"lessor"`
+	Room          Room     `json:"room"`
+	CheckIn       int64    `json:"checkIn"`
+	Duration      int64    `json:"duration"`
+	Purpose       string   `json:"purpose"`
+	Payment       Payment  `json:"payment"`
+	ConfirmedImgs []string `json:"confirmedImgs"`
+	CreatedAt     int64    `json:"createdAt"`
+	UpdatedAt     int64    `json:"updatedAt"`
+	CreatedBy     int64    `json:"createdBy"`
+	UpdatedBy     int64    `json:"updatedBy"`
 }
 
 type PaymentRenter struct {

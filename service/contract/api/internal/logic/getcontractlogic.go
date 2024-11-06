@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 
 	"roomrover/common"
 	accountModel "roomrover/service/account/model"
@@ -43,6 +44,7 @@ func (l *GetContractLogic) GetContract(req *types.GetContractReq) (resp *types.G
 	var paymentModel *model.PaymentTbl
 	var paymentDetailModels []*model.PaymentDetailTbl
 	var paymentRentersModels []*model.PaymentRenterTbl
+	var confirmedImgs []string
 
 	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
@@ -161,12 +163,28 @@ func (l *GetContractLogic) GetContract(req *types.GetContractReq) (resp *types.G
 		}
 
 		paymentRenters = append(paymentRenters, types.PaymentRenter{
-			ID:        renter.Id,
-			PaymentID: renter.PaymentId.Int64,
-			RenterID:  userModel.Id,
-			Name:      userModel.FullName.String,
-			Phone:     userModel.Phone,
+			ID:          renter.Id,
+			PaymentID:   renter.PaymentId.Int64,
+			RenterID:    userModel.Id,
+			Name:        userModel.FullName.String,
+			Phone:       userModel.Phone,
+			CccdNumber:  userModel.CCCDNumber.String,
+			CccdDate:    userModel.CCCDDate.Int64,
+			CccdAddress: userModel.CCCDAddress.String,
 		})
+	}
+
+	if len(contractModel.ConfirmedImgs.String) > 0 {
+		err = json.Unmarshal([]byte(contractModel.ConfirmedImgs.String), &confirmedImgs)
+		if err != nil {
+			l.Logger.Error(err)
+			return &types.GetContractRes{
+				Result: types.Result{
+					Code:    common.INVALID_REQUEST_CODE,
+					Message: common.INVALID_REQUEST_MESS,
+				},
+			}, nil
+		}
 	}
 
 	contract = types.Contract{
@@ -217,6 +235,7 @@ func (l *GetContractLogic) GetContract(req *types.GetContractReq) (resp *types.G
 			Type:       houseRoomModel.Type.Int64,
 			EIndex:     houseRoomModel.EIndex.Int64,
 			WIndex:     houseRoomModel.WIndex.Int64,
+			Capacity:   houseRoomModel.Capacity.Int64,
 		},
 		CheckIn:  contractModel.CheckIn.Int64,
 		Duration: contractModel.Duration.Int64,
@@ -232,10 +251,11 @@ func (l *GetContractLogic) GetContract(req *types.GetContractReq) (resp *types.G
 			PaymentRenters: paymentRenters,
 			PaymentDetails: paymentDetails,
 		},
-		CreatedAt: contractModel.CreatedAt.Int64,
-		UpdatedAt: contractModel.UpdatedAt.Int64,
-		CreatedBy: contractModel.CreatedBy.Int64,
-		UpdatedBy: contractModel.UpdatedBy.Int64,
+		ConfirmedImgs: confirmedImgs,
+		CreatedAt:     contractModel.CreatedAt.Int64,
+		UpdatedAt:     contractModel.UpdatedAt.Int64,
+		CreatedBy:     contractModel.CreatedBy.Int64,
+		UpdatedBy:     contractModel.UpdatedBy.Int64,
 	}
 
 	l.Logger.Info("GetContract Success: ", userID)

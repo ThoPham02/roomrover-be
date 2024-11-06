@@ -20,7 +20,7 @@ type (
 type (
 	CreateHouseReq {
 		Name        string `form:"name"`
-		Description string `form:"description"`
+		Description string `form:"description,optional"`
 		Type        int64  `form:"type"`
 		Area        int64  `form:"area"`
 		Price       int64  `form:"price"`
