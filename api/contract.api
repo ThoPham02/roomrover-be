@@ -174,9 +174,9 @@ type (
 
 	ConfirmContractReq {
 		ID       int64  `path:"id"`
-		Renters  string `form:"renters"`
-		Albums   string `form:"albums"`
-		Services string `form:"services"`
+		Renters  string `form:"renters,optional"`
+		Albums   string `form:"albums,optional"`
+		Services string `form:"services,optional"`
 	}
 	ConfirmContractRes {
 		Result Result `json:"result"`
