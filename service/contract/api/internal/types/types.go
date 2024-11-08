@@ -181,9 +181,9 @@ type ZaloPaymentCallbackRes struct {
 
 type ConfirmContractReq struct {
 	ID       int64  `path:"id"`
-	Renters  string `form:"renters"`
-	Albums   string `form:"albums"`
-	Services string `form:"services"`
+	Renters  string `form:"renters,optional"`
+	Albums   string `form:"albums,optional"`
+	Services string `form:"services,optional"`
 }
 
 type ConfirmContractRes struct {

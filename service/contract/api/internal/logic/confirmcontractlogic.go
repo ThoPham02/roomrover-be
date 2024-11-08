@@ -96,6 +96,7 @@ func (l *ConfirmContractLogic) ConfirmContract(req *types.ConfirmContractReq) (r
 	}
 	if req.Renters != "" {
 		var renters []types.PaymentRenter
+		var updateRenters []*model.PaymentRenterTbl
 		err = json.Unmarshal([]byte(req.Renters), &renters)
 		if err != nil {
 			l.Logger.Error(err)
@@ -107,16 +108,6 @@ func (l *ConfirmContractLogic) ConfirmContract(req *types.ConfirmContractReq) (r
 			}, nil
 		}
 
-		err = l.svcCtx.PaymentRenterModel.DeleteByPaymentID(l.ctx, paymentID)
-		if err != nil {
-			l.Logger.Error(err)
-			return &types.ConfirmContractRes{
-				Result: types.Result{
-					Code:    common.DB_ERR_CODE,
-					Message: common.DB_ERR_MESS,
-				},
-			}, nil
-		}
 		for _, renter := range renters {
 			var userID int64
 			userModel, err := l.svcCtx.AccountFunction.FindUserByPhone(renter.Phone)
@@ -160,11 +151,53 @@ func (l *ConfirmContractLogic) ConfirmContract(req *types.ConfirmContractReq) (r
 				}
 			}
 
-			_, err = l.svcCtx.PaymentRenterModel.Insert(l.ctx, &model.PaymentRenterTbl{
-				Id:        l.svcCtx.ObjSync.GenServiceObjID(),
-				PaymentId: sql.NullInt64{Valid: true, Int64: paymentID},
-				UserId:    sql.NullInt64{Valid: true, Int64: userID},
-			})
+			if renter.ID < common.MIN_ID {
+				updateRenters = append(updateRenters, &model.PaymentRenterTbl{
+					Id:        l.svcCtx.ObjSync.GenServiceObjID(),
+					PaymentId: sql.NullInt64{Valid: true, Int64: paymentID},
+					UserId:    sql.NullInt64{Valid: true, Int64: userID},
+				})
+			} else {
+				renterModel, err := l.svcCtx.PaymentRenterModel.FindOne(l.ctx, renter.ID)
+				if err != nil || renterModel == nil {
+					l.Logger.Error(err)
+					return &types.ConfirmContractRes{
+						Result: types.Result{
+							Code:    common.DB_ERR_CODE,
+							Message: common.DB_ERR_MESS,
+						},
+					}, nil
+				}
+
+				renterModel.UserId = sql.NullInt64{Valid: true, Int64: userID}
+				err = l.svcCtx.PaymentRenterModel.Update(l.ctx, renterModel)
+				if err != nil {
+					l.Logger.Error(err)
+					return &types.ConfirmContractRes{
+						Result: types.Result{
+							Code:    common.DB_ERR_CODE,
+							Message: common.DB_ERR_MESS,
+						},
+					}, nil
+				}
+
+				updateRenters = append(updateRenters, renterModel)
+				continue
+			}
+		}
+
+		err = l.svcCtx.PaymentRenterModel.DeleteByPaymentID(l.ctx, paymentID)
+		if err != nil {
+			l.Logger.Error(err)
+			return &types.ConfirmContractRes{
+				Result: types.Result{
+					Code:    common.DB_ERR_CODE,
+					Message: common.DB_ERR_MESS,
+				},
+			}, nil
+		}
+		for _, renter := range updateRenters {
+			_, err = l.svcCtx.PaymentRenterModel.Insert(l.ctx, renter)
 			if err != nil {
 				l.Logger.Error(err)
 				return &types.ConfirmContractRes{
