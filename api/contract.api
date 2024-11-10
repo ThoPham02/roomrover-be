@@ -28,26 +28,15 @@ type (
 
 	UpdateContractReq {
 		ID            int64  `path:"id"`
-		Status        int64  `form:"status"`
-		RenterID      int64  `form:"renterID"`
-		RenterNumber  string `form:"renterNumber"`
-		RenterDate    string `form:"renterDate"`
-		RenterName    string `form:"renterName"`
-		RenterAddress string `form:"renterAddress"`
-		LessorID      int64  `form:"lessorID"`
-		LessorNumber  string `form:"lessorNumber"`
-		LessorDate    string `form:"lessorDate"`
-		LessorName    string `form:"lessorName"`
-		LessorAddress string `form:"lessorAddress"`
-		PaymentRenter string `form:"paymentRenter"`
-		RoomID        int64  `form:"roomID"`
-		EIndex        int64  `form:"eIndex"`
-		WIndex        int64  `form:"wIndex"`
+		Renter        string `form:"renter"`
+		Lessor        string `form:"lessor"`
+		PaymentRenter string `form:"paymentRenter,optional"`
+		Room          string `form:"room"`
 		CheckIn       int64  `form:"checkIn"`
 		Duration      int64  `form:"duration"`
 		Purpose       string `form:"purpose"`
-		Amount        int64  `form:"amount"`
-		Discount      int64  `form:"discount"`
+		Price         int64  `form:"price"`
+		Discount      int64  `form:"discount,optional"`
 		Deposit       int64  `form:"deposit"`
 		DepositDate   int64  `form:"depositDate"`
 	}
