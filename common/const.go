@@ -86,7 +86,7 @@ const (
 	NOTI_TYPE_READ   = 2
 )
 
-const MIN_ID = 1000000000
+const MIN_ID = 10000000000000
 
 const (
 	BILL_PAY_TYPE_MONEY    = 1

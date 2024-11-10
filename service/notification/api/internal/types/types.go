@@ -205,6 +205,9 @@ type BillDetail struct {
 	Name         string `json:"name"`
 	Price        int64  `json:"price"`
 	Type         int64  `json:"type"`
+	OldIndex     int64  `json:"oldIndex"`
+	NewIndex     int64  `json:"newIndex"`
+	Imgurl       string `json:"imgUrl"`
 	Quantity     int64  `json:"quantity"`
 }
 

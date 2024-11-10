@@ -58,21 +58,30 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 		var billStatus int64 = common.BILL_STATUS_UNPAID
 		for _, paymentDetail := range paymentDetails {
 			var billDetailModel = &model.BillDetailTbl{
-				Id:       l.svcCtx.ObjSync.GenServiceObjID(),
-				BillId:   sql.NullInt64{Valid: true, Int64: billID},
-				Name:     paymentDetail.Name,
-				Price:    paymentDetail.Price,
-				Type:     paymentDetail.Type,
-				Quantity: sql.NullInt64{Valid: true, Int64: 0},
-				Status:   sql.NullInt64{Valid: true, Int64: common.PAYMENT_DETAIL_STATUS_DONE},
+				Id:              l.svcCtx.ObjSync.GenServiceObjID(),
+				BillId:          sql.NullInt64{Valid: true, Int64: billID},
+				PaymentDetailId: sql.NullInt64{Valid: true, Int64: paymentDetail.Id},
+				Name:            paymentDetail.Name,
+				Price:           paymentDetail.Price,
+				Type:            paymentDetail.Type,
+				OldIndex:        sql.NullInt64{Valid: true, Int64: 0},
+				NewIndex:        sql.NullInt64{Valid: true, Int64: 0},
+				ImgUrl:          sql.NullString{Valid: true, String: ""},
+				Quantity:        sql.NullInt64{Valid: true, Int64: 0},
 			}
 
 			switch paymentDetail.Type.Int64 {
 			case common.PAYMENT_DETAIL_TYPE_FIXED:
 				billDetailModel.Quantity.Int64 = 1
 			case common.PAYMENT_DETAIL_TYPE_USAGE:
+				total, err := l.svcCtx.BillDetailModel.CountQuantityByBillAndDetailID(l.ctx, billDetailModel.BillId.Int64, billDetailModel.PaymentDetailId.Int64)
+				if err != nil {
+					l.Logger.Error(err)
+					continue
+				}
+
 				billDetailModel.Quantity.Int64 = 0
-				billDetailModel.Status.Int64 = common.PAYMENT_DETAIL_STATUS_DRAF
+				billDetailModel.OldIndex = sql.NullInt64{Valid: true, Int64: total + paymentDetail.Index.Int64}
 				billStatus = common.BILL_STATUS_DRAF
 			case common.PAYMENT_DETAIL_TYPE_FIXED_USER:
 				var count int64

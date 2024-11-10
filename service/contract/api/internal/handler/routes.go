@@ -15,6 +15,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Middleware{serverCtx.UserTokenMiddleware},
 			[]rest.Route{
 				{
+					Method:  http.MethodGet,
+					Path:    "/bill-detail/:billID",
+					Handler: GetListBillDetailReqHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPut,
+					Path:    "/bill-detail/:billID",
+					Handler: UpdateBillDetailsHandler(serverCtx),
+				},
+				{
 					Method:  http.MethodPut,
 					Path:    "/:id/confirm",
 					Handler: ConfirmContractHandler(serverCtx),

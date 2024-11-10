@@ -150,7 +150,8 @@ func (l *UpdateContractLogic) UpdateContract(req *types.UpdateContractReq) (resp
 			},
 		}, nil
 	}
-	if renterModel == nil || lessorModel == nil || roomModel == nil || roomModel.Status != common.ROOM_STATUS_ACTIVE {
+	if renterModel == nil || lessorModel == nil || roomModel == nil || (roomModel.Status != common.ROOM_STATUS_ACTIVE && room.RoomID != contractModel.RoomId.Int64) {
+		l.Logger.Error(err)
 		return &types.UpdateContractRes{
 			Result: types.Result{
 				Code:    common.INVALID_REQUEST_CODE,

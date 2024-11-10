@@ -170,6 +170,22 @@ type (
 	ConfirmContractRes {
 		Result Result `json:"result"`
 	}
+
+	GetListBillDetailReq {
+		BillID int64 `path:"billID"`
+	}
+	GetListBillDetailRes {
+		Result      Result       `json:"result"`
+		BillDetails []BillDetail `json:"billDetails"`
+	}
+
+	UpdateBillDetailsReq {
+		BillID      int64  `path:"billID"`
+		BillDetails string `form:"billDetails"`
+	}
+	UpdateBillDetailsRes {
+		Result Result `json:"result"`
+	}
 )
 
 @server (
@@ -178,6 +194,18 @@ type (
 	prefix:     /contract
 )
 service contract-api {
+	@doc(
+		summary: "Get Bill Detail"
+	)
+	@handler GetListBillDetailReq
+	get /bill-detail/:billID (GetListBillDetailReq) returns (GetListBillDetailRes)
+	
+	@doc(
+		summary: "Update Bill Details"
+	)
+	@handler UpdateBillDetails
+	put /bill-detail/:billID (UpdateBillDetailsReq) returns (UpdateBillDetailsRes)
+	
 	@doc(
 		summary: "Confirm contract"
 	)

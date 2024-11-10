@@ -179,6 +179,24 @@ type ConfirmContractRes struct {
 	Result Result `json:"result"`
 }
 
+type GetListBillDetailReq struct {
+	BillID int64 `path:"billID"`
+}
+
+type GetListBillDetailRes struct {
+	Result      Result       `json:"result"`
+	BillDetails []BillDetail `json:"billDetails"`
+}
+
+type UpdateBillDetailsReq struct {
+	BillID      int64  `path:"billID"`
+	BillDetails string `form:"billDetails"`
+}
+
+type UpdateBillDetailsRes struct {
+	Result Result `json:"result"`
+}
+
 type Result struct {
 	Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
 	Message string `json:"message"` // Result message: detail response code
@@ -352,6 +370,9 @@ type BillDetail struct {
 	Name         string `json:"name"`
 	Price        int64  `json:"price"`
 	Type         int64  `json:"type"`
+	OldIndex     int64  `json:"oldIndex"`
+	NewIndex     int64  `json:"newIndex"`
+	Imgurl       string `json:"imgUrl"`
 	Quantity     int64  `json:"quantity"`
 }
 
