@@ -61,9 +61,10 @@ const (
 )
 
 const (
-	PAYMENT_DETAIL_TYPE_FIXED      = 1
-	PAYMENT_DETAIL_TYPE_USAGE      = 2
-	PAYMENT_DETAIL_TYPE_FIXED_USER = 4
+	PAYMENT_DETAIL_TYPE_FIXED      = 1 // co dinh
+	PAYMENT_DETAIL_TYPE_USAGE      = 2 // sl su dung
+	PAYMENT_DETAIL_TYPE_FIXED_USER = 4 // so luong nguoi
+	PAYMENT_DETAIL_TYPE_ROOM       = 8 // gia phong
 )
 
 const (

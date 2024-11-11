@@ -59,6 +59,10 @@ func (l *UpdateBillDetailsLogic) UpdateBillDetails(req *types.UpdateBillDetailsR
 	}
 
 	for _, billDetail := range billDetails {
+		if billDetail.Type != common.PAYMENT_DETAIL_TYPE_USAGE {
+			continue
+		}
+
 		var billDetailModel *model.BillDetailTbl
 
 		billDetailModel, err = l.svcCtx.BillDetailModel.FindOne(l.ctx, billDetail.BillDetailID)

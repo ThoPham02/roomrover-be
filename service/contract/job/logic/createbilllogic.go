@@ -8,8 +8,6 @@ import (
 	"roomrover/service/contract/job/svc"
 	"roomrover/service/contract/model"
 
-	notiModel "roomrover/service/notification/model"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -62,7 +60,7 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 			BillId:   sql.NullInt64{Valid: true, Int64: billID},
 			Name:     sql.NullString{Valid: true, String: "Tiền phòng"},
 			Price:    sql.NullInt64{Valid: true, Int64: paymentModel.Amount},
-			Type:     sql.NullInt64{Valid: true, Int64: common.PAYMENT_DETAIL_TYPE_FIXED},
+			Type:     sql.NullInt64{Valid: true, Int64: common.PAYMENT_DETAIL_TYPE_ROOM},
 			Quantity: sql.NullInt64{Valid: true, Int64: 1},
 		})
 		if err != nil {
@@ -124,9 +122,9 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 			Title:       sql.NullString{Valid: true, String: fmt.Sprintf("Hóa đơn thanh toán tháng %d", common.GetBillIndexByTime(contractModel.CheckIn.Int64, currentTime))},
 			PaymentId:   paymentModel.Id,
 			PaymentDate: sql.NullInt64{Valid: true, Int64: currentTime + 6*86400000}, // han thanh toan sau 5 ngay
-			Amount:      paymentModel.Amount,
+			Amount:      0,
 			Discount:    sql.NullInt64{Valid: true, Int64: paymentModel.Discount},
-			Remain:      paymentModel.Amount - paymentModel.Discount,
+			Remain:      0,
 			Status:      billStatus,
 		}
 		_, err = l.svcCtx.BillModel.Insert(l.ctx, billModel)
@@ -135,23 +133,23 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 			continue
 		}
 
-		noti := &notiModel.NotificationTbl{
-			Id:        l.svcCtx.ObjSync.GenServiceObjID(),
-			Sender:    contractModel.LessorId.Int64,
-			Receiver:  contractModel.RenterId.Int64,
-			RefId:     billModel.Id,
-			RefType:   common.NOTIFICATION_REF_TYPE_BILL,
-			Title:     fmt.Sprintf("Hoàn thành hóa đơn thanh toán tháng %d", common.GetBillIndexByTime(contractModel.CheckIn.Int64, currentTime)),
-			DueDate:   billModel.PaymentDate.Int64,
-			Status:    common.NOTI_STATUS_PENDING,
-			Unread:    common.NOTI_TYPE_UNREAD,
-			CreatedAt: currentTime,
-		}
-		err = l.svcCtx.NotificationFunction.CreateNotification(noti)
-		if err != nil {
-			l.Logger.Error(err)
-			continue
-		}
+		// noti := &notiModel.NotificationTbl{
+		// 	Id:        l.svcCtx.ObjSync.GenServiceObjID(),
+		// 	Sender:    contractModel.LessorId.Int64,
+		// 	Receiver:  contractModel.RenterId.Int64,
+		// 	RefId:     billModel.Id,
+		// 	RefType:   common.NOTIFICATION_REF_TYPE_BILL,
+		// 	Title:     fmt.Sprintf("Hoàn thành hóa đơn thanh toán tháng %d", common.GetBillIndexByTime(contractModel.CheckIn.Int64, currentTime)),
+		// 	DueDate:   billModel.PaymentDate.Int64,
+		// 	Status:    common.NOTI_STATUS_PENDING,
+		// 	Unread:    common.NOTI_TYPE_UNREAD,
+		// 	CreatedAt: currentTime,
+		// }
+		// err = l.svcCtx.NotificationFunction.CreateNotification(noti)
+		// if err != nil {
+		// 	l.Logger.Error(err)
+		// 	continue
+		// }
 	}
 
 	l.Logger.Info("CreateBillByTime Start Time Success: ", common.GetCurrentTime())
