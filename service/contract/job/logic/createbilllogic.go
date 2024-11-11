@@ -56,6 +56,19 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 
 		var billID int64 = l.svcCtx.ObjSync.GenServiceObjID()
 		var billStatus int64 = common.BILL_STATUS_UNPAID
+
+		_, err = l.svcCtx.BillDetailModel.Insert(l.ctx, &model.BillDetailTbl{
+			Id:       l.svcCtx.ObjSync.GenServiceObjID(),
+			BillId:   sql.NullInt64{Valid: true, Int64: billID},
+			Name:     sql.NullString{Valid: true, String: "Tiền phòng"},
+			Price:    sql.NullInt64{Valid: true, Int64: paymentModel.Amount},
+			Type:     sql.NullInt64{Valid: true, Int64: common.PAYMENT_DETAIL_TYPE_FIXED},
+			Quantity: sql.NullInt64{Valid: true, Int64: 1},
+		})
+		if err != nil {
+			l.Logger.Error(err)
+			continue
+		}
 		for _, paymentDetail := range paymentDetails {
 			var billDetailModel = &model.BillDetailTbl{
 				Id:              l.svcCtx.ObjSync.GenServiceObjID(),

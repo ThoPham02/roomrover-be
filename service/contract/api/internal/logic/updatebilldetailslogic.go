@@ -34,6 +34,7 @@ func (l *UpdateBillDetailsLogic) UpdateBillDetails(req *types.UpdateBillDetailsR
 	var billDetailModels []*model.BillDetailTbl
 	var billDetails []types.BillDetail
 	var billModel *model.BillTbl
+	var amount int64
 
 	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
@@ -91,17 +92,6 @@ func (l *UpdateBillDetailsLogic) UpdateBillDetails(req *types.UpdateBillDetailsR
 		}
 	}
 
-	billModel, err = l.svcCtx.BillModel.FindOne(l.ctx, req.BillID)
-	if err != nil {
-		l.Logger.Error(err)
-		return &types.UpdateBillDetailsRes{
-			Result: types.Result{
-				Code:    common.DB_ERR_CODE,
-				Message: common.DB_ERR_MESS,
-			},
-		}, nil
-	}
-	
 	billDetailModels, err = l.svcCtx.BillDetailModel.GetDetailByBillID(l.ctx, req.BillID)
 	if err != nil {
 		l.Logger.Error(err)
@@ -112,8 +102,33 @@ func (l *UpdateBillDetailsLogic) UpdateBillDetails(req *types.UpdateBillDetailsR
 			},
 		}, nil
 	}
-
 	for _, billDetailModel := range billDetailModels {
+		amount += billDetailModel.Price.Int64 * billDetailModel.Quantity.Int64
+	}
+
+	billModel, err = l.svcCtx.BillModel.FindOne(l.ctx, req.BillID)
+	if err != nil {
+		l.Logger.Error(err)
+		return &types.UpdateBillDetailsRes{
+			Result: types.Result{
+				Code:    common.DB_ERR_CODE,
+				Message: common.DB_ERR_MESS,
+			},
+		}, nil
+	}
+
+	billModel.Amount = amount
+	billModel.Remain = amount
+	billModel.Status = common.BILL_STATUS_UNPAID
+	err = l.svcCtx.BillModel.Update(l.ctx, billModel)
+	if err != nil {
+		l.Logger.Error(err)
+		return &types.UpdateBillDetailsRes{
+			Result: types.Result{
+				Code:    common.DB_ERR_CODE,
+				Message: common.DB_ERR_MESS,
+			},
+		}, nil
 	}
 
 	l.Logger.Info("UpdateBillDetails Success: ", userID)
