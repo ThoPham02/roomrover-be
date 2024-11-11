@@ -71,11 +71,14 @@ CREATE TABLE `bill_tbl` (
 CREATE TABLE `bill_detail_tbl` (
   `id` bigint,
   `bill_id` bigint,
+  `payment_detail_id` bigint,
   `name` varchar(255),
   `price` bigint,
   `type` int,
+  `old_index` int,
+  `new_index` int,
+  `img_url` varchar(255),
   `quantity` int,
-  `status` int,
   PRIMARY KEY (`id`)
 );
 

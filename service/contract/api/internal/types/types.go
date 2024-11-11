@@ -22,26 +22,15 @@ type CreateContractRes struct {
 
 type UpdateContractReq struct {
 	ID            int64  `path:"id"`
-	Status        int64  `form:"status"`
-	RenterID      int64  `form:"renterID"`
-	RenterNumber  string `form:"renterNumber"`
-	RenterDate    string `form:"renterDate"`
-	RenterName    string `form:"renterName"`
-	RenterAddress string `form:"renterAddress"`
-	LessorID      int64  `form:"lessorID"`
-	LessorNumber  string `form:"lessorNumber"`
-	LessorDate    string `form:"lessorDate"`
-	LessorName    string `form:"lessorName"`
-	LessorAddress string `form:"lessorAddress"`
-	PaymentRenter string `form:"paymentRenter"`
-	RoomID        int64  `form:"roomID"`
-	EIndex        int64  `form:"eIndex"`
-	WIndex        int64  `form:"wIndex"`
+	Renter        string `form:"renter"`
+	Lessor        string `form:"lessor"`
+	PaymentRenter string `form:"paymentRenter,optional"`
+	Room          string `form:"room"`
 	CheckIn       int64  `form:"checkIn"`
 	Duration      int64  `form:"duration"`
 	Purpose       string `form:"purpose"`
-	Amount        int64  `form:"amount"`
-	Discount      int64  `form:"discount"`
+	Price         int64  `form:"price"`
+	Discount      int64  `form:"discount,optional"`
 	Deposit       int64  `form:"deposit"`
 	DepositDate   int64  `form:"depositDate"`
 }
@@ -187,6 +176,24 @@ type ConfirmContractReq struct {
 }
 
 type ConfirmContractRes struct {
+	Result Result `json:"result"`
+}
+
+type GetListBillDetailReq struct {
+	BillID int64 `path:"billID"`
+}
+
+type GetListBillDetailRes struct {
+	Result      Result       `json:"result"`
+	BillDetails []BillDetail `json:"billDetails"`
+}
+
+type UpdateBillDetailsReq struct {
+	BillID      int64  `path:"billID"`
+	BillDetails string `form:"billDetails"`
+}
+
+type UpdateBillDetailsRes struct {
 	Result Result `json:"result"`
 }
 
@@ -363,6 +370,9 @@ type BillDetail struct {
 	Name         string `json:"name"`
 	Price        int64  `json:"price"`
 	Type         int64  `json:"type"`
+	OldIndex     int64  `json:"oldIndex"`
+	NewIndex     int64  `json:"newIndex"`
+	Imgurl       string `json:"imgUrl"`
 	Quantity     int64  `json:"quantity"`
 }
 
