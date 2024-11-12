@@ -74,6 +74,7 @@ func (l *CreateBillPayLogic) CreateBillPay(req *types.CreateBillPayReq) (resp *t
 		UserId:  userID,
 		Amount:  req.Amount,
 		PayDate: req.PayDate,
+		Status:  common.BILL_PAY_STATUS_DONE,
 		Type:    req.PayType,
 		Url:     sql.NullString{Valid: true, String: req.Url},
 	})

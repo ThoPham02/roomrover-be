@@ -122,7 +122,7 @@ type CreateBillPayReq struct {
 	Amount  int64  `form:"amount"`
 	PayType int64  `form:"payType"`
 	PayDate int64  `form:"payDate"`
-	Url     string `form:"url"`
+	Url     string `form:"url,optional"`
 }
 
 type CreateBillPayRes struct {

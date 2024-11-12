@@ -96,6 +96,6 @@ const (
 )
 
 const (
-	BILL_PAY_STATUS_PROCESS = 1
-	BILL_PAY_STATUS_DONE    = 2
+	BILL_PAY_STATUS_PROCESS = 1 // cho xu ly
+	BILL_PAY_STATUS_DONE    = 2 // thanh cong
 )
