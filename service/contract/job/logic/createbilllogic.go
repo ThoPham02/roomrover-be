@@ -54,6 +54,8 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 
 		var billID int64 = l.svcCtx.ObjSync.GenServiceObjID()
 		var billStatus int64 = common.BILL_STATUS_UNPAID
+		var totalAmount int64 = paymentModel.Amount
+		var totalRemain int64
 
 		_, err = l.svcCtx.BillDetailModel.Insert(l.ctx, &model.BillDetailTbl{
 			Id:       l.svcCtx.ObjSync.GenServiceObjID(),
@@ -84,6 +86,7 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 			switch paymentDetail.Type.Int64 {
 			case common.PAYMENT_DETAIL_TYPE_FIXED:
 				billDetailModel.Quantity.Int64 = 1
+				totalAmount += paymentDetail.Price.Int64
 			case common.PAYMENT_DETAIL_TYPE_USAGE:
 				total, err := l.svcCtx.BillDetailModel.CountQuantityByBillAndDetailID(l.ctx, billDetailModel.BillId.Int64, billDetailModel.PaymentDetailId.Int64)
 				if err != nil {
@@ -102,6 +105,9 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 					continue
 				}
 				billDetailModel.Quantity.Int64 = count
+				totalAmount += paymentDetail.Price.Int64 * count
+			default:
+				continue
 			}
 
 			_, err = l.svcCtx.BillDetailModel.Insert(l.ctx, billDetailModel)
@@ -117,14 +123,19 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 			continue
 		}
 
+		totalRemain = totalAmount - paymentModel.Discount
+		if billStatus == common.BILL_STATUS_DRAF {
+			totalAmount = 0
+			totalRemain = 0
+		}
 		var billModel = &model.BillTbl{
 			Id:          billID,
 			Title:       sql.NullString{Valid: true, String: fmt.Sprintf("Hóa đơn thanh toán tháng %d", common.GetBillIndexByTime(contractModel.CheckIn.Int64, currentTime))},
 			PaymentId:   paymentModel.Id,
 			PaymentDate: sql.NullInt64{Valid: true, Int64: currentTime + 6*86400000}, // han thanh toan sau 5 ngay
-			Amount:      0,
+			Amount:      totalAmount,
 			Discount:    sql.NullInt64{Valid: true, Int64: paymentModel.Discount},
-			Remain:      0,
+			Remain:      totalRemain,
 			Status:      billStatus,
 		}
 		_, err = l.svcCtx.BillModel.Insert(l.ctx, billModel)

@@ -46,7 +46,7 @@ func (m *customBillDetailTblModel) GetDetailByBillID(ctx context.Context, billID
 }
 
 func (m *customBillDetailTblModel) CountQuantityByBillAndDetailID(ctx context.Context, billID, detailID int64) (int64, error) {
-	query := fmt.Sprintf("select SUM(quantity) from %s where `bill_id` = ? and `detail_id` = ?", m.table)
+	query := fmt.Sprintf("select SUM(quantity) from %s where `bill_id` = ? and `payment_detail_id` = ?", m.table)
 	var resp int64
 	err := m.conn.QueryRowCtx(ctx, &resp, query, billID, detailID)
 	switch err {

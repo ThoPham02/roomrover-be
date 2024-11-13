@@ -3,6 +3,7 @@ package model
 import (
 	"context"
 	"fmt"
+	"roomrover/common"
 
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
@@ -98,9 +99,9 @@ func (m *customHouseTblModel) FindMultiByID(ctx context.Context, ids []int64) ([
 func (m *customHouseTblModel) SearchHouse(ctx context.Context, search string, districtID, provinceID, wardID, typeHouse, unit, priceFrom, priceTo, areaFrom, areaTo, limit, offset int64) (total int64, listHouses []*HouseTbl, err error) {
 	var searchVal string = "%" + search + "%"
 	var vals []interface{}
-	selectQuery := fmt.Sprintf("select %s from %s where `name` like ?", houseTblRows, m.table)
-	countQuery := fmt.Sprintf("select count(*) from %s where `name` like ?", m.table)
-	vals = append(vals, searchVal)
+	selectQuery := fmt.Sprintf("select %s from %s where `status` = ? and `name` like ?", houseTblRows, m.table)
+	countQuery := fmt.Sprintf("select count(*) from %s where `status` = ? and `name` like ?", m.table)
+	vals = append(vals, common.HOUSE_STATUS_ACTIVE, searchVal)
 	if districtID > 0 {
 		countQuery += " and `district_id` = ?"
 		selectQuery += " and `district_id` = ?"

@@ -75,7 +75,7 @@ CREATE TABLE `contact_tbl` (
   `datetime` bigint,
   `status` int NOT NULL,
   PRIMARY KEY (`id`)
-)
+);
 
 CREATE TABLE `contract_tbl` (
   `id` bigint,
@@ -150,11 +150,14 @@ CREATE TABLE `bill_tbl` (
 CREATE TABLE `bill_detail_tbl` (
   `id` bigint,
   `bill_id` bigint,
+  `payment_detail_id` bigint,
   `name` varchar(255),
   `price` bigint,
   `type` int,
+  `old_index` int,
+  `new_index` int,
+  `img_url` varchar(255),
   `quantity` int,
-  `status` int,
   PRIMARY KEY (`id`)
 );
 
@@ -169,20 +172,4 @@ CREATE TABLE `bill_pay_tbl` (
   `type` int not null,
   `url` varchar(255),
   PRIMARY KEY (`id`)
-);
-
-create table `notification_tbl` (
-    `id` bigint,
-    `sender` bigint not null,
-    `receiver` bigint not null,
-    `ref_id` bigint not null,
-    `ref_type` int not null,
-    `title` text not null,
-    `description` text not null,
-    `priority` int not null,
-    `due_date` bigint not null,
-    `status` int not null,
-    `unread` int default 1 not null,
-    `created_at` bigint not null,
-    primary key (`id`)
 );
