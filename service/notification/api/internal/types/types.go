@@ -32,6 +32,25 @@ type CreateNotificationRes struct {
 	Notification Notification `json:"notification"`
 }
 
+type GetListNotificationReq struct {
+	Limit  int64 `form:"limit"`
+	Offset int64 `form:"offset"`
+}
+
+type GetListNotificationRes struct {
+	Result        Result         `json:"result"`
+	Notifications []Notification `json:"notifications"`
+	Total         int            `json:"total"`
+}
+
+type MarkReadReq struct {
+	ID int64 `path:"id"`
+}
+
+type MarkReadRes struct {
+	Result Result `json:"result"`
+}
+
 type Result struct {
 	Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
 	Message string `json:"message"` // Result message: detail response code

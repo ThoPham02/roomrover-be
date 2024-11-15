@@ -37,6 +37,23 @@ type (
 		Result       Result       `json:"result"`
 		Notification Notification `json:"notification"`
 	}
+
+	GetListNotificationReq {
+		Limit  int64 `form:"limit"`
+		Offset int64 `form:"offset"`
+	}
+	GetListNotificationRes {
+		Result        Result         `json:"result"`
+		Notifications []Notification `json:"notifications"`
+		Total         int            `json:"total"`
+	}
+
+	MarkReadReq {
+		ID int64 `path:"id"`
+	}
+	MarkReadRes {
+		Result Result `json:"result"`
+	}
 )
 
 @server (
@@ -50,4 +67,16 @@ service notification-api {
 	)
 	@handler CreateNotification
 	post /create (CreateNotificationReq) returns (CreateNotificationRes)
+	
+	@doc(
+		summary: "Get List Noti"
+	)
+	@handler GetListNotification
+	get /list  (GetListNotificationReq) returns (GetListNotificationRes)
+	
+	@doc(
+		summary: "Mark Read Noti"
+	)
+	@handler MarkReadNoti
+	put /mark-read/:id (MarkReadReq) returns (MarkReadRes)
 }
