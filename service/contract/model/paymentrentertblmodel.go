@@ -78,7 +78,7 @@ func (m *customPaymentRenterTblModel) CountRenterContacts(ctx context.Context, u
 	query := `SELECT count(*)
 	FROM payment_renter_tbl
 	JOIN payment_tbl ON payment_renter_tbl.payment_id = payment_tbl.id
-	JOIN contract_tbl ON contract_tbl.id = payment_tbl.contact_id
+	JOIN contract_tbl ON contract_tbl.id = payment_tbl.contract_id
 	JOIN room_tbl ON contract_tbl.room_id = room_tbl.id
 	JOIN house_tbl ON room_tbl.house_id = house_tbl.id
 	JOIN user_tbl ON payment_renter_tbl.user_id = user_tbl.id
@@ -103,7 +103,7 @@ func (m *customPaymentRenterTblModel) FilterRenterContacts(ctx context.Context, 
     payment_renter_tbl.status AS status
 	FROM payment_renter_tbl
 	JOIN payment_tbl ON payment_renter_tbl.payment_id = payment_tbl.id
-	JOIN contract_tbl ON contract_tbl.id = payment_tbl.contact_id
+	JOIN contract_tbl ON contract_tbl.id = payment_tbl.contract_id
 	JOIN room_tbl ON contract_tbl.room_id = room_tbl.id
 	JOIN house_tbl ON room_tbl.house_id = house_tbl.id
 	JOIN user_tbl ON payment_renter_tbl.user_id = user_tbl.id
