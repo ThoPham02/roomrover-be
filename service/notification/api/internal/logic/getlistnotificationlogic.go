@@ -76,16 +76,79 @@ func (l *GetListNotificationLogic) GetListNotification(req *types.GetListNotific
 	}
 
 	for _, notiModel := range notiModels {
-		notis = append(notis, types.Notification{
+		var noti = types.Notification{
 			NotificationID: notiModel.Id,
-			AssigneeID:     notiModel.Sender,
-			AssignerID:     notiModel.Sender,
+			SenderID:       notiModel.Sender,
+			ReceiverID:     notiModel.Receiver,
 			RefID:          notiModel.RefId,
 			RefType:        notiModel.RefType,
-			Status:         notiModel.Status,
 			Unread:         notiModel.Unread,
 			CreatedAt:      notiModel.CreatedAt,
-		})
+		}
+
+		switch notiModel.RefType {
+		case common.NOTI_TYPE_CREATE_CONTACT:
+			contactModel, err := l.svcCtx.InventFunction.GetContactByID(noti.RefID)
+			if err != nil {
+				l.Logger.Error(err)
+				continue
+			}
+			accountModel, err := l.svcCtx.AccountFunction.GetUserByID(contactModel.RenterId.Int64)
+			if err != nil {
+				l.Logger.Error(err)
+				continue
+			}
+			houseModel, err := l.svcCtx.InventFunction.GetHouseByID(contactModel.HouseId.Int64)
+			if err != nil {
+				l.Logger.Error(err)
+				continue
+			}
+
+			noti.NotiInfos = append(noti.NotiInfos, types.NotiInfo{
+				ID:   contactModel.RenterId.Int64,
+				Name: accountModel.FullName.String,
+			})
+			noti.NotiInfos = append(noti.NotiInfos, types.NotiInfo{
+				ID:   contactModel.HouseId.Int64,
+				Name: houseModel.Name.String,
+			})
+			noti.NotiInfos = append(noti.NotiInfos, types.NotiInfo{
+				ID:   contactModel.Id,
+				Name: contactModel.Datetime.Int64,
+			})
+
+		case common.NOTI_TYPE_CONFIRM_CONTACT, common.NOTI_TYPE_REJECT_CONTACT:
+			contactModel, err := l.svcCtx.InventFunction.GetContactByID(noti.RefID)
+			if err != nil {
+				l.Logger.Error(err)
+				continue
+			}
+			accountModel, err := l.svcCtx.AccountFunction.GetUserByID(contactModel.LessorId.Int64)
+			if err != nil {
+				l.Logger.Error(err)
+				continue
+			}
+			houseModel, err := l.svcCtx.InventFunction.GetHouseByID(contactModel.HouseId.Int64)
+			if err != nil {
+				l.Logger.Error(err)
+				continue
+			}
+
+			noti.NotiInfos = append(noti.NotiInfos, types.NotiInfo{
+				ID:   contactModel.LessorId.Int64,
+				Name: accountModel.FullName.String,
+			})
+			noti.NotiInfos = append(noti.NotiInfos, types.NotiInfo{
+				ID:   contactModel.HouseId.Int64,
+				Name: houseModel.Name.String,
+			})
+			noti.NotiInfos = append(noti.NotiInfos, types.NotiInfo{
+				ID:   contactModel.Id,
+				Name: contactModel.Datetime.Int64,
+			})
+		}
+
+		notis = append(notis, noti)
 	}
 
 	l.Logger.Info("GetListNotification Success: ", userID)

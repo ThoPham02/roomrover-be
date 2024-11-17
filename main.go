@@ -55,6 +55,9 @@ func main() {
 	inventService.Ctx.SetNotiFunction(notiFunc)
 	contractService.Ctx.SetAccountFunction(accountFunc)
 	contractService.Ctx.SetInventFunction(inventFunc)
+	notiService.Ctx.SetAccountFunction(accountFunc)
+	notiService.Ctx.SetInventFunction(inventFunc)
+	notiService.Ctx.SetContractFunction(contractFunc)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()

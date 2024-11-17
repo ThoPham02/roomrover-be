@@ -44,7 +44,7 @@ func (m *defaultNotificationTblModel) GetNotisByReceiver(ctx context.Context, re
 	if limit > 0 {
 		query += fmt.Sprintf(" limit %d offset %d", limit, offset)
 	}
-	err := m.conn.QueryRowCtx(ctx, resp, query, receiverID)
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, receiverID)
 	switch err {
 	case nil:
 		return resp, nil

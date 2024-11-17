@@ -68,3 +68,6 @@ func (sc *InventoryFunction) GetHouseByID(houseID int64) (house *model.HouseTbl,
 func (sc *InventoryFunction) UpdateHouse(house *model.HouseTbl) error {
 	return sc.InventService.Ctx.HouseModel.Update(context.Background(), house)
 }
+func (sc *InventoryFunction) GetContactByID(contactID int64) (contact *model.ContactTbl, err error) {
+	return sc.InventService.Ctx.ContactModel.FindOne(context.Background(), contactID)
+}

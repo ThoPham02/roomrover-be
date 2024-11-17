@@ -12,4 +12,5 @@ type InventoryFunction interface {
 	CountRoomActiveByHouseID(houseID int64) (count int64, err error)
 	GetHouseByID(houseID int64) (house *model.HouseTbl, err error)
 	UpdateHouse(house *model.HouseTbl) error
+	GetContactByID(contactID int64) (contact *model.ContactTbl, err error)
 }
