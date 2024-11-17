@@ -186,6 +186,25 @@ type (
 	UpdateBillDetailsRes {
 		Result Result `json:"result"`
 	}
+
+	GetListRenterReq {
+		Search string `form:"search,optional"`
+		Limit  int64  `form:"limit,optional"`
+		Offset int64  `form:"offset,optional"`
+	}
+	GetListRenterRes {
+		Result  Result          `json:"result"`
+		Renters []RenterContact `json:"renters"`
+		Total   int             `json:"total"`
+	}
+
+	UpdateRenterStatusReq {
+		ID     int64 `path:"id"`
+		Status int64 `form:"status,optional"`
+	}
+	UpdateRenterStatusRes {
+		Result Result `json:"result"`
+	}
 )
 
 @server (
@@ -194,10 +213,22 @@ type (
 	prefix:     /contract
 )
 service contract-api {
+	@doc (
+		summary: "List Renter Contact"
+	)
+	@handler GetListRenter
+	get /renters (GetListRenterReq) returns (GetListRenterRes)
+	
+	@doc (
+		summary: "Update Renter Status"
+	)
+	@handler UpdateRenterStatus
+	put /renters/:id (UpdateRenterStatusReq) returns (UpdateRenterStatusRes)
+	
 	@doc(
 		summary: "Get Bill Detail"
 	)
-	@handler GetListBillDetailReq
+	@handler GetListBillDetail
 	get /bill-detail/:billID (GetListBillDetailReq) returns (GetListBillDetailRes)
 	
 	@doc(

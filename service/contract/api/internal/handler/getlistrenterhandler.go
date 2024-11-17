@@ -9,16 +9,16 @@ import (
 	"roomrover/service/contract/api/internal/types"
 )
 
-func GetListBillDetailReqHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func GetListRenterHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.GetListBillDetailReq
+		var req types.GetListRenterReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := logic.NewGetListBillDetailReqLogic(r.Context(), svcCtx)
-		resp, err := l.GetListBillDetailReq(&req)
+		l := logic.NewGetListRenterLogic(r.Context(), svcCtx)
+		resp, err := l.GetListRenter(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {

@@ -197,6 +197,27 @@ type UpdateBillDetailsRes struct {
 	Result Result `json:"result"`
 }
 
+type GetListRenterReq struct {
+	Search string `form:"search,optional"`
+	Limit  int64  `form:"limit,optional"`
+	Offset int64  `form:"offset,optional"`
+}
+
+type GetListRenterRes struct {
+	Result  Result        `json:"result"`
+	Renters []RenterContact `json:"renters"`
+	Total   int           `json:"total"`
+}
+
+type UpdateRenterStatusReq struct {
+	ID     int64 `path:"id"`
+	Status int64 `form:"status,optional"`
+}
+
+type UpdateRenterStatusRes struct {
+	Result Result `json:"result"`
+}
+
 type Result struct {
 	Code    int    `json:"code"`    //    Result code: 0 is success. Otherwise, getting an error
 	Message string `json:"message"` // Result message: detail response code
@@ -386,4 +407,15 @@ type BillPay struct {
 	Type      int64  `json:"type"`
 	Url       string `json:"url"`
 	TransId   string `json:"transId"`
+}
+
+type RenterContact struct {
+	ID          int64  `json:"id"`
+	RoomName    string `json:"roomName"`
+	Name        string `json:"name"`
+	Phone       string `json:"phone"`
+	CccdNumber  string `json:"cccdNumber"`
+	CccdDate    int64  `json:"cccdDate"`
+	CccdAddress string `json:"cccdAddress"`
+	Status      int64  `json:"status"`
 }

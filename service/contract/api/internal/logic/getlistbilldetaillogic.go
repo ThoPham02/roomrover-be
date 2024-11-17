@@ -11,21 +11,21 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type GetListBillDetailReqLogic struct {
+type GetListBillDetailLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewGetListBillDetailReqLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetListBillDetailReqLogic {
-	return &GetListBillDetailReqLogic{
+func NewGetListBillDetailLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetListBillDetailLogic {
+	return &GetListBillDetailLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *GetListBillDetailReqLogic) GetListBillDetailReq(req *types.GetListBillDetailReq) (resp *types.GetListBillDetailRes, err error) {
+func (l *GetListBillDetailLogic) GetListBillDetail(req *types.GetListBillDetailReq) (resp *types.GetListBillDetailRes, err error) {
 	l.Logger.Info("GetListBillDetailReq", req)
 
 	var userID int64

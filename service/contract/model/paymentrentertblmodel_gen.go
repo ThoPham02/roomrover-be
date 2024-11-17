@@ -38,6 +38,7 @@ type (
 		Id        int64         `db:"id"`
 		PaymentId sql.NullInt64 `db:"payment_id"`
 		UserId    sql.NullInt64 `db:"user_id"`
+		Status    int64         `db:"status"`
 	}
 )
 
@@ -69,14 +70,14 @@ func (m *defaultPaymentRenterTblModel) FindOne(ctx context.Context, id int64) (*
 }
 
 func (m *defaultPaymentRenterTblModel) Insert(ctx context.Context, data *PaymentRenterTbl) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, paymentRenterTblRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.PaymentId, data.UserId)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?)", m.table, paymentRenterTblRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.PaymentId, data.UserId, data.Status)
 	return ret, err
 }
 
 func (m *defaultPaymentRenterTblModel) Update(ctx context.Context, data *PaymentRenterTbl) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, paymentRenterTblRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.PaymentId, data.UserId, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.PaymentId, data.UserId, data.Status, data.Id)
 	return err
 }
 

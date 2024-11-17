@@ -52,6 +52,7 @@ CREATE TABLE `payment_renter_tbl` (
   `id` bigint,
   `payment_id` bigint,
   `user_id` bigint,
+  `status` bigint not null default 0,
   PRIMARY KEY (`id`)
 );
 

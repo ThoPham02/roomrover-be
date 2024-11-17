@@ -16,8 +16,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodGet,
+					Path:    "/renters",
+					Handler: GetListRenterHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPut,
+					Path:    "/renters/:id",
+					Handler: UpdateRenterStatusHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
 					Path:    "/bill-detail/:billID",
-					Handler: GetListBillDetailReqHandler(serverCtx),
+					Handler: GetListBillDetailHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPut,

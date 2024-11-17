@@ -18,6 +18,7 @@ type (
 		DeleteNotiByRefID(ctx context.Context, refID int64) error
 		GetNotisByReceiver(ctx context.Context, receiverID int64, limit, offset int64) ([]*NotificationTbl, error)
 		CountNotisByReceiver(ctx context.Context, receiverID int64) (int, error)
+		MarkRead(ctx context.Context, id int64) error
 	}
 
 	customNotificationTblModel struct {
@@ -41,9 +42,11 @@ func (m *defaultNotificationTblModel) DeleteNotiByRefID(ctx context.Context, ref
 func (m *defaultNotificationTblModel) GetNotisByReceiver(ctx context.Context, receiverID int64, limit, offset int64) ([]*NotificationTbl, error) {
 	query := fmt.Sprintf("select %s from %s where `receiver` = ? ", notificationTblRows, m.table)
 	var resp []*NotificationTbl
+	query += " ORDER BY `created_at` DESC"
 	if limit > 0 {
 		query += fmt.Sprintf(" limit %d offset %d", limit, offset)
 	}
+
 	err := m.conn.QueryRowsCtx(ctx, &resp, query, receiverID)
 	switch err {
 	case nil:
@@ -67,4 +70,10 @@ func (m *defaultNotificationTblModel) CountNotisByReceiver(ctx context.Context, 
 	default:
 		return 0, err
 	}
+}
+
+func (m *defaultNotificationTblModel) MarkRead(ctx context.Context, id int64) error {
+	query := fmt.Sprintf("update %s set `unread` = 2 where `id` = ?", m.table)
+    _, err := m.conn.ExecCtx(ctx, query, id)
+    return err
 }

@@ -400,3 +400,14 @@ type BillPay struct {
 	Url       string `json:"url"`
 	TransId   string `json:"transId"`
 }
+
+type RenterContact struct {
+	ID          int64  `json:"id"`
+	RoomName    string `json:"roomName"`
+	Name        string `json:"name"`
+	Phone       string `json:"phone"`
+	CccdNumber  string `json:"cccdNumber"`
+	CccdDate    int64  `json:"cccdDate"`
+	CccdAddress string `json:"cccdAddress"`
+	Status      int64  `json:"status"`
+}
