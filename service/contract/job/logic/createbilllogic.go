@@ -128,9 +128,16 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 			totalAmount = 0
 			totalRemain = 0
 		}
+
+		houseRoomModel, err := l.svcCtx.InventFunction.GetHouseRoomByRoomID(contractModel.RoomId.Int64)
+		if err != nil {
+			l.Logger.Error(err)
+			continue
+		}
+
 		var billModel = &model.BillTbl{
 			Id:          billID,
-			Title:       sql.NullString{Valid: true, String: fmt.Sprintf("Hóa đơn thanh toán tháng %d", common.GetBillIndexByTime(contractModel.CheckIn.Int64, currentTime))},
+			Title:       sql.NullString{Valid: true, String: fmt.Sprintf("Hóa đơn thanh toán %s tháng %d", houseRoomModel.HouseRoomName.String, common.GetBillIndexByTime(contractModel.CheckIn.Int64, currentTime))},
 			PaymentId:   paymentModel.Id,
 			PaymentDate: sql.NullInt64{Valid: true, Int64: currentTime + 6*86400000}, // han thanh toan sau 5 ngay
 			Amount:      totalAmount,

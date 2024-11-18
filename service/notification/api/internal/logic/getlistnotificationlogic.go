@@ -146,6 +146,71 @@ func (l *GetListNotificationLogic) GetListNotification(req *types.GetListNotific
 				ID:   contactModel.Id,
 				Name: contactModel.Datetime.Int64,
 			})
+		case common.NOTI_TYPE_CREATE_CONTRACT, common.NOTI_TYPE_UPDATE_CONTRACT:
+			contractModel, err := l.svcCtx.ContractFunction.GetContractByID(noti.RefID)
+			if err != nil {
+				l.Logger.Error(err)
+				continue
+			}
+			accountModel, err := l.svcCtx.AccountFunction.GetUserByID(contractModel.LessorId.Int64)
+			if err != nil {
+				l.Logger.Error(err)
+				continue
+			}
+			noti.NotiInfos = append(noti.NotiInfos, types.NotiInfo{
+				ID:   contractModel.LessorId.Int64,
+				Name: accountModel.FullName.String,
+			})
+			noti.NotiInfos = append(noti.NotiInfos, types.NotiInfo{
+				ID:   contractModel.Id,
+				Name: contractModel.Code.String,
+			})
+		case common.NOTI_TYPE_CONFIRM_CONTRACT:
+			contractModel, err := l.svcCtx.ContractFunction.GetContractByID(noti.RefID)
+			if err != nil {
+				l.Logger.Error(err)
+				continue
+			}
+			accountModel, err := l.svcCtx.AccountFunction.GetUserByID(contractModel.RenterId.Int64)
+			if err != nil {
+				l.Logger.Error(err)
+				continue
+			}
+			noti.NotiInfos = append(noti.NotiInfos, types.NotiInfo{
+				ID:   contractModel.RenterId.Int64,
+				Name: accountModel.FullName.String,
+			})
+			noti.NotiInfos = append(noti.NotiInfos, types.NotiInfo{
+				ID:   contractModel.Id,
+				Name: contractModel.Code.String,
+			})
+		case common.NOTI_TYPE_CANCEL_CONTRACT, common.NOTI_TYPE_OUT_DATE_CONTRACT, common.NOTI_TYPE_NEARLY_OUT_DATE_CONTRACT:
+			contractModel, err := l.svcCtx.ContractFunction.GetContractByID(noti.RefID)
+			if err != nil {
+				l.Logger.Error(err)
+				continue
+			}
+			noti.NotiInfos = append(noti.NotiInfos, types.NotiInfo{
+				ID:   contractModel.Id,
+				Name: contractModel.Code.String,
+			})
+		case common.NOTI_TYPE_OUT_DATE_BILL, common.NOTI_TYPE_CREATE_BILL, common.NOTI_TYPE_PAY_BILL:
+			billModel, err := l.svcCtx.ContractFunction.GetBillByID(noti.RefID)
+			if err != nil {
+				l.Logger.Error(err)
+				continue
+			}
+			noti.NotiInfos = append(noti.NotiInfos, types.NotiInfo{
+				ID:   billModel.Id,
+				Name: billModel.Title.String,
+			})
+			noti.NotiInfos = append(noti.NotiInfos, types.NotiInfo{
+				ID:   billModel.Id,
+				Name: billModel.PaymentDate,
+			})
+
+		default:
+			continue
 		}
 
 		notis = append(notis, noti)

@@ -9,6 +9,7 @@ import (
 	"roomrover/service/contract/api/internal/svc"
 	"roomrover/service/contract/api/internal/types"
 	"roomrover/service/contract/model"
+	notiModel "roomrover/service/notification/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -32,6 +33,7 @@ func (l *ConfirmContractLogic) ConfirmContract(req *types.ConfirmContractReq) (r
 
 	var userID int64
 	var albums []string
+	var currentTime = common.GetCurrentTime()
 
 	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
@@ -262,7 +264,7 @@ func (l *ConfirmContractLogic) ConfirmContract(req *types.ConfirmContractReq) (r
 
 	contractModel.Status = sql.NullInt64{Valid: true, Int64: common.CONTRACT_STATUS_ACTIVE}
 	contractModel.ConfirmedImgs = sql.NullString{Valid: true, String: req.Albums}
-	contractModel.UpdatedAt = sql.NullInt64{Valid: true, Int64: common.GetCurrentTime()}
+	contractModel.UpdatedAt = sql.NullInt64{Valid: true, Int64: currentTime}
 	contractModel.UpdatedBy = sql.NullInt64{Valid: true, Int64: userID}
 	contractModel.RenterId = sql.NullInt64{Valid: true, Int64: renterModel.Id}
 	contractModel.RenterName = sql.NullString{Valid: true, String: renterModel.FullName.String}
@@ -270,6 +272,25 @@ func (l *ConfirmContractLogic) ConfirmContract(req *types.ConfirmContractReq) (r
 	contractModel.RenterDate = sql.NullInt64{Valid: true, Int64: renterModel.CCCDDate.Int64}
 	contractModel.RenterAddress = sql.NullString{Valid: true, String: renterModel.CCCDAddress.String}
 	err = l.svcCtx.ContractModel.Update(l.ctx, contractModel)
+	if err != nil {
+		l.Logger.Error(err)
+		return &types.ConfirmContractRes{
+			Result: types.Result{
+				Code:    common.DB_ERR_CODE,
+				Message: common.DB_ERR_MESS,
+			},
+		}, nil
+	}
+
+	err = l.svcCtx.NotiFunction.CreateNotification(&notiModel.NotificationTbl{
+		Id:        l.svcCtx.ObjSync.GenServiceObjID(),
+		Sender:    contractModel.RenterId.Int64,
+		Receiver:  contractModel.LessorId.Int64,
+		RefId:     contractModel.Id,
+		RefType:   common.NOTI_TYPE_CONFIRM_CONTRACT,
+		Unread:    common.NOTI_TYPE_UNREAD,
+		CreatedAt: currentTime,
+	})
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.ConfirmContractRes{

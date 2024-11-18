@@ -8,6 +8,7 @@ import (
 
 	accountFunc "roomrover/service/account/function"
 	inventFunc "roomrover/service/inventory/function"
+	notifunc "roomrover/service/notification/function"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
@@ -30,7 +31,7 @@ type ServiceContext struct {
 
 	AccountFunction accountFunc.AccountFunction
 	InventFunction  inventFunc.InventoryFunction
-	
+	NotiFunction    notifunc.NotificationFunction
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -61,4 +62,8 @@ func (sc *ServiceContext) SetAccountFunction(accountFunction accountFunc.Account
 
 func (sc *ServiceContext) SetInventFunction(inventFunction inventFunc.InventoryFunction) {
 	sc.InventFunction = inventFunction
+}
+
+func (sc *ServiceContext) SetNotiFunction(notiFunction notifunc.NotificationFunction) {
+	sc.NotiFunction = notiFunction
 }

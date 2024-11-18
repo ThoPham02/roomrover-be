@@ -11,6 +11,7 @@ import (
 	"roomrover/service/contract/api/internal/types"
 	model "roomrover/service/contract/model"
 	inventoryModel "roomrover/service/inventory/model"
+	notiModel "roomrover/service/notification/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
@@ -370,6 +371,25 @@ func (l *UpdateContractLogic) UpdateContract(req *types.UpdateContractReq) (resp
 		}, nil
 	}
 	err = l.svcCtx.PaymentModel.Update(l.ctx, paymentModel)
+	if err != nil {
+		l.Logger.Error(err)
+		return &types.UpdateContractRes{
+			Result: types.Result{
+				Code:    common.DB_ERR_CODE,
+				Message: common.DB_ERR_MESS,
+			},
+		}, nil
+	}
+
+	err = l.svcCtx.NotiFunction.CreateNotification(&notiModel.NotificationTbl{
+		Id:        l.svcCtx.ObjSync.GenServiceObjID(),
+		Sender:    lessorModel.Id,
+		Receiver:  renterModel.Id,
+		RefId:     contractModel.Id,
+		RefType:   common.NOTI_TYPE_UPDATE_CONTRACT,
+		Unread:    common.NOTI_TYPE_UNREAD,
+		CreatedAt: currentTime,
+	})
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.UpdateContractRes{

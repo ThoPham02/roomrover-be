@@ -86,9 +86,18 @@ const (
 	NOTI_TYPE_UNREAD = 1
 	NOTI_TYPE_READ   = 2
 
-	NOTI_TYPE_CREATE_CONTACT  = 1
-	NOTI_TYPE_CONFIRM_CONTACT = 2
-	NOTI_TYPE_REJECT_CONTACT  = 4
+	NOTI_TYPE_CREATE_CONTACT           = 1    // tao lien he
+	NOTI_TYPE_CONFIRM_CONTACT          = 2    // xac nhan lien he
+	NOTI_TYPE_REJECT_CONTACT           = 4    // tu choi lien he
+	NOTI_TYPE_CREATE_CONTRACT          = 8    // tao hop dong
+	NOTI_TYPE_UPDATE_CONTRACT          = 16   // cap nhat hop dong
+	NOTI_TYPE_CANCEL_CONTRACT          = 32   // huy hop dong
+	NOTI_TYPE_CONFIRM_CONTRACT         = 64   // xac nhan hop dong
+	NOTI_TYPE_OUT_DATE_CONTRACT        = 128  // hop dong het han
+	NOTI_TYPE_NEARLY_OUT_DATE_CONTRACT = 256  // hop dong sap het han
+	NOTI_TYPE_CREATE_BILL              = 512  // tao hoa don
+	NOTI_TYPE_OUT_DATE_BILL            = 1024 // hoa don het han
+	NOTI_TYPE_PAY_BILL                 = 2048 // thanh toan hoa don
 )
 
 const MIN_ID = 10000000000000

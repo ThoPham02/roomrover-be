@@ -8,6 +8,7 @@ import (
 	"roomrover/service/contract/api/internal/svc"
 	"roomrover/service/contract/api/internal/types"
 	"roomrover/service/contract/model"
+	notiModel "roomrover/service/notification/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -73,6 +74,42 @@ func (l *UpdateContractStatusLogic) UpdateContractStatus(req *types.UpdateContra
 			},
 		}, nil
 	}
+	if req.Status == common.CONTRACT_STATUS_INACTIVE {
+		noti := &notiModel.NotificationTbl{
+			Id:        l.svcCtx.ObjSync.GenServiceObjID(),
+			Sender:    contract.RenterId.Int64,
+			Receiver:  contract.LessorId.Int64,
+			RefId:     contract.Id,
+			RefType:   common.NOTI_TYPE_CONFIRM_CONTRACT,
+			Unread:    common.NOTI_TYPE_UNREAD,
+			CreatedAt: common.GetCurrentTime(),
+		}
+
+		err = l.svcCtx.NotiFunction.CreateNotification(noti)
+		if err != nil {
+			l.Logger.Error(err)
+			return &types.UpdateContractStatusRes{
+				Result: types.Result{
+					Code:    common.DB_ERR_CODE,
+					Message: common.DB_ERR_MESS,
+				},
+			}, nil
+		}
+
+		noti.Sender = contract.LessorId.Int64
+		noti.Receiver = contract.RenterId.Int64
+		err = l.svcCtx.NotiFunction.CreateNotification(noti)
+		if err != nil {
+			l.Logger.Error(err)
+			return &types.UpdateContractStatusRes{
+				Result: types.Result{
+					Code:    common.DB_ERR_CODE,
+					Message: common.DB_ERR_MESS,
+				},
+			}, nil
+		}
+	}
+
 	l.Logger.Info("UpdateContractStatus success: ", contract)
 	return &types.UpdateContractStatusRes{
 		Result: types.Result{

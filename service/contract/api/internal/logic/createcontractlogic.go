@@ -14,6 +14,7 @@ import (
 	"roomrover/service/contract/api/internal/types"
 	"roomrover/service/contract/model"
 	inventoryModel "roomrover/service/inventory/model"
+	notiModel "roomrover/service/notification/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -364,6 +365,25 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 		}, nil
 	}
 	_, err = l.svcCtx.PaymentModel.Insert(l.ctx, paymentModel)
+	if err != nil {
+		l.Logger.Error(err)
+		return &types.CreateContractRes{
+			Result: types.Result{
+				Code:    common.DB_ERR_CODE,
+				Message: common.DB_ERR_MESS,
+			},
+		}, nil
+	}
+
+	err = l.svcCtx.NotiFunction.CreateNotification(&notiModel.NotificationTbl{
+		Id:        l.svcCtx.ObjSync.GenServiceObjID(),
+		Sender:    lessorModel.Id,
+		Receiver:  renterModel.Id,
+		RefId:     contractModel.Id,
+		RefType:   common.NOTI_TYPE_CREATE_CONTRACT,
+		Unread:    common.NOTI_TYPE_UNREAD,
+		CreatedAt: currentTime,
+	})
 	if err != nil {
 		l.Logger.Error(err)
 		return &types.CreateContractRes{

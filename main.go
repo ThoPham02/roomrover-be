@@ -55,6 +55,7 @@ func main() {
 	inventService.Ctx.SetNotiFunction(notiFunc)
 	contractService.Ctx.SetAccountFunction(accountFunc)
 	contractService.Ctx.SetInventFunction(inventFunc)
+	contractService.Ctx.SetNotiFunction(notiFunc)
 	notiService.Ctx.SetAccountFunction(accountFunc)
 	notiService.Ctx.SetInventFunction(inventFunc)
 	notiService.Ctx.SetContractFunction(contractFunc)
