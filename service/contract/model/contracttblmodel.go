@@ -3,6 +3,7 @@ package model
 import (
 	"context"
 	"fmt"
+	"roomrover/common"
 
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
@@ -18,6 +19,7 @@ type (
 		CountContractByCondition(ctx context.Context, lessorID int64, renterID int64, search string, status int64, createFrom int64, createTo int64) (int64, error)
 		FindContractByCondition(ctx context.Context, lessorID int64, renterID int64, search string, status int64, createFrom int64, createTo int64, offset int64, limit int64) ([]*ContractTbl, error)
 		FindActiveByRoomID(ctx context.Context, roomID int64) (*ContractTbl, error)
+		FilterContractOutDate(ctx context.Context, checkTime int64) ([]*ContractTbl, error)
 	}
 
 	customContractTblModel struct {
@@ -138,6 +140,20 @@ func (m *customContractTblModel) FindActiveByRoomID(ctx context.Context, roomID 
 	switch err {
 	case nil:
 		return &resp, nil
+	case sqlx.ErrNotFound:
+		return nil, nil
+	default:
+		return nil, err
+	}
+}
+
+func (m *customContractTblModel) FilterContractOutDate(ctx context.Context, checkTime int64) ([]*ContractTbl, error) {
+	query := fmt.Sprintf("select %s from %s where `id` in (select `contract_id` from `payment_tbl` where `deposit_date` between ? and ?) and `status` = ?", contractTblRows, m.table)
+	var resp []*ContractTbl
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, checkTime-43200000, checkTime+43200000, common.CONTRACT_STATUS_WAIT_DEPOSIT)
+	switch err {
+	case nil:
+		return resp, nil
 	case sqlx.ErrNotFound:
 		return nil, nil
 	default:

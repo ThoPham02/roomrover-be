@@ -7,6 +7,7 @@ import (
 	"roomrover/common"
 	"roomrover/service/contract/job/svc"
 	"roomrover/service/contract/model"
+	notiModel "roomrover/service/notification/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -30,8 +31,22 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 	var err error
 
 	var paymentModels []*model.PaymentTbl
+	var contractOutDate []*model.ContractTbl
 
 	l.Logger.Info("CreateBillByTime Start Time: ", currentTime)
+
+	contractOutDate, err = l.svcCtx.ContractModel.FilterContractOutDate(l.ctx, currentTime)
+	if err != nil {
+		l.Logger.Error(err)
+	}
+	for _, contractModel := range contractOutDate {
+		contractModel.Status.Int64 = common.CONTRACT_STATUS_INACTIVE
+		err = l.svcCtx.ContractModel.Update(l.ctx, contractModel)
+		if err != nil {
+			l.Logger.Error(err)
+			continue
+		}
+	}
 
 	paymentModels, err = l.svcCtx.PaymentModel.FilterPaymentByTime(l.ctx, currentTime+1*86400000) // thong bao 1 ngay truoc
 	if err != nil {
@@ -47,7 +62,8 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 			continue
 		}
 		contractModel, err = l.svcCtx.ContractModel.FindOne(l.ctx, paymentModel.ContractId)
-		if err != nil || contractModel == nil {
+		if err != nil || contractModel == nil ||
+			(contractModel.Status.Int64 != common.CONTRACT_STATUS_ACTIVE && contractModel.Status.Int64 != common.CONTRACT_STATUS_NEARLY_OUT_DATE) {
 			l.Logger.Error(err)
 			continue
 		}
@@ -151,23 +167,66 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 			continue
 		}
 
-		// noti := &notiModel.NotificationTbl{
-		// 	Id:        l.svcCtx.ObjSync.GenServiceObjID(),
-		// 	Sender:    contractModel.LessorId.Int64,
-		// 	Receiver:  contractModel.RenterId.Int64,
-		// 	RefId:     billModel.Id,
-		// 	RefType:   common.NOTIFICATION_REF_TYPE_BILL,
-		// 	Title:     fmt.Sprintf("Hoàn thành hóa đơn thanh toán tháng %d", common.GetBillIndexByTime(contractModel.CheckIn.Int64, currentTime)),
-		// 	DueDate:   billModel.PaymentDate.Int64,
-		// 	Status:    common.NOTI_STATUS_PENDING,
-		// 	Unread:    common.NOTI_TYPE_UNREAD,
-		// 	CreatedAt: currentTime,
-		// }
-		// err = l.svcCtx.NotificationFunction.CreateNotification(noti)
-		// if err != nil {
-		// 	l.Logger.Error(err)
-		// 	continue
-		// }
+		if contractModel.Status.Int64 == common.CONTRACT_STATUS_ACTIVE {
+			contractModel.Status.Int64 = common.CONTRACT_STATUS_NEARLY_OUT_DATE
+			err = l.svcCtx.ContractModel.Update(l.ctx, contractModel)
+			if err != nil {
+				l.Logger.Error(err)
+				continue
+			}
+		}
+
+		if contractModel.Status.Int64 == common.CONTRACT_STATUS_NEARLY_OUT_DATE {
+			contractModel.Status.Int64 = common.CONTRACT_STATUS_OUT_DATE
+			err = l.svcCtx.ContractModel.Update(l.ctx, contractModel)
+			if err != nil {
+				l.Logger.Error(err)
+				continue
+			}
+			noti := &notiModel.NotificationTbl{
+				Id:        l.svcCtx.ObjSync.GenServiceObjID(),
+				Sender:    contractModel.LessorId.Int64,
+				Receiver:  contractModel.RenterId.Int64,
+				RefId:     billModel.Id,
+				RefType:   common.NOTI_TYPE_OUT_DATE_CONTRACT,
+				Unread:    common.NOTI_TYPE_UNREAD,
+				CreatedAt: currentTime,
+			}
+			err = l.svcCtx.NotificationFunction.CreateNotification(noti)
+			if err != nil {
+				l.Logger.Error(err)
+				continue
+			}
+			noti.Sender = contractModel.RenterId.Int64
+			noti.Receiver = contractModel.LessorId.Int64
+			err = l.svcCtx.NotificationFunction.CreateNotification(noti)
+			if err != nil {
+				l.Logger.Error(err)
+				continue
+			}
+		}
+
+		noti := &notiModel.NotificationTbl{
+			Id:        l.svcCtx.ObjSync.GenServiceObjID(),
+			Sender:    contractModel.LessorId.Int64,
+			Receiver:  contractModel.RenterId.Int64,
+			RefId:     billModel.Id,
+			RefType:   common.NOTI_TYPE_CREATE_BILL,
+			Unread:    common.NOTI_TYPE_UNREAD,
+			CreatedAt: currentTime,
+		}
+		err = l.svcCtx.NotificationFunction.CreateNotification(noti)
+		if err != nil {
+			l.Logger.Error(err)
+			continue
+		}
+		noti.Sender = contractModel.RenterId.Int64
+		noti.Receiver = contractModel.LessorId.Int64
+		err = l.svcCtx.NotificationFunction.CreateNotification(noti)
+		if err != nil {
+			l.Logger.Error(err)
+			continue
+		}
 	}
 
 	l.Logger.Info("CreateBillByTime Start Time Success: ", common.GetCurrentTime())
