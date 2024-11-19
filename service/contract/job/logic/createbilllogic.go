@@ -178,6 +178,30 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 
 		if contractModel.Status.Int64 == common.CONTRACT_STATUS_NEARLY_OUT_DATE {
 			contractModel.Status.Int64 = common.CONTRACT_STATUS_OUT_DATE
+			roomModel, err := l.svcCtx.InventFunction.GetRoomByID(contractModel.RoomId.Int64)
+			if err != nil {
+				l.Logger.Error(err)
+				continue
+			}
+			roomModel.Status = common.ROOM_STATUS_ACTIVE
+			houseModel, err := l.svcCtx.InventFunction.GetHouseByID(roomModel.HouseId.Int64)
+			if err != nil {
+				l.Logger.Error(err)
+				continue
+			}
+			if houseModel.Status == common.HOUSE_STATUS_SOLD_OUT {
+				houseModel.Status = common.HOUSE_STATUS_ACTIVE
+				err = l.svcCtx.InventFunction.UpdateHouse(houseModel)
+				if err != nil {
+					l.Logger.Error(err)
+					continue
+				}
+			}
+			err = l.svcCtx.InventFunction.UpdateRoom(roomModel)
+			if err != nil {
+				l.Logger.Error(err)
+				continue
+			}
 			err = l.svcCtx.ContractModel.Update(l.ctx, contractModel)
 			if err != nil {
 				l.Logger.Error(err)
