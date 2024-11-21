@@ -16,6 +16,7 @@ type (
 	PaymentDetailTblModel interface {
 		paymentDetailTblModel
 		GetPaymentDetailByPaymentID(ctx context.Context, paymentID int64) ([]*PaymentDetailTbl, error)
+		DeleteByPaymentID(ctx context.Context, paymentID int64) error
 	}
 
 	customPaymentDetailTblModel struct {
@@ -42,4 +43,10 @@ func (m *customPaymentDetailTblModel) GetPaymentDetailByPaymentID(ctx context.Co
 	default:
 		return nil, err
 	}
+}
+
+func (m *customPaymentDetailTblModel) DeleteByPaymentID(ctx context.Context, paymentID int64) error {
+	query := fmt.Sprintf("delete from %s where `payment_id` = ?", m.table)
+	_, err := m.conn.ExecCtx(ctx, query, paymentID)
+	return err
 }

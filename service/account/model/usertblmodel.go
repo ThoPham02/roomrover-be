@@ -3,6 +3,7 @@ package model
 import (
 	"context"
 	"fmt"
+	"roomrover/common"
 
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
@@ -76,10 +77,10 @@ func (m *customUserTblModel) FindByIDs(ctx context.Context, userIDs []int64) ([]
 }
 
 func (m *customUserTblModel) FilterUser(ctx context.Context, phone string, limit, offset int64) ([]*UserTbl, error) {
-	query := fmt.Sprintf("select %s from %s where `phone` like ?", userTblRows, m.table)
+	query := fmt.Sprintf("select %s from %s where `role` = ? and  `phone` like ?", userTblRows, m.table)
 	var resp []*UserTbl
 	var vals []interface{}
-	vals = append(vals, "%"+phone+"%")
+	vals = append(vals, common.USER_ROLE_RENTER, "%"+phone+"%")
 	if limit > 0 {
         query += " limit ? offset ?"
         vals = append(vals, limit, offset)

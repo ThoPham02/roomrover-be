@@ -28,26 +28,15 @@ type (
 
 	UpdateContractReq {
 		ID            int64  `path:"id"`
-		Status        int64  `form:"status"`
-		RenterID      int64  `form:"renterID"`
-		RenterNumber  string `form:"renterNumber"`
-		RenterDate    string `form:"renterDate"`
-		RenterName    string `form:"renterName"`
-		RenterAddress string `form:"renterAddress"`
-		LessorID      int64  `form:"lessorID"`
-		LessorNumber  string `form:"lessorNumber"`
-		LessorDate    string `form:"lessorDate"`
-		LessorName    string `form:"lessorName"`
-		LessorAddress string `form:"lessorAddress"`
-		PaymentRenter string `form:"paymentRenter"`
-		RoomID        int64  `form:"roomID"`
-		EIndex        int64  `form:"eIndex"`
-		WIndex        int64  `form:"wIndex"`
+		Renter        string `form:"renter"`
+		Lessor        string `form:"lessor"`
+		PaymentRenter string `form:"paymentRenter,optional"`
+		Room          string `form:"room"`
 		CheckIn       int64  `form:"checkIn"`
 		Duration      int64  `form:"duration"`
 		Purpose       string `form:"purpose"`
-		Amount        int64  `form:"amount"`
-		Discount      int64  `form:"discount"`
+		Price         int64  `form:"price"`
+		Discount      int64  `form:"discount,optional"`
 		Deposit       int64  `form:"deposit"`
 		DepositDate   int64  `form:"depositDate"`
 	}
@@ -131,7 +120,7 @@ type (
 		Amount  int64  `form:"amount"`
 		PayType int64  `form:"payType"`
 		PayDate int64  `form:"payDate"`
-		Url     string `form:"url"`
+		Url     string `form:"url,optional"`
 	}
 	CreateBillPayRes {
 		Result Result `json:"result"`
@@ -171,6 +160,51 @@ type (
 		ReturnCode    int    `json:"return_code"`
 		ReturnMessage string `json:"return_message"`
 	}
+
+	ConfirmContractReq {
+		ID       int64  `path:"id"`
+		Renters  string `form:"renters,optional"`
+		Albums   string `form:"albums,optional"`
+		Services string `form:"services,optional"`
+	}
+	ConfirmContractRes {
+		Result Result `json:"result"`
+	}
+
+	GetListBillDetailReq {
+		BillID int64 `path:"billID"`
+	}
+	GetListBillDetailRes {
+		Result      Result       `json:"result"`
+		BillDetails []BillDetail `json:"billDetails"`
+	}
+
+	UpdateBillDetailsReq {
+		BillID      int64  `path:"billID"`
+		BillDetails string `form:"billDetails"`
+	}
+	UpdateBillDetailsRes {
+		Result Result `json:"result"`
+	}
+
+	GetListRenterReq {
+		Search string `form:"search,optional"`
+		Limit  int64  `form:"limit,optional"`
+		Offset int64  `form:"offset,optional"`
+	}
+	GetListRenterRes {
+		Result  Result          `json:"result"`
+		Renters []RenterContact `json:"renters"`
+		Total   int             `json:"total"`
+	}
+
+	UpdateRenterStatusReq {
+		ID     int64 `path:"id"`
+		Status int64 `form:"status,optional"`
+	}
+	UpdateRenterStatusRes {
+		Result Result `json:"result"`
+	}
 )
 
 @server (
@@ -179,6 +213,36 @@ type (
 	prefix:     /contract
 )
 service contract-api {
+	@doc (
+		summary: "List Renter Contact"
+	)
+	@handler GetListRenter
+	get /renters (GetListRenterReq) returns (GetListRenterRes)
+	
+	@doc (
+		summary: "Update Renter Status"
+	)
+	@handler UpdateRenterStatus
+	put /renters/:id (UpdateRenterStatusReq) returns (UpdateRenterStatusRes)
+	
+	@doc(
+		summary: "Get Bill Detail"
+	)
+	@handler GetListBillDetail
+	get /bill-detail/:billID (GetListBillDetailReq) returns (GetListBillDetailRes)
+	
+	@doc(
+		summary: "Update Bill Details"
+	)
+	@handler UpdateBillDetails
+	put /bill-detail/:billID (UpdateBillDetailsReq) returns (UpdateBillDetailsRes)
+	
+	@doc(
+		summary: "Confirm contract"
+	)
+	@handler ConfirmContract
+	put /:id/confirm (ConfirmContractReq) returns (ConfirmContractRes)
+	
 	@doc (
 		summary: "Create contract"
 	)

@@ -3,6 +3,7 @@ package model
 import (
 	"context"
 	"fmt"
+	"roomrover/common"
 
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
@@ -15,7 +16,7 @@ type (
 	HouseTblModel interface {
 		houseTblModel
 		withSession(session sqlx.Session) HouseTblModel
-		FilterHouse(ctx context.Context, userID int64, search string, limit, offset int64) (total int64, listHouses []*HouseTbl, err error)
+		FilterHouse(ctx context.Context, userID int64, search string, houseType, status, limit, offset int64) (total int64, listHouses []*HouseTbl, err error)
 		FindMultiByID(ctx context.Context, ids []int64) ([]*HouseTbl, error)
 		SearchHouse(ctx context.Context, search string, districtID, provinceID, wardID, typeHouse, unit int64, priceFrom, priceTo, areaFrom, areaTo, limit, offset int64) (total int64, listHouses []*HouseTbl, err error)
 	}
@@ -36,21 +37,38 @@ func (m *customHouseTblModel) withSession(session sqlx.Session) HouseTblModel {
 	return NewHouseTblModel(sqlx.NewSqlConnFromSession(session))
 }
 
-func (m *customHouseTblModel) FilterHouse(ctx context.Context, userID int64, search string, limit, offset int64) (total int64, listHouses []*HouseTbl, err error) {
+func (m *customHouseTblModel) FilterHouse(ctx context.Context, userID int64, search string, houseType, status, limit, offset int64) (total int64, listHouses []*HouseTbl, err error) {
 	var searchVal string = "%" + search + "%"
 	var vals []interface{}
 	selectQuery := fmt.Sprintf("select %s from %s where `user_id` = ? and `name` like ?", houseTblRows, m.table)
 	vals = append(vals, userID, searchVal)
+	if houseType > 0 {
+		selectQuery += " and `type` = ?"
+		vals = append(vals, houseType)
+	}
+	if status > 0 {
+		selectQuery += " and `status` = ?"
+		vals = append(vals, status)
+	}
+	selectQuery += " order by `updated_at` desc"
+
+	countQuery := fmt.Sprintf("select count(*) from %s where `user_id` = ? and `name` like ?", m.table)
+	if houseType > 0 {
+		countQuery += " and `type` = ?"
+	}
+	if status > 0 {
+		countQuery += " and `status` = ?"
+	}
+	err = m.conn.QueryRowCtx(ctx, &total, countQuery, vals...)
+	if err != nil {
+		return 0, nil, err
+	}
+
 	if limit > 0 {
 		selectQuery += " limit ? offset ?"
 		vals = append(vals, limit, offset)
 	}
 	err = m.conn.QueryRowsCtx(ctx, &listHouses, selectQuery, vals...)
-	if err != nil {
-		return 0, nil, err
-	}
-	countQuery := fmt.Sprintf("select count(*) from %s where `user_id` = ? and `name` like ?", m.table)
-	err = m.conn.QueryRowCtx(ctx, &total, countQuery, userID, searchVal)
 	if err != nil {
 		return 0, nil, err
 	}
@@ -81,9 +99,9 @@ func (m *customHouseTblModel) FindMultiByID(ctx context.Context, ids []int64) ([
 func (m *customHouseTblModel) SearchHouse(ctx context.Context, search string, districtID, provinceID, wardID, typeHouse, unit, priceFrom, priceTo, areaFrom, areaTo, limit, offset int64) (total int64, listHouses []*HouseTbl, err error) {
 	var searchVal string = "%" + search + "%"
 	var vals []interface{}
-	selectQuery := fmt.Sprintf("select %s from %s where `name` like ?", houseTblRows, m.table)
-	countQuery := fmt.Sprintf("select count(*) from %s where `name` like ?", m.table)
-	vals = append(vals, searchVal)
+	selectQuery := fmt.Sprintf("select %s from %s where `status` = ? and `name` like ?", houseTblRows, m.table)
+	countQuery := fmt.Sprintf("select count(*) from %s where `status` = ? and `name` like ?", m.table)
+	vals = append(vals, common.HOUSE_STATUS_ACTIVE, searchVal)
 	if districtID > 0 {
 		countQuery += " and `district_id` = ?"
 		selectQuery += " and `district_id` = ?"
@@ -134,7 +152,7 @@ func (m *customHouseTblModel) SearchHouse(ctx context.Context, search string, di
 	if err != nil {
 		return 0, nil, err
 	}
-
+	selectQuery += " order by `updated_at` desc"
 	if limit > 0 {
 		selectQuery += " limit ? offset ?"
 		vals = append(vals, limit, offset)

@@ -127,6 +127,7 @@ func (l *SearchRoomLogic) SearchRoom(req *types.SearchRoomReq) (resp *types.Sear
 			Area:       room.Area.Int64,
 			Price:      room.Price.Int64,
 			Status:     room.Status,
+			Type:       room.Type.Int64,
 			Capacity:   room.Capacity.Int64,
 			EIndex:     room.EIndex.Int64,
 			WIndex:     room.WIndex.Int64,

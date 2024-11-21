@@ -10,7 +10,7 @@ import (
 	"github.com/zeromicro/go-zero/rest"
 )
 
-var configFile = flag.String("f", "etc/notification-api.yaml", "the config file")
+var configFile = flag.String("notification", "etc/notification-api.yaml", "the config file")
 
 type NotificationService struct {
 	C      config.Config

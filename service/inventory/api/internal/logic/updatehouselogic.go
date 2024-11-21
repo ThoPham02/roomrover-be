@@ -50,6 +50,10 @@ func (l *UpdateHouseLogic) UpdateHouse(req *types.UpdateHouseReq) (resp *types.U
 	var updateServiceModels []*model.ServiceTbl
 	var createServiceModels []*model.ServiceTbl
 
+	var houseStatus int64 = common.HOUSE_STATUS_DRAFT
+	var roomStatus int64 = common.ROOM_STATUS_INACTIVE
+	var activeRoom int
+
 	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
 		l.Logger.Error(err)
@@ -86,6 +90,16 @@ func (l *UpdateHouseLogic) UpdateHouse(req *types.UpdateHouseReq) (resp *types.U
 			}, nil
 		}
 		for _, room := range rooms {
+			roomStatus = room.Status
+			if room.Status != common.ROOM_STATUS_RENTED && room.Status != common.ROOM_STATUS_STOP {
+				if req.Option == 0 {
+					roomStatus = common.ROOM_STATUS_INACTIVE
+				} else {
+					roomStatus = common.ROOM_STATUS_ACTIVE
+					activeRoom++
+				}
+			}
+
 			if room.RoomID > common.MIN_ID {
 				mapRoomExist[room.RoomID] = true
 
@@ -100,8 +114,13 @@ func (l *UpdateHouseLogic) UpdateHouse(req *types.UpdateHouseReq) (resp *types.U
 					}, nil
 				}
 
+				if roomModel.Status == common.ROOM_STATUS_RENTED {
+					houseStatus = common.HOUSE_STATUS_ACTIVE
+				}
+
 				roomModel.Capacity = sql.NullInt64{Int64: room.Capacity, Valid: true}
 				roomModel.Name = sql.NullString{String: room.Name, Valid: true}
+				roomModel.Status = roomStatus
 
 				updateRoomModels = append(updateRoomModels, roomModel)
 			} else {
@@ -109,7 +128,7 @@ func (l *UpdateHouseLogic) UpdateHouse(req *types.UpdateHouseReq) (resp *types.U
 					Id:       l.svcCtx.ObjSync.GenServiceObjID(),
 					HouseId:  sql.NullInt64{Int64: req.HouseID, Valid: true},
 					Name:     sql.NullString{Valid: true, String: room.Name},
-					Status:   common.ROOM_STATUS_ACTIVE,
+					Status:   roomStatus,
 					Capacity: sql.NullInt64{Valid: true, Int64: room.Capacity},
 					EIndex:   sql.NullInt64{Valid: true, Int64: 0},
 					WIndex:   sql.NullInt64{Valid: true, Int64: 0},
@@ -229,6 +248,20 @@ func (l *UpdateHouseLogic) UpdateHouse(req *types.UpdateHouseReq) (resp *types.U
 		albumModels = append(albumModels, albumModel)
 	}
 
+	if req.Option == 0 {
+		if houseModel.Status == common.HOUSE_STATUS_DRAFT {
+			houseStatus = common.HOUSE_STATUS_DRAFT
+		} else {
+			houseStatus = common.HOUSE_STATUS_INACTIVE
+		}
+	} else {
+		if activeRoom == 0 {
+			houseStatus = common.HOUSE_STATUS_SOLD_OUT
+		} else {
+			houseStatus = common.HOUSE_STATUS_ACTIVE
+		}
+	}
+
 	houseModel = &model.HouseTbl{
 		Id:          houseModel.Id,
 		UserId:      houseModel.UserId,
@@ -237,7 +270,7 @@ func (l *UpdateHouseLogic) UpdateHouse(req *types.UpdateHouseReq) (resp *types.U
 		Type:        req.Type,
 		Area:        req.Area,
 		Price:       req.Price,
-		Status:      houseModel.Status,
+		Status:      houseStatus,
 		BedNum:      sql.NullInt64{Valid: true, Int64: int64(req.BedNum)},
 		LivingNum:   sql.NullInt64{Valid: true, Int64: int64(req.LivingNum)},
 		Unit:        sql.NullInt64{Valid: true, Int64: int64(req.Unit)},

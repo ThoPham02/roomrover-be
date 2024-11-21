@@ -6,6 +6,7 @@ import (
 	"roomrover/service/inventory/api/internal/config"
 	"roomrover/service/inventory/api/internal/middleware"
 	"roomrover/service/inventory/model"
+	notiFunc "roomrover/service/notification/function"
 	"roomrover/storage"
 	"roomrover/sync"
 
@@ -27,6 +28,7 @@ type ServiceContext struct {
 
 	AccountFunction  accountFunc.AccountFunction
 	ContractFunction contractFunc.ContractFunction
+	NotiFunction     notiFunc.NotificationFunction
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -50,4 +52,8 @@ func (ctx *ServiceContext) SetContractFunction(contractFunc contractFunc.Contrac
 
 func (ctx *ServiceContext) SetAccountFunction(accountFunc accountFunc.AccountFunction) {
 	ctx.AccountFunction = accountFunc
+}
+
+func (ctx *ServiceContext) SetNotiFunction(notiFunc notiFunc.NotificationFunction) {
+	ctx.NotiFunction = notiFunc
 }

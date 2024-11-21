@@ -30,5 +30,10 @@ func (notificationFunc *NotificationFunction) Start() error {
 }
 
 func (notificationFunc *NotificationFunction) CreateNotification(noti *model.NotificationTbl) error {
-	return notificationFunc.NotificationService.Ctx.NotificationModel.Update(context.TODO(), noti)
+	_, err := notificationFunc.NotificationService.Ctx.NotificationModel.Insert(context.TODO(), noti)
+	return err
+}
+
+func (notificationFunc *NotificationFunction) DeleteNotiByRefID(refID int64) error {
+	return notificationFunc.NotificationService.Ctx.NotificationModel.DeleteNotiByRefID(context.TODO(), refID)
 }

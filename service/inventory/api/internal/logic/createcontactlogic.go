@@ -8,6 +8,7 @@ import (
 	"roomrover/service/inventory/api/internal/svc"
 	"roomrover/service/inventory/api/internal/types"
 	"roomrover/service/inventory/model"
+	notiModel "roomrover/service/notification/model"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -30,6 +31,7 @@ func (l *CreateContactLogic) CreateContact(req *types.CreateContactReq) (resp *t
 	l.Logger.Info("CreateContact: ", req)
 
 	var userID int64
+	var currentTime = common.GetCurrentTime()
 
 	userID, err = common.GetUserIDFromContext(l.ctx)
 	if err != nil {
@@ -53,13 +55,33 @@ func (l *CreateContactLogic) CreateContact(req *types.CreateContactReq) (resp *t
 		}, nil
 	}
 
-	_, err = l.svcCtx.ContactModel.Insert(l.ctx, &model.ContactTbl{
+	var contact = &model.ContactTbl{
 		Id:       l.svcCtx.ObjSync.GenServiceObjID(),
 		HouseId:  sql.NullInt64{Valid: true, Int64: req.HouseID},
 		RenterId: sql.NullInt64{Valid: true, Int64: userID},
 		LessorId: sql.NullInt64{Valid: true, Int64: req.LessorID},
 		Datetime: sql.NullInt64{Valid: true, Int64: req.Datetime},
 		Status:   common.CONTACT_STATUS_TYPE_WATTING,
+	}
+	_, err = l.svcCtx.ContactModel.Insert(l.ctx, contact)
+	if err != nil {
+		l.Logger.Info(err)
+		return &types.CreateContactRes{
+			Result: types.Result{
+				Code:    common.DB_ERR_CODE,
+				Message: common.DB_ERR_MESS,
+			},
+		}, nil
+	}
+
+	err = l.svcCtx.NotiFunction.CreateNotification(&notiModel.NotificationTbl{
+		Id:          l.svcCtx.ObjSync.GenServiceObjID(),
+		Sender:      userID,
+		Receiver:    req.LessorID,
+		RefId:       contact.Id,
+		RefType:     common.NOTI_TYPE_CREATE_CONTACT,
+		Unread:      common.NOTI_TYPE_UNREAD,
+		CreatedAt:   currentTime,
 	})
 	if err != nil {
 		l.Logger.Info(err)

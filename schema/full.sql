@@ -28,6 +28,7 @@ CREATE TABLE `house_tbl` (
   `status` int NOT NULL,
   `bed_num` int,
   `living_num` int,
+  `unit` int,
   `address` varchar(255),
   `ward_id` int NOT NULL,
   `district_id` int NOT NULL,
@@ -66,6 +67,16 @@ CREATE TABLE `service_tbl` (
   PRIMARY KEY (`id`)
 );
 
+CREATE TABLE `contact_tbl` (
+  `id` bigint,
+  `house_id` bigint,
+  `renter_id` bigint,
+  `lessor_id` bigint,
+  `datetime` bigint,
+  `status` int NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
 CREATE TABLE `contract_tbl` (
   `id` bigint,
   `code` varchar(255),
@@ -86,6 +97,7 @@ CREATE TABLE `contract_tbl` (
   `check_in` bigint,
   `duration` int,
   `purpose` varchar(255),
+  `confirmed_imgs` text,
 
   `created_at` bigint,
   `updated_at` bigint,
@@ -111,6 +123,7 @@ CREATE TABLE `payment_detail_tbl` (
   `name` varchar(255),
   `type` int,
   `price` bigint,
+  `index` int,
   PRIMARY KEY (`id`)
 );
 
@@ -130,17 +143,21 @@ CREATE TABLE `bill_tbl` (
   `discount` bigint,
   `remain` bigint not null,
   `status` int not null,
+  `paid_date` bigint,
   PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `bill_detail_tbl` (
   `id` bigint,
   `bill_id` bigint,
+  `payment_detail_id` bigint,
   `name` varchar(255),
   `price` bigint,
   `type` int,
+  `old_index` int,
+  `new_index` int,
+  `img_url` varchar(255),
   `quantity` int,
-  `status` int,
   PRIMARY KEY (`id`)
 );
 
@@ -150,23 +167,9 @@ CREATE TABLE `bill_pay_tbl` (
   `user_id` bigint not null,
   `amount` bigint not null,
   `pay_date` bigint not null,
+  `status` int not null,
+  `trans_id` varchar(255),
   `type` int not null,
   `url` varchar(255),
   PRIMARY KEY (`id`)
-);
-
-create table `notification_tbl` (
-    `id` bigint,
-    `sender` bigint not null,
-    `receiver` bigint not null,
-    `ref_id` bigint not null,
-    `ref_type` int not null,
-    `title` text not null,
-    `description` text not null,
-    `priority` int not null,
-    `due_date` bigint not null,
-    `status` int not null,
-    `unread` int default 1 not null,
-    `created_at` bigint not null,
-    primary key (`id`)
 );

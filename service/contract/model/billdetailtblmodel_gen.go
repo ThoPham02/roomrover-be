@@ -35,13 +35,16 @@ type (
 	}
 
 	BillDetailTbl struct {
-		Id       int64          `db:"id"`
-		BillId   sql.NullInt64  `db:"bill_id"`
-		Name     sql.NullString `db:"name"`
-		Price    sql.NullInt64  `db:"price"`
-		Type     sql.NullInt64  `db:"type"`
-		Quantity sql.NullInt64  `db:"quantity"`
-		Status   sql.NullInt64  `db:"status"`
+		Id              int64          `db:"id"`
+		BillId          sql.NullInt64  `db:"bill_id"`
+		PaymentDetailId sql.NullInt64  `db:"payment_detail_id"`
+		Name            sql.NullString `db:"name"`
+		Price           sql.NullInt64  `db:"price"`
+		Type            sql.NullInt64  `db:"type"`
+		OldIndex        sql.NullInt64  `db:"old_index"`
+		NewIndex        sql.NullInt64  `db:"new_index"`
+		ImgUrl          sql.NullString `db:"img_url"`
+		Quantity        sql.NullInt64  `db:"quantity"`
 	}
 )
 
@@ -73,14 +76,14 @@ func (m *defaultBillDetailTblModel) FindOne(ctx context.Context, id int64) (*Bil
 }
 
 func (m *defaultBillDetailTblModel) Insert(ctx context.Context, data *BillDetailTbl) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?)", m.table, billDetailTblRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.BillId, data.Name, data.Price, data.Type, data.Quantity, data.Status)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, billDetailTblRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.BillId, data.PaymentDetailId, data.Name, data.Price, data.Type, data.OldIndex, data.NewIndex, data.ImgUrl, data.Quantity)
 	return ret, err
 }
 
 func (m *defaultBillDetailTblModel) Update(ctx context.Context, data *BillDetailTbl) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, billDetailTblRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.BillId, data.Name, data.Price, data.Type, data.Quantity, data.Status, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.BillId, data.PaymentDetailId, data.Name, data.Price, data.Type, data.OldIndex, data.NewIndex, data.ImgUrl, data.Quantity, data.Id)
 	return err
 }
 

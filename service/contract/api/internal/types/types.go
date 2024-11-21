@@ -22,26 +22,15 @@ type CreateContractRes struct {
 
 type UpdateContractReq struct {
 	ID            int64  `path:"id"`
-	Status        int64  `form:"status"`
-	RenterID      int64  `form:"renterID"`
-	RenterNumber  string `form:"renterNumber"`
-	RenterDate    string `form:"renterDate"`
-	RenterName    string `form:"renterName"`
-	RenterAddress string `form:"renterAddress"`
-	LessorID      int64  `form:"lessorID"`
-	LessorNumber  string `form:"lessorNumber"`
-	LessorDate    string `form:"lessorDate"`
-	LessorName    string `form:"lessorName"`
-	LessorAddress string `form:"lessorAddress"`
-	PaymentRenter string `form:"paymentRenter"`
-	RoomID        int64  `form:"roomID"`
-	EIndex        int64  `form:"eIndex"`
-	WIndex        int64  `form:"wIndex"`
+	Renter        string `form:"renter"`
+	Lessor        string `form:"lessor"`
+	PaymentRenter string `form:"paymentRenter,optional"`
+	Room          string `form:"room"`
 	CheckIn       int64  `form:"checkIn"`
 	Duration      int64  `form:"duration"`
 	Purpose       string `form:"purpose"`
-	Amount        int64  `form:"amount"`
-	Discount      int64  `form:"discount"`
+	Price         int64  `form:"price"`
+	Discount      int64  `form:"discount,optional"`
 	Deposit       int64  `form:"deposit"`
 	DepositDate   int64  `form:"depositDate"`
 }
@@ -133,7 +122,7 @@ type CreateBillPayReq struct {
 	Amount  int64  `form:"amount"`
 	PayType int64  `form:"payType"`
 	PayDate int64  `form:"payDate"`
-	Url     string `form:"url"`
+	Url     string `form:"url,optional"`
 }
 
 type CreateBillPayRes struct {
@@ -177,6 +166,56 @@ type ZaloPaymentCallbackReq struct {
 type ZaloPaymentCallbackRes struct {
 	ReturnCode    int    `json:"return_code"`
 	ReturnMessage string `json:"return_message"`
+}
+
+type ConfirmContractReq struct {
+	ID       int64  `path:"id"`
+	Renters  string `form:"renters,optional"`
+	Albums   string `form:"albums,optional"`
+	Services string `form:"services,optional"`
+}
+
+type ConfirmContractRes struct {
+	Result Result `json:"result"`
+}
+
+type GetListBillDetailReq struct {
+	BillID int64 `path:"billID"`
+}
+
+type GetListBillDetailRes struct {
+	Result      Result       `json:"result"`
+	BillDetails []BillDetail `json:"billDetails"`
+}
+
+type UpdateBillDetailsReq struct {
+	BillID      int64  `path:"billID"`
+	BillDetails string `form:"billDetails"`
+}
+
+type UpdateBillDetailsRes struct {
+	Result Result `json:"result"`
+}
+
+type GetListRenterReq struct {
+	Search string `form:"search,optional"`
+	Limit  int64  `form:"limit,optional"`
+	Offset int64  `form:"offset,optional"`
+}
+
+type GetListRenterRes struct {
+	Result  Result        `json:"result"`
+	Renters []RenterContact `json:"renters"`
+	Total   int           `json:"total"`
+}
+
+type UpdateRenterStatusReq struct {
+	ID     int64 `path:"id"`
+	Status int64 `form:"status,optional"`
+}
+
+type UpdateRenterStatusRes struct {
+	Result Result `json:"result"`
 }
 
 type Result struct {
@@ -263,6 +302,10 @@ type Contact struct {
 	ID          int64  `json:"id"`
 	HouseID     int64  `json:"houseID"`
 	HouseName   string `json:"houseName"`
+	ProvinceID  int64  `json:"provinceID"`
+	DistrictID  int64  `json:"districtID"`
+	WardID      int64  `json:"wardID"`
+	Address     string `json:"address"`
 	RenterID    int64  `json:"renterID"`
 	RenterName  string `json:"renterName"`
 	RenterPhone string `json:"renterPhone"`
@@ -274,28 +317,32 @@ type Contact struct {
 }
 
 type Contract struct {
-	ContractID int64   `json:"contractID"`
-	Code       string  `json:"code"`
-	Status     int64   `json:"status"`
-	Renter     User    `json:"renter"`
-	Lessor     User    `json:"lessor"`
-	Room       Room    `json:"room"`
-	CheckIn    int64   `json:"checkIn"`
-	Duration   int64   `json:"duration"`
-	Purpose    string  `json:"purpose"`
-	Payment    Payment `json:"payment"`
-	CreatedAt  int64   `json:"createdAt"`
-	UpdatedAt  int64   `json:"updatedAt"`
-	CreatedBy  int64   `json:"createdBy"`
-	UpdatedBy  int64   `json:"updatedBy"`
+	ContractID    int64    `json:"contractID"`
+	Code          string   `json:"code"`
+	Status        int64    `json:"status"`
+	Renter        User     `json:"renter"`
+	Lessor        User     `json:"lessor"`
+	Room          Room     `json:"room"`
+	CheckIn       int64    `json:"checkIn"`
+	Duration      int64    `json:"duration"`
+	Purpose       string   `json:"purpose"`
+	Payment       Payment  `json:"payment"`
+	ConfirmedImgs []string `json:"confirmedImgs"`
+	CreatedAt     int64    `json:"createdAt"`
+	UpdatedAt     int64    `json:"updatedAt"`
+	CreatedBy     int64    `json:"createdBy"`
+	UpdatedBy     int64    `json:"updatedBy"`
 }
 
 type PaymentRenter struct {
-	ID        int64  `json:"id"`
-	PaymentID int64  `json:"paymentID"`
-	RenterID  int64  `json:"renterID"`
-	Name      string `json:"name"`
-	Phone     string `json:"phone"`
+	ID          int64  `json:"id"`
+	PaymentID   int64  `json:"paymentID"`
+	RenterID    int64  `json:"renterID"`
+	Name        string `json:"name"`
+	Phone       string `json:"phone"`
+	CccdNumber  string `json:"cccdNumber"`  // so can cuoc
+	CccdDate    int64  `json:"cccdDate"`    // ngay cap
+	CccdAddress string `json:"cccdAddress"` // noi cap
 }
 
 type PaymentDetail struct {
@@ -304,6 +351,7 @@ type PaymentDetail struct {
 	Name      string `json:"name"`
 	Price     int64  `json:"price"`
 	Type      int64  `json:"type"`
+	Index     int64  `json:"index"`
 }
 
 type Payment struct {
@@ -343,6 +391,9 @@ type BillDetail struct {
 	Name         string `json:"name"`
 	Price        int64  `json:"price"`
 	Type         int64  `json:"type"`
+	OldIndex     int64  `json:"oldIndex"`
+	NewIndex     int64  `json:"newIndex"`
+	Imgurl       string `json:"imgUrl"`
 	Quantity     int64  `json:"quantity"`
 }
 
@@ -356,4 +407,15 @@ type BillPay struct {
 	Type      int64  `json:"type"`
 	Url       string `json:"url"`
 	TransId   string `json:"transId"`
+}
+
+type RenterContact struct {
+	ID          int64  `json:"id"`
+	RoomName    string `json:"roomName"`
+	Name        string `json:"name"`
+	Phone       string `json:"phone"`
+	CccdNumber  string `json:"cccdNumber"`
+	CccdDate    int64  `json:"cccdDate"`
+	CccdAddress string `json:"cccdAddress"`
+	Status      int64  `json:"status"`
 }

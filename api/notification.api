@@ -8,19 +8,20 @@ info (
 import "model.api"
 
 type (
+	NotiInfo {
+		ID   int64       `json:"id"`
+		Name interface{} `json:"name"`
+	}
+
 	Notification {
-		NotificationID int64  `json:"id"`
-		AssigneeID     int64  `json:"assigneeID"`
-		AssignerID     int64  `json:"assignerID"`
-		RefID          int64  `json:"refID"`
-		RefType        int64  `json:"refType"`
-		Title          string `json:"title"`
-		Description    string `json:"description"`
-		Priority       int64  `json:"priority"`
-		DueDate        int64  `json:"dueDate"`
-		Status         int64  `json:"status"`
-		Unread         int64  `json:"unread"`
-		CreatedAt      int64  `json:"createdAt"`
+		NotificationID int64      `json:"id"`
+		SenderID       int64      `json:"senderID"`
+		ReceiverID     int64      `json:"receiverID"`
+		RefID          int64      `json:"refID"`
+		RefType        int64      `json:"refType"`
+		Unread         int64      `json:"unread"`
+		NotiInfos      []NotiInfo `json:"notiInfos"`
+		CreatedAt      int64      `json:"createdAt"`
 	}
 
 	CreateNotificationReq {
@@ -37,6 +38,23 @@ type (
 		Result       Result       `json:"result"`
 		Notification Notification `json:"notification"`
 	}
+
+	GetListNotificationReq {
+		Limit  int64 `form:"limit"`
+		Offset int64 `form:"offset"`
+	}
+	GetListNotificationRes {
+		Result        Result         `json:"result"`
+		Notifications []Notification `json:"notifications"`
+		Total         int            `json:"total"`
+	}
+
+	MarkReadReq {
+		ID int64 `path:"id"`
+	}
+	MarkReadRes {
+		Result Result `json:"result"`
+	}
 )
 
 @server (
@@ -50,4 +68,16 @@ service notification-api {
 	)
 	@handler CreateNotification
 	post /create (CreateNotificationReq) returns (CreateNotificationRes)
+	
+	@doc(
+		summary: "Get List Noti"
+	)
+	@handler GetListNotification
+	get /list  (GetListNotificationReq) returns (GetListNotificationRes)
+	
+	@doc(
+		summary: "Mark Read Noti"
+	)
+	@handler MarkReadNoti
+	put /mark-read/:id (MarkReadReq) returns (MarkReadRes)
 }

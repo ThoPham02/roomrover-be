@@ -56,3 +56,18 @@ func (sc *InventoryFunction) GetHousesByIDs(houseIDs []int64) (houses []*model.H
 func (sc *InventoryFunction) GetHouseRoomByRoomID(roomID int64) (houseRoom *model.HouseRoomTbl, err error) {
 	return sc.InventService.Ctx.RoomModel.GetHouseRoomByRoomID(context.Background(), roomID)
 }
+
+func (sc *InventoryFunction) CountRoomActiveByHouseID(houseID int64) (count int64, err error) {
+	return sc.InventService.Ctx.RoomModel.CountRoomActiveByHouseID(context.Background(), houseID)
+}
+
+func (sc *InventoryFunction) GetHouseByID(houseID int64) (house *model.HouseTbl, err error) {
+	return sc.InventService.Ctx.HouseModel.FindOne(context.Background(), houseID)
+}
+
+func (sc *InventoryFunction) UpdateHouse(house *model.HouseTbl) error {
+	return sc.InventService.Ctx.HouseModel.Update(context.Background(), house)
+}
+func (sc *InventoryFunction) GetContactByID(contactID int64) (contact *model.ContactTbl, err error) {
+	return sc.InventService.Ctx.ContactModel.FindOne(context.Background(), contactID)
+}

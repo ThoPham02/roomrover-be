@@ -18,6 +18,7 @@ CREATE TABLE `contract_tbl` (
   `check_in` bigint,
   `duration` int,
   `purpose` varchar(255),
+  `confirmed_imgs` text,
 
   `created_at` bigint,
   `updated_at` bigint,
@@ -43,6 +44,7 @@ CREATE TABLE `payment_detail_tbl` (
   `name` varchar(255),
   `type` int,
   `price` bigint,
+  `index` int,
   PRIMARY KEY (`id`)
 );
 
@@ -50,6 +52,7 @@ CREATE TABLE `payment_renter_tbl` (
   `id` bigint,
   `payment_id` bigint,
   `user_id` bigint,
+  `status` bigint not null default 0,
   PRIMARY KEY (`id`)
 );
 
@@ -69,11 +72,14 @@ CREATE TABLE `bill_tbl` (
 CREATE TABLE `bill_detail_tbl` (
   `id` bigint,
   `bill_id` bigint,
+  `payment_detail_id` bigint,
   `name` varchar(255),
   `price` bigint,
   `type` int,
+  `old_index` int,
+  `new_index` int,
+  `img_url` varchar(255),
   `quantity` int,
-  `status` int,
   PRIMARY KEY (`id`)
 );
 

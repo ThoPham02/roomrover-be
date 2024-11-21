@@ -40,6 +40,17 @@ func (l *DeleteContactLogic) DeleteContact(req *types.DeleteContactReq) (resp *t
 		}, nil
 	}
 
+	err = l.svcCtx.NotiFunction.DeleteNotiByRefID(req.ID)
+	if err != nil {
+		l.Logger.Error(err)
+		return &types.DeleteContactRes{
+			Result: types.Result{
+				Code:    common.DB_ERR_CODE,
+				Message: common.DB_ERR_MESS,
+			},
+		}, nil
+	}
+	
 	err = l.svcCtx.ContactModel.Delete(l.ctx, req.ID)
 	if err != nil {
 		l.Logger.Error(err)

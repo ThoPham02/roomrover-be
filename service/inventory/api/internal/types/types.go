@@ -12,7 +12,7 @@ type UploadFileHouseRes struct {
 
 type CreateHouseReq struct {
 	Name        string `form:"name"`
-	Description string `form:"description"`
+	Description string `form:"description,optional"`
 	Type        int64  `form:"type"`
 	Area        int64  `form:"area"`
 	Price       int64  `form:"price"`
@@ -36,6 +36,8 @@ type CreateHouseRes struct {
 
 type FilterHouseReq struct {
 	Search string `form:"search,optional"`
+	Type   int64  `form:"type,optional"`
+	Status int64  `form:"status,optional"`
 	Limit  int64  `form:"limit"`
 	Offset int64  `form:"offset"`
 }
@@ -156,11 +158,17 @@ type DeleteContactRes struct {
 }
 
 type FilterContactReq struct {
+	From   int64 `form:"from,optional"`
+	To     int64 `form:"to,optional"`
+	Status int64 `form:"status,optional"`
+	Limit  int64 `form:"limit"`
+	Offset int64 `form:"offset"`
 }
 
 type FilterContactRes struct {
 	Result   Result    `json:"result"`
 	Contacts []Contact `json:"contacts"`
+	Total    int       `json:"total"`
 }
 
 type UpdateContactStatusReq struct {
@@ -286,6 +294,10 @@ type Contact struct {
 	ID          int64  `json:"id"`
 	HouseID     int64  `json:"houseID"`
 	HouseName   string `json:"houseName"`
+	ProvinceID  int64  `json:"provinceID"`
+	DistrictID  int64  `json:"districtID"`
+	WardID      int64  `json:"wardID"`
+	Address     string `json:"address"`
 	RenterID    int64  `json:"renterID"`
 	RenterName  string `json:"renterName"`
 	RenterPhone string `json:"renterPhone"`
@@ -297,28 +309,32 @@ type Contact struct {
 }
 
 type Contract struct {
-	ContractID int64   `json:"contractID"`
-	Code       string  `json:"code"`
-	Status     int64   `json:"status"`
-	Renter     User    `json:"renter"`
-	Lessor     User    `json:"lessor"`
-	Room       Room    `json:"room"`
-	CheckIn    int64   `json:"checkIn"`
-	Duration   int64   `json:"duration"`
-	Purpose    string  `json:"purpose"`
-	Payment    Payment `json:"payment"`
-	CreatedAt  int64   `json:"createdAt"`
-	UpdatedAt  int64   `json:"updatedAt"`
-	CreatedBy  int64   `json:"createdBy"`
-	UpdatedBy  int64   `json:"updatedBy"`
+	ContractID    int64    `json:"contractID"`
+	Code          string   `json:"code"`
+	Status        int64    `json:"status"`
+	Renter        User     `json:"renter"`
+	Lessor        User     `json:"lessor"`
+	Room          Room     `json:"room"`
+	CheckIn       int64    `json:"checkIn"`
+	Duration      int64    `json:"duration"`
+	Purpose       string   `json:"purpose"`
+	Payment       Payment  `json:"payment"`
+	ConfirmedImgs []string `json:"confirmedImgs"`
+	CreatedAt     int64    `json:"createdAt"`
+	UpdatedAt     int64    `json:"updatedAt"`
+	CreatedBy     int64    `json:"createdBy"`
+	UpdatedBy     int64    `json:"updatedBy"`
 }
 
 type PaymentRenter struct {
-	ID        int64  `json:"id"`
-	PaymentID int64  `json:"paymentID"`
-	RenterID  int64  `json:"renterID"`
-	Name      string `json:"name"`
-	Phone     string `json:"phone"`
+	ID          int64  `json:"id"`
+	PaymentID   int64  `json:"paymentID"`
+	RenterID    int64  `json:"renterID"`
+	Name        string `json:"name"`
+	Phone       string `json:"phone"`
+	CccdNumber  string `json:"cccdNumber"`  // so can cuoc
+	CccdDate    int64  `json:"cccdDate"`    // ngay cap
+	CccdAddress string `json:"cccdAddress"` // noi cap
 }
 
 type PaymentDetail struct {
@@ -327,6 +343,7 @@ type PaymentDetail struct {
 	Name      string `json:"name"`
 	Price     int64  `json:"price"`
 	Type      int64  `json:"type"`
+	Index     int64  `json:"index"`
 }
 
 type Payment struct {
@@ -366,6 +383,9 @@ type BillDetail struct {
 	Name         string `json:"name"`
 	Price        int64  `json:"price"`
 	Type         int64  `json:"type"`
+	OldIndex     int64  `json:"oldIndex"`
+	NewIndex     int64  `json:"newIndex"`
+	Imgurl       string `json:"imgUrl"`
 	Quantity     int64  `json:"quantity"`
 }
 
@@ -379,4 +399,15 @@ type BillPay struct {
 	Type      int64  `json:"type"`
 	Url       string `json:"url"`
 	TransId   string `json:"transId"`
+}
+
+type RenterContact struct {
+	ID          int64  `json:"id"`
+	RoomName    string `json:"roomName"`
+	Name        string `json:"name"`
+	Phone       string `json:"phone"`
+	CccdNumber  string `json:"cccdNumber"`
+	CccdDate    int64  `json:"cccdDate"`
+	CccdAddress string `json:"cccdAddress"`
+	Status      int64  `json:"status"`
 }

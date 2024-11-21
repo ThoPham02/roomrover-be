@@ -57,6 +57,9 @@ func (m *customServiceTblModel) DeleteByHouseID(ctx context.Context, houseID int
 }
 
 func (m *customServiceTblModel) FindMultiByHouseIDs(ctx context.Context, houseIDs []int64) ([]*ServiceTbl, error) {
+	if len(houseIDs) == 0 {
+        return nil, nil
+    }
 	query := fmt.Sprintf("select %s from %s where `house_id` in (", serviceTblRows, m.table)
 	var resp []*ServiceTbl
 	var vals []interface{}
