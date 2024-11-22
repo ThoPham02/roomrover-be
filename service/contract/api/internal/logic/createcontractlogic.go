@@ -131,13 +131,48 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 
 	renterModel, err = l.svcCtx.AccountFunction.GetUserByID(renter.UserID)
 	if err != nil {
-		l.Logger.Error(err)
-		return &types.CreateContractRes{
-			Result: types.Result{
-				Code:    common.DB_ERR_CODE,
-				Message: common.DB_ERR_MESS,
-			},
-		}, nil
+		if err == sql.ErrNoRows {
+			renterModel, err = l.svcCtx.AccountFunction.FindUserByPhone(renter.Phone)
+			if err != nil {
+				l.Logger.Error(err)
+				return &types.CreateContractRes{
+					Result: types.Result{
+						Code:    common.DB_ERR_CODE,
+						Message: common.DB_ERR_MESS,
+					},
+				}, nil
+			}
+
+			if renterModel == nil {
+				renter.UserID = l.svcCtx.ObjSync.GenServiceObjID()
+				err = l.svcCtx.AccountFunction.CreateInactivatedUser(
+					renter.UserID,
+					renter.Phone,
+					renter.FullName,
+					renter.CccdNumber,
+					renter.CccdDate,
+					renter.CccdAddress,
+				)
+				if err != nil {
+					l.Logger.Error(err)
+					return &types.CreateContractRes{
+						Result: types.Result{
+							Code:    common.DB_ERR_CODE,
+							Message: common.DB_ERR_MESS,
+						},
+					}, nil
+				}
+			}
+
+		} else {
+			l.Logger.Error(err)
+			return &types.CreateContractRes{
+				Result: types.Result{
+					Code:    common.DB_ERR_CODE,
+					Message: common.DB_ERR_MESS,
+				},
+			}, nil
+		}
 	}
 	lessorModel, err = l.svcCtx.AccountFunction.GetUserByID(lessor.UserID)
 	if err != nil {
