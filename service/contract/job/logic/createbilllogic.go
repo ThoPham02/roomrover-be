@@ -221,6 +221,7 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 				l.Logger.Error(err)
 				continue
 			}
+			noti.Id = l.svcCtx.ObjSync.GenServiceObjID()
 			noti.Sender = contractModel.RenterId.Int64
 			noti.Receiver = contractModel.LessorId.Int64
 			err = l.svcCtx.NotificationFunction.CreateNotification(noti)
@@ -244,6 +245,7 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 			l.Logger.Error(err)
 			continue
 		}
+		noti.Id = l.svcCtx.ObjSync.GenServiceObjID()
 		noti.Sender = contractModel.RenterId.Int64
 		noti.Receiver = contractModel.LessorId.Int64
 		err = l.svcCtx.NotificationFunction.CreateNotification(noti)

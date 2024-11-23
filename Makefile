@@ -84,6 +84,9 @@ runs:
 job:
 	go run ./cmd/job.go -f etc/job.yaml
 
+ngrok:
+	ngrok http --url=crane-pleased-mollusk.ngrok-free.app 80
+
 compose-build:
 	docker compose up --build -d
 compose-up:
