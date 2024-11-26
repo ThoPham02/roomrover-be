@@ -150,10 +150,10 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 			l.Logger.Error(err)
 			continue
 		}
-
+		var index int64 = common.GetBillIndexByTime(contractModel.CheckIn.Int64, currentTime)
 		var billModel = &model.BillTbl{
 			Id:          billID,
-			Title:       sql.NullString{Valid: true, String: fmt.Sprintf("Hóa đơn thanh toán %s tháng %d", houseRoomModel.HouseRoomName.String, common.GetBillIndexByTime(contractModel.CheckIn.Int64, currentTime))},
+			Title:       sql.NullString{Valid: true, String: fmt.Sprintf("Hóa đơn thanh toán %s tháng %d", houseRoomModel.HouseRoomName.String, index)},
 			PaymentId:   paymentModel.Id,
 			PaymentDate: sql.NullInt64{Valid: true, Int64: currentTime + 6*86400000}, // han thanh toan sau 5 ngay
 			Amount:      totalAmount,
@@ -168,15 +168,15 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 		}
 
 		if contractModel.Status.Int64 == common.CONTRACT_STATUS_ACTIVE {
-			contractModel.Status.Int64 = common.CONTRACT_STATUS_NEARLY_OUT_DATE
-			err = l.svcCtx.ContractModel.Update(l.ctx, contractModel)
-			if err != nil {
-				l.Logger.Error(err)
-				continue
+			if index == contractModel.Duration.Int64-1 {
+				contractModel.Status.Int64 = common.CONTRACT_STATUS_NEARLY_OUT_DATE
+				err = l.svcCtx.ContractModel.Update(l.ctx, contractModel)
+				if err != nil {
+					l.Logger.Error(err)
+					continue
+				}
 			}
-		}
-
-		if contractModel.Status.Int64 == common.CONTRACT_STATUS_NEARLY_OUT_DATE {
+		} else if contractModel.Status.Int64 == common.CONTRACT_STATUS_NEARLY_OUT_DATE {
 			contractModel.Status.Int64 = common.CONTRACT_STATUS_OUT_DATE
 			roomModel, err := l.svcCtx.InventFunction.GetRoomByID(contractModel.RoomId.Int64)
 			if err != nil {
