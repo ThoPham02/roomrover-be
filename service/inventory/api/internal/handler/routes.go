@@ -15,6 +15,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Middleware{serverCtx.UserTokenMiddleware},
 			[]rest.Route{
 				{
+					Method:  http.MethodGet,
+					Path:    "/dashboard",
+					Handler: GetDashboardHandler(serverCtx),
+				},
+				{
 					Method:  http.MethodPut,
 					Path:    "/contact/:id",
 					Handler: UpdateContactStatusHandler(serverCtx),

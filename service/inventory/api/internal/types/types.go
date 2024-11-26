@@ -180,6 +180,26 @@ type UpdateContactStatusRes struct {
 	Result Result `json:"result"`
 }
 
+type HouseRevenue struct {
+	HouseID   int64  `json:"houseID"`
+	HouseName string `json:"houseName"`
+	Revenue   int64  `json:"revenue"`
+}
+
+type GetDashboardReq struct {
+}
+
+type GetDashboardRes struct {
+	Result          Result         `json:"result"`
+	TotalRoom       int            `json:"totalRoom"`
+	RentedRoom      int            `json:"rentedRoom"`
+	EmptyRoom       int            `json:"emptyRoom"`
+	TotalAmount     int64          `json:"totalAmount"`
+	CurrentContact  []Contact      `json:"currentContact"`
+	ExpiredContract []Contract     `json:"expiredContract"`
+	HouseRevenue    []HouseRevenue `json:"houseRevenue"`
+}
+
 type SearchHouseReq struct {
 	Search     string `form:"search,optional"`
 	DistrictID int64  `form:"districtID,optional"`

@@ -3,6 +3,7 @@ package model
 import (
 	"context"
 	"fmt"
+	"roomrover/common"
 
 	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
@@ -17,6 +18,7 @@ type (
 		contactTblModel
 		FindMultiByUser(ctx context.Context, renterID, lessorID, from, to, status, limit, offset int64) ([]*ContactTbl, error)
 		CountByUser(ctx context.Context, renterID, lessorID, from, to, status int64) (int, error)
+		GetCurrentContact(ctx context.Context, userID int64) ([]*ContactTbl, error)
 	}
 
 	customContactTblModel struct {
@@ -101,4 +103,20 @@ func (m *customContactTblModel) CountByUser(ctx context.Context, renterID, lesso
 
 	err := m.conn.QueryRowCtx(ctx, &resp, query, vals...)
 	return resp, err
+}
+
+func (m *customContactTblModel) GetCurrentContact(ctx context.Context, userID int64) ([]*ContactTbl, error) {
+	query := fmt.Sprintf("select %s from %s where `lessor_id` = ? and `datetime` between ? and ?", contactTblRows, m.table)
+	var resp []*ContactTbl
+	var currentDay int64 = common.GetCurrentTime()/86400000*86400000 - 7*3600*1000
+
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, userID, currentDay, currentDay+86400000)
+	switch err {
+	case nil:
+		return resp, nil
+	case sqlc.ErrNotFound:
+		return nil, nil
+	default:
+		return nil, err
+	}
 }

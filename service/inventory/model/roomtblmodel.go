@@ -43,6 +43,7 @@ type (
 		CountSearchRoom(ctx context.Context, userID, houseType int64, search string, status int64) (int, error)
 		GetHouseRoomByRoomID(ctx context.Context, roomID int64) (*HouseRoomTbl, error)
 		CountRoomActiveByHouseID(ctx context.Context, houseID int64) (int64, error)
+		GetAllRoomByUserID(ctx context.Context, userID int64) ([]*RoomTbl, error)
 	}
 
 	customRoomTblModel struct {
@@ -301,4 +302,18 @@ func (m *customRoomTblModel) CountRoomActiveByHouseID(ctx context.Context, house
 	var total int64
 	err := m.conn.QueryRowCtx(ctx, &total, query, houseID)
 	return total, err
+}
+
+func (m *customRoomTblModel) GetAllRoomByUserID(ctx context.Context, userID int64) ([]*RoomTbl, error) {
+	query := fmt.Sprintf("select %s from %s where `house_id` in (select `id` from `house_tbl` where `user_id` = ?)", roomTblRows, m.table)
+	var resp []*RoomTbl
+	err := m.conn.QueryRowsCtx(ctx, &resp, query, userID)
+	switch err {
+	case nil:
+		return resp, nil
+	case sqlx.ErrNotFound:
+		return nil, nil
+	default:
+		return nil, err
+	}
 }

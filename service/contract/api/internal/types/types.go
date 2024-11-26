@@ -204,9 +204,9 @@ type GetListRenterReq struct {
 }
 
 type GetListRenterRes struct {
-	Result  Result        `json:"result"`
+	Result  Result          `json:"result"`
 	Renters []RenterContact `json:"renters"`
-	Total   int           `json:"total"`
+	Total   int             `json:"total"`
 }
 
 type UpdateRenterStatusReq struct {
