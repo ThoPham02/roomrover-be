@@ -122,6 +122,7 @@ type GetRoomRes struct {
 	Room     Room     `json:"room"`
 	House    House    `json:"house"`
 	Contract Contract `json:"contract"`
+	Bills    []Bill   `json:"bills"`
 }
 
 type SearchRoomReq struct {
@@ -198,6 +199,14 @@ type GetDashboardRes struct {
 	CurrentContact  []Contact      `json:"currentContact"`
 	ExpiredContract []Contract     `json:"expiredContract"`
 	HouseRevenue    []HouseRevenue `json:"houseRevenue"`
+}
+
+type DeleteRoomReq struct {
+	ID int64 `path:"id"`
+}
+
+type DeleteRoomRes struct {
+	Result Result `json:"result"`
 }
 
 type SearchHouseReq struct {

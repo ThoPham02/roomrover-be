@@ -135,9 +135,9 @@ func (m *customContractTblModel) FindContractByCondition(ctx context.Context, le
 }
 
 func (m *customContractTblModel) FindActiveByRoomID(ctx context.Context, roomID int64) (*ContractTbl, error) {
-	query := fmt.Sprintf("select %s from %s where `room_id` = ? and `status` & 1", contractTblRows, m.table)
+	query := fmt.Sprintf("select %s from %s where `room_id` = ? and `status` & ?", contractTblRows, m.table)
 	var resp ContractTbl
-	err := m.conn.QueryRowCtx(ctx, &resp, query, roomID)
+	err := m.conn.QueryRowCtx(ctx, &resp, query, roomID, common.CONTRACT_STATUS_ACTIVE)
 	switch err {
 	case nil:
 		return &resp, nil

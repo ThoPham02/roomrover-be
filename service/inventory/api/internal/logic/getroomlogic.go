@@ -33,6 +33,8 @@ func (l *GetRoomLogic) GetRoom(req *types.GetRoomReq) (resp *types.GetRoomRes, e
 	var services []types.Service
 	var lessor types.User
 	var contract types.Contract
+	var bills []types.Bill
+
 	var roomModel *model.RoomTbl
 	var houseModel *model.HouseTbl
 
@@ -171,6 +173,56 @@ func (l *GetRoomLogic) GetRoom(req *types.GetRoomReq) (resp *types.GetRoomRes, e
 		}
 	}
 
+	contractModels, err := l.svcCtx.ContractFunction.GetContractByRoom(roomModel.Id)
+	if err != nil {
+		l.Logger.Error(err)
+		return &types.GetRoomRes{
+			Result: types.Result{
+				Code:    common.DB_ERR_CODE,
+				Message: common.DB_ERR_MESS,
+			},
+		}, nil
+	}
+	for _, contract := range contractModels {
+		renter, err := l.svcCtx.AccountFunction.GetUserByID(contract.RenterId.Int64)
+		if err != nil {
+			l.Logger.Error(err)
+			return &types.GetRoomRes{
+				Result: types.Result{
+					Code:    common.DB_ERR_CODE,
+					Message: common.DB_ERR_MESS,
+				},
+			}, nil
+		}
+
+		billModels, err := l.svcCtx.ContractFunction.GetBillByContractID(contract.Id)
+		if err != nil {
+			l.Logger.Error(err)
+			return &types.GetRoomRes{
+				Result: types.Result{
+					Code:    common.DB_ERR_CODE,
+					Message: common.DB_ERR_MESS,
+				},
+			}, nil
+		}
+
+		for _, bill := range billModels {
+			bills = append(bills, types.Bill{
+				BillID:       bill.Id,
+				Title:        bill.Title.String,
+				ContractCode: contract.Code.String,
+				RenterID:     renter.Id,
+				RenterName:   renter.FullName.String,
+				RenterPhone:  renter.Phone,
+				PaymentID:    bill.PaymentId,
+				PaymentDate:  bill.PaymentDate.Int64,
+				Amount:       bill.Amount,
+				Remain:       bill.Remain,
+				Status:       bill.Status,
+			})
+		}
+	}
+
 	l.Logger.Info("GetRoom Success: ", userID)
 	return &types.GetRoomRes{
 		Result: types.Result{
@@ -213,5 +265,6 @@ func (l *GetRoomLogic) GetRoom(req *types.GetRoomReq) (resp *types.GetRoomRes, e
 			UpdatedBy:   houseModel.UpdatedBy.Int64,
 		},
 		Contract: contract,
+		Bills:    bills,
 	}, nil
 }

@@ -122,6 +122,7 @@ type (
 		Room     Room     `json:"room"`
 		House    House    `json:"house"`
 		Contract Contract `json:"contract"`
+		Bills    []Bill   `json:"bills"`
 	}
 
 	SearchRoomReq {
@@ -192,6 +193,13 @@ type (
 		ExpiredContract []Contract     `json:"expiredContract"`
 		HouseRevenue    []HouseRevenue `json:"houseRevenue"`
 	}
+
+	DeleteRoomReq {
+		ID int64 `path:"id"`
+	}
+	DeleteRoomRes {
+		Result Result `json:"result"`
+	}
 )
 
 @server (
@@ -200,6 +208,12 @@ type (
 	prefix:     /invent
 )
 service invent-api {
+	@doc (
+		summary: "Delete Room"
+	)
+	@handler DeleteRoom
+	delete /room/:id (DeleteRoomReq) returns (DeleteRoomRes)
+	
 	@doc (
 		summary: "Get Dashboard"
 	)

@@ -9,6 +9,7 @@ type ContractFunction interface {
 	GetPaymentByContractID(contractID int64) (payments *model.PaymentTbl, err error)
 	// GetPaymentByTime(time int64) (payments []*model.PaymentTbl, err error)
 	GetBillByID(id int64) (*model.BillTbl, error)
-	GetBillPayByContractID(houseID int64) (billPays []*model.BillPayTbl, err error)
+	GetBillPayByContractID(contractID int64) (billPays []*model.BillPayTbl, err error)
 	GetContractByRoom(roomID int64) ([]*model.ContractTbl, error)
+	GetBillByContractID(contractID int64) (bills []*model.BillTbl, err error)
 }

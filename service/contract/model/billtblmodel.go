@@ -28,6 +28,7 @@ type (
 		billTblModel
 		CountByCondition(ctx context.Context, condition FilterCondition) (int64, error)
 		FilterBillByCondition(ctx context.Context, condition FilterCondition) ([]*BillTbl, error)
+		FindByContractID(ctx context.Context, contractID int64) ([]*BillTbl, error)
 	}
 
 	customBillTblModel struct {
@@ -125,4 +126,18 @@ func (m *customBillTblModel) FilterBillByCondition(ctx context.Context, conditio
 	default:
 		return nil, err
 	}
+}
+
+func (m *customBillTblModel) FindByContractID(ctx context.Context, contractID int64) ([]*BillTbl, error) {
+	query := fmt.Sprintf("select %s from %s where `payment_id` in (select `id` from `payment_tbl` where `contract_id` = ?)", billTblRows, m.table)
+    var resp []*BillTbl
+    err := m.conn.QueryRowsCtx(ctx, &resp, query, contractID)
+    switch err {
+    case nil:
+        return resp, nil
+    case sqlc.ErrNotFound:
+        return nil, nil
+    default:
+        return nil, err
+    }
 }

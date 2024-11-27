@@ -62,12 +62,27 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 	}
 
 	if userModel != nil {
-		return &types.RegisterRes{
-			Result: types.Result{
-				Code:    common.USER_ALREADY_EXISTS_CODE,
-				Message: common.USER_ALREADY_EXISTS_MESS,
-			},
-		}, nil
+		if userModel.Status == common.USER_ACTIVE {
+			return &types.RegisterRes{
+				Result: types.Result{
+					Code:    common.USER_ALREADY_EXISTS_CODE,
+					Message: common.USER_ALREADY_EXISTS_MESS,
+				},
+			}, nil
+		}
+
+		userModel.Status = common.USER_ACTIVE
+		userModel.UpdatedAt = sql.NullInt64{Valid: true, Int64: currentTime}
+	} else {
+		userModel = &model.UserTbl{
+			Id:           l.svcCtx.ObjSync.GenServiceObjID(),
+			Phone:        req.Phone,
+			PasswordHash: "",
+			Role:         sql.NullInt64{Valid: true, Int64: req.UserRole},
+			Status:       common.USER_ACTIVE,
+			CreatedAt:    sql.NullInt64{Valid: true, Int64: currentTime},
+			UpdatedAt:    sql.NullInt64{Valid: true, Int64: currentTime},
+		}
 	}
 
 	// Register new user
@@ -82,16 +97,17 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 		}, nil
 	}
 
-	userModel = &model.UserTbl{
-		Id:           l.svcCtx.ObjSync.GenServiceObjID(),
-		Phone:        req.Phone,
-		PasswordHash: hashpw,
-		Role:         sql.NullInt64{Valid: true, Int64: req.UserRole},
-		Status:       common.USER_ACTIVE,
-		CreatedAt:    sql.NullInt64{Valid: true, Int64: currentTime},
-		UpdatedAt:    sql.NullInt64{Valid: true, Int64: currentTime},
+	userModel.PasswordHash = hashpw
+	err = l.svcCtx.UserModel.Delete(l.ctx, userModel.Id)
+	if err != nil {
+		l.Logger.Error(err)
+		return &types.RegisterRes{
+			Result: types.Result{
+				Code:    common.DB_ERR_CODE,
+				Message: common.DB_ERR_MESS,
+			},
+		}, nil
 	}
-
 	_, err = l.svcCtx.UserModel.Insert(l.ctx, userModel)
 	if err != nil {
 		l.Logger.Error(err)
