@@ -136,6 +136,17 @@ func (l *GetRoomLogic) GetRoom(req *types.GetRoomReq) (resp *types.GetRoomRes, e
 			}, nil
 		}
 
+		renter, err := l.svcCtx.AccountFunction.GetUserByID(contractModel.RenterId.Int64)
+		if err != nil || renter == nil {
+			l.Logger.Error(err)
+			return &types.GetRoomRes{
+				Result: types.Result{
+					Code:    common.DB_ERR_CODE,
+					Message: common.DB_ERR_MESS,
+				},
+			}, nil
+		}
+
 		contract = types.Contract{
 			ContractID: contractModel.Id,
 			Code:       contractModel.Code.String,
@@ -148,11 +159,12 @@ func (l *GetRoomLogic) GetRoom(req *types.GetRoomReq) (resp *types.GetRoomRes, e
 				CccdAddress: contractModel.LessorAddress.String,
 			},
 			Renter: types.User{
-				UserID:      contractModel.RenterId.Int64,
-				FullName:    contractModel.RenterName.String,
-				CccdNumber:  contractModel.RenterNumber.String,
-				CccdDate:    contractModel.RenterDate.Int64,
-				CccdAddress: contractModel.RenterAddress.String,
+				UserID:      renter.Id,
+				Phone:       renter.Phone,
+				FullName:    renter.FullName.String,
+				CccdNumber:  renter.CCCDNumber.String,
+				CccdDate:    renter.CCCDDate.Int64,
+				CccdAddress: renter.CCCDAddress.String,
 			},
 			CheckIn:  contractModel.CheckIn.Int64,
 			Duration: contractModel.Duration.Int64,
