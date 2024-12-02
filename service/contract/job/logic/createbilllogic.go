@@ -211,7 +211,7 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 				Id:        l.svcCtx.ObjSync.GenServiceObjID(),
 				Sender:    contractModel.LessorId.Int64,
 				Receiver:  contractModel.RenterId.Int64,
-				RefId:     billModel.Id,
+				RefId:     contractModel.Id,
 				RefType:   common.NOTI_TYPE_OUT_DATE_CONTRACT,
 				Unread:    common.NOTI_TYPE_UNREAD,
 				CreatedAt: currentTime,

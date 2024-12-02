@@ -55,6 +55,7 @@ func (cfFunc *ContractFunction) GetContractByRoom(roomID int64) ([]*model.Contra
 func (cfFunc *ContractFunction) GetBillByContractID(contractID int64) (bills []*model.BillTbl, err error) {
 	return cfFunc.ContractService.Ctx.BillModel.FindByContractID(context.TODO(), contractID)
 }
-// func (cfFunc *ContractFunction) GetPaymentByTime(time int64) (payments []*model.PaymentTbl, err error) {
-// 	return cfFunc.ContractService.Ctx.PaymentModel.FindMultiByTime(context.TODO(), time)
-// }
+
+func (cfFunc *ContractFunction) GetBillByID(id int64) (*model.BillTbl, error) {
+	return cfFunc.ContractService.Ctx.BillModel.FindOne(context.TODO(), id)
+}

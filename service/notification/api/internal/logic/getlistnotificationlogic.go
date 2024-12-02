@@ -187,6 +187,13 @@ func (l *GetListNotificationLogic) GetListNotification(req *types.GetListNotific
 		case common.NOTI_TYPE_CANCEL_CONTRACT, common.NOTI_TYPE_OUT_DATE_CONTRACT, common.NOTI_TYPE_NEARLY_OUT_DATE_CONTRACT:
 			contractModel, err := l.svcCtx.ContractFunction.GetContractByID(noti.RefID)
 			if err != nil {
+				if err == model.ErrNotFound {
+					err = l.svcCtx.NotificationModel.Delete(l.ctx, notiModel.Id)
+					if err != nil {
+						l.Logger.Error(err)
+						continue
+					}
+				}
 				l.Logger.Error(err)
 				continue
 			}
@@ -206,7 +213,7 @@ func (l *GetListNotificationLogic) GetListNotification(req *types.GetListNotific
 			})
 			noti.NotiInfos = append(noti.NotiInfos, types.NotiInfo{
 				ID:   billModel.Id,
-				Name: billModel.PaymentDate,
+				Name: billModel.PaymentDate.Int64,
 			})
 
 		default:
