@@ -50,7 +50,7 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 	}
 
 	// Check if the user exists
-	userModel, err := l.svcCtx.UserModel.FindOneByPhone(l.ctx, req.Phone)
+	userModel, err := l.svcCtx.UserModel.FindOneByPhone(l.ctx, req.PhoneNumber)
 	if err != nil && err != model.ErrNotFound {
 		l.Logger.Error(err)
 		return &types.RegisterRes{
@@ -71,13 +71,23 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.RegisterRe
 			}, nil
 		}
 
+		// Update user info
+		userModel.FullName = sql.NullString{Valid: true, String: req.FullName}
+		userModel.CCCDNumber = sql.NullString{Valid: true, String: req.Cccd}
+		userModel.CCCDDate = sql.NullInt64{Valid: true, Int64: req.IssueDate}
+		userModel.CCCDAddress = sql.NullString{Valid: true, String: req.IssuePlace}
+		userModel.Role = sql.NullInt64{Valid: true, Int64: req.UserRole}
 		userModel.Status = common.USER_ACTIVE
 		userModel.UpdatedAt = sql.NullInt64{Valid: true, Int64: currentTime}
 	} else {
 		userModel = &model.UserTbl{
 			Id:           l.svcCtx.ObjSync.GenServiceObjID(),
-			Phone:        req.Phone,
+			Phone:        req.PhoneNumber,
 			PasswordHash: "",
+			FullName:     sql.NullString{Valid: true, String: req.FullName},
+			CCCDNumber:   sql.NullString{Valid: true, String: req.Cccd},
+			CCCDDate:     sql.NullInt64{Valid: true, Int64: req.IssueDate},
+			CCCDAddress:  sql.NullString{Valid: true, String: req.IssuePlace},
 			Role:         sql.NullInt64{Valid: true, Int64: req.UserRole},
 			Status:       common.USER_ACTIVE,
 			CreatedAt:    sql.NullInt64{Valid: true, Int64: currentTime},

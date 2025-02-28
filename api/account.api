@@ -9,26 +9,30 @@ import "model.api"
 
 type (
 	LoginReq {
-		Phone    string `form:"phone"`    // user_name
+		Phone    string `form:"phone"` // user_name
 		Password string `form:"password"` //  password
 	}
 	LoginRes {
 		Result Result `json:"result"`
 		Token  string `json:"token"` // jwt token for api
-		User   User   `json:"user"`  // Account info
+		User   User   `json:"user"` // Account info
 	}
 )
 
 type (
 	RegisterReq {
-		Phone    string `form:"phone"`
-		Password string `form:"password"`
-		UserRole int64  `form:"user_role"`
+		PhoneNumber string `form:"phoneNumber"`
+		Password    string `form:"password"`
+		UserRole    int64  `form:"role"`
+		Cccd        string `form:"cccd"`
+		FullName    string `form:"fullName"`
+		IssueDate   int64  `form:"issueDate"`
+		IssuePlace  string `form:"issuePlace"`
 	}
 	RegisterRes {
 		Result Result `json:"result"`
 		Token  string `json:"token"` // jwt token for api
-		User   User   `json:"user"`  // Account info
+		User   User   `json:"user"` // Account info
 	}
 )
 
@@ -103,13 +107,13 @@ service account-api {
 	)
 	@handler Login
 	post /login (LoginReq) returns (LoginRes)
-	
+
 	@doc (
 		summary: "Register New User"
 	)
 	@handler Register
 	post /register (RegisterReq) returns (RegisterRes)
-	
+
 	@doc (
 		summary: "Filter User"
 	)
@@ -127,22 +131,23 @@ service account-api {
 	)
 	@handler GetUser
 	get /info (GetUserReq) returns (GetUserRes)
-	
+
 	@doc (
 		summary: "Update User Info"
 	)
 	@handler UpdateUser
 	put /:id (UpdateUserReq) returns (UpdateUserRes)
-	
+
 	@doc (
 		summary: "Change User Password"
 	)
 	@handler ChangePassword
 	put /change-password (ChangePasswordReq) returns (ChangePasswordRes)
-	
+
 	@doc (
 		summary: "Upload File"
 	)
 	@handler UploadFile
 	post /avatar (UploadFileReq) returns (UploadFileRes)
 }
+
