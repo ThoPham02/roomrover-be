@@ -174,6 +174,7 @@ func (l *GetBillDetailLogic) GetBillDetail(req *types.GetBillDetailReq) (resp *t
 			PaymentID:    billModel.PaymentId,
 			PaymentDate:  billModel.PaymentDate.Int64,
 			Amount:       billModel.Amount,
+			Internet: paymentModel.Internet,
 			Remain:       billModel.Remain,
 			Status:       billModel.Status,
 			BillDetails:  details,

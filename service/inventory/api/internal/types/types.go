@@ -344,6 +344,7 @@ type Contract struct {
 	Renter        User     `json:"renter"`
 	Lessor        User     `json:"lessor"`
 	Room          Room     `json:"room"`
+	Internet      int64    `json:"internet"`
 	CheckIn       int64    `json:"checkIn"`
 	Duration      int64    `json:"duration"`
 	Purpose       string   `json:"purpose"`
@@ -380,6 +381,7 @@ type Payment struct {
 	ContractID     int64           `json:"contractID"`
 	Amount         int64           `json:"amount"`
 	Discount       int64           `json:"discount"`
+	Internet       int64           `json:"internet"`
 	Deposit        int64           `json:"deposit"`
 	DepositDate    int64           `json:"depositDate"`
 	NextBill       int64           `json:"nextBill"`
@@ -400,6 +402,7 @@ type Bill struct {
 	PaymentID    int64        `json:"paymentID"`
 	PaymentDate  int64        `json:"paymentDate"`
 	Amount       int64        `json:"amount"`
+	Internet     int64        `json:"internet"`
 	Remain       int64        `json:"remain"`
 	Status       int64        `json:"status"`
 	BillDetails  []BillDetail `json:"billDetails"`

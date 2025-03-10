@@ -95,7 +95,7 @@ func (l *UpdateContractStatusLogic) UpdateContractStatus(req *types.UpdateContra
 				},
 			}, nil
 		}
-
+		noti.Id = l.svcCtx.ObjSync.GenServiceObjID()
 		noti.Sender = contract.LessorId.Int64
 		noti.Receiver = contract.RenterId.Int64
 		err = l.svcCtx.NotiFunction.CreateNotification(noti)

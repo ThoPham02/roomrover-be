@@ -38,6 +38,7 @@ type (
 		Id          int64 `db:"id"`
 		ContractId  int64 `db:"contract_id"`
 		Amount      int64 `db:"amount"`
+		Internet    int64 `db:"internet"`
 		Discount    int64 `db:"discount"`
 		Deposit     int64 `db:"deposit"`
 		DepositDate int64 `db:"deposit_date"`
@@ -73,14 +74,14 @@ func (m *defaultPaymentTblModel) FindOne(ctx context.Context, id int64) (*Paymen
 }
 
 func (m *defaultPaymentTblModel) Insert(ctx context.Context, data *PaymentTbl) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?)", m.table, paymentTblRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.ContractId, data.Amount, data.Discount, data.Deposit, data.DepositDate, data.NextBill)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?)", m.table, paymentTblRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Id, data.ContractId, data.Amount, data.Internet, data.Discount, data.Deposit, data.DepositDate, data.NextBill)
 	return ret, err
 }
 
 func (m *defaultPaymentTblModel) Update(ctx context.Context, data *PaymentTbl) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, paymentTblRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.ContractId, data.Amount, data.Discount, data.Deposit, data.DepositDate, data.NextBill, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, data.ContractId, data.Amount, data.Internet, data.Discount, data.Deposit, data.DepositDate, data.NextBill, data.Id)
 	return err
 }
 

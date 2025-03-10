@@ -31,6 +31,7 @@ CREATE TABLE `payment_tbl` (
   `id` bigint,
   `contract_id` bigint not null,
   `amount` bigint not null,
+  `internet` bigint not null,
   `discount` bigint not null,
   `deposit` bigint not null,
   `deposit_date` bigint not null,

@@ -323,6 +323,7 @@ func (l *CreateContractLogic) CreateContract(req *types.CreateContractReq) (resp
 		Id:          l.svcCtx.ObjSync.GenServiceObjID(),
 		ContractId:  contractModel.Id,
 		Amount:      req.Price,
+		Internet:    req.Internet,
 		Discount:    req.Discount,
 		Deposit:     req.Deposit,
 		DepositDate: req.DepositDate,

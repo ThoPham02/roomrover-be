@@ -13,6 +13,7 @@ type (
 		Lessor        string `form:"lessor"`
 		PaymentRenter string `form:"paymentRenter,optional"`
 		Room          string `form:"room"`
+		Internet      int64  `form:"internet"`
 		CheckIn       int64  `form:"checkIn"`
 		Duration      int64  `form:"duration"`
 		Purpose       string `form:"purpose"`
@@ -33,6 +34,7 @@ type (
 		PaymentRenter string `form:"paymentRenter,optional"`
 		Room          string `form:"room"`
 		CheckIn       int64  `form:"checkIn"`
+		Internet      int64  `form:"internet"`
 		Duration      int64  `form:"duration"`
 		Purpose       string `form:"purpose"`
 		Price         int64  `form:"price"`

@@ -70,7 +70,8 @@ func (l *CreateBillLogic) CreateBillByTime() error {
 
 		var billID int64 = l.svcCtx.ObjSync.GenServiceObjID()
 		var billStatus int64 = common.BILL_STATUS_UNPAID
-		var totalAmount int64 = paymentModel.Amount
+		var totalAmount int64 = paymentModel.Amount + paymentModel.Internet
+		l.Logger.Info(totalAmount)
 		var totalRemain int64
 
 		_, err = l.svcCtx.BillDetailModel.Insert(l.ctx, &model.BillDetailTbl{
